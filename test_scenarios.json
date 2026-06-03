@@ -1,0 +1,437 @@
+{
+  "name": "TIPPSS_SafeGuard_PQ_Sequential_v3",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tippss-assessment",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook_entry",
+      "name": "Webhook Entry",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        460
+      ],
+      "webhookId": "tippss-assessment-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Agent 1: Data Parser (v2.0.1 \u2014 handles webhook body and direct test input)\nconst raw = $input.first().json;\nconst payload = raw.body || raw;\n\nconst context = {\n  system_id: payload.system_id || `SYS-${Date.now()}`,\n  domain: payload.domain || 'healthcare',\n  timestamp: new Date().toISOString(),\n  constraints: payload.constraints || { budget_usd: 100000, max_downtime_hrs: 40 },\n  inputs: {\n    tls_config: payload.tls_config || null,\n    iot_traffic: payload.iot_traffic || null,\n    ehr_records: payload.ehr_records || null,\n    ai_prompt_logs: payload.ai_prompt_logs || null,\n    device_logs: payload.device_logs || null\n  },\n  findings: [],\n  metadata: {\n    parser_version: '2.0.1',\n    input_source: raw.body ? 'webhook_body' : 'direct_json',\n    input_types_detected: []\n  }\n};\n\nfor (const [k, v] of Object.entries(context.inputs)) {\n  if (v !== null && v !== undefined) context.metadata.input_types_detected.push(k);\n}\n\nreturn { json: context };"
+      },
+      "id": "agent_1_parser",
+      "name": "Agent 1: Data Parser",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Agent 2: Crypto Inventory Agent\nconst ctx = $input.first().json;\nconst tls = ctx.inputs.tls_config;\nconst findings = [];\nconst CLASSICAL = ['RSA', 'ECC', 'ECDSA', 'ECDH', 'ECDHE', 'DH', 'DHE', 'RSA-PSS', 'RSA-PKCS1'];\nconst DEPRECATED_TLS = ['TLS1.0', 'TLS1.1'];\nconst WEAK_HASH = ['SHA-1', 'MD5'];\nconst PQ = ['ML-KEM', 'ML-DSA', 'SLH-DSA', 'FN-DSA'];\nif (tls) {\n  if (tls.tls_version && DEPRECATED_TLS.includes(tls.tls_version)) {\n    findings.push({ agent: 'crypto_inventory', severity: 'critical', type: 'deprecated_tls_version',\n      detail: `${tls.tls_version} deprecated since 2020 (RFC 8996)`, detected_value: tls.tls_version,\n      tippss_mapping: ['Security', 'Protection'] });\n  }\n  if (tls.key_exchange) {\n    const ke = tls.key_exchange.toUpperCase();\n    const isClass = CLASSICAL.some(a => ke.includes(a));\n    const isPQ = PQ.some(a => ke.includes(a));\n    if (isClass && !isPQ) {\n      findings.push({ agent: 'crypto_inventory', severity: 'high', type: 'classical_key_exchange',\n        detail: `${tls.key_exchange} key exchange not PQ safe`, detected_value: tls.key_exchange,\n        tippss_mapping: ['Security', 'Protection'] });\n    }\n  }\n  if (tls.cert_signature_algo) {\n    const sig = tls.cert_signature_algo.toUpperCase();\n    const isClass = CLASSICAL.some(a => sig.includes(a));\n    const isPQ = PQ.some(a => sig.includes(a));\n    if (isClass && !isPQ) {\n      findings.push({ agent: 'crypto_inventory', severity: 'high', type: 'classical_signature',\n        detail: `${tls.cert_signature_algo} certificate signature not PQ safe`, detected_value: tls.cert_signature_algo,\n        tippss_mapping: ['Security', 'Identity', 'Protection'] });\n    }\n  }\n  if (tls.hash && WEAK_HASH.includes(tls.hash)) {\n    findings.push({ agent: 'crypto_inventory', severity: 'critical', type: 'weak_hash',\n      detail: `${tls.hash} collision-vulnerable`, detected_value: tls.hash,\n      tippss_mapping: ['Security', 'Protection'] });\n  }\n}\nctx.findings.push(...findings);\nreturn { json: ctx };"
+      },
+      "id": "agent_2_crypto",
+      "name": "Agent 2: Crypto Inventory",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Agent 3: PQ Benchmark Agent\nconst ctx = $input.first().json;\nconst tls = ctx.inputs.tls_config;\nconst PQ_REC = {\n  'RSA': { rec: 'ML-KEM-768 (FIPS 203) + ML-DSA-65 (FIPS 204)', priority: 'high' },\n  'ECDH': { rec: 'ML-KEM-768 (FIPS 203) hybrid first', priority: 'high' },\n  'ECDHE': { rec: 'X25519+ML-KEM-768 hybrid then full ML-KEM-768', priority: 'high' },\n  'ECDSA': { rec: 'ML-DSA-65 (FIPS 204) hybrid first', priority: 'high' },\n  'ECC': { rec: 'ML-KEM-768 + ML-DSA-65', priority: 'high' }\n};\nconst pq_findings = [];\nconst classical = ctx.findings.filter(f => f.agent === 'crypto_inventory' \n  && f.type !== 'weak_hash' && f.type !== 'deprecated_tls_version');\nfor (const f of classical) {\n  const algo = Object.keys(PQ_REC).find(a => f.detected_value && f.detected_value.toUpperCase().includes(a));\n  if (algo) {\n    pq_findings.push({ agent: 'pq_benchmark', severity: 'high', type: 'pq_migration_required',\n      detail: `${algo} vulnerable to Shor's algorithm`, detected_algorithm: algo,\n      recommendation: PQ_REC[algo].rec, priority: PQ_REC[algo].priority,\n      tippss_mapping: ['Security', 'Protection'] });\n  }\n}\nif (tls && tls.data_lifetime_years && tls.data_lifetime_years >= 10) {\n  pq_findings.push({ agent: 'pq_benchmark', severity: 'critical', type: 'long_lifetime_classical_crypto',\n    detail: `${tls.data_lifetime_years}-year lifetime + classical crypto = severe harvest-now-decrypt-later exposure`,\n    tippss_mapping: ['Privacy', 'Protection', 'Security'] });\n}\nctx.findings.push(...pq_findings);\nreturn { json: ctx };"
+      },
+      "id": "agent_3_pq_benchmark",
+      "name": "Agent 3: PQ Benchmark",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        860,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Agent 4: Clinical Privacy Agent\nconst ctx = $input.first().json;\nconst prompts = ctx.inputs.ai_prompt_logs || [];\nconst PHI = [\n  { rx: /\\bMRN[:\\s-]*\\d{4,}/gi, type: 'medical_record_number' },\n  { rx: /\\b\\d{3}-\\d{2}-\\d{4}\\b/g, type: 'ssn' },\n  { rx: /\\bpatient\\s+(name|id)[:\\s]+[A-Z][a-z]+/gi, type: 'patient_identifier' },\n  { rx: /\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b/g, type: 'email' },\n  { rx: /\\b(HIV|AIDS|cancer|psychiatric|substance abuse)\\s+(diagnosis|status|treatment|history)/gi, type: 'sensitive_diagnosis' }\n];\nconst pf = [];\nconst arr = Array.isArray(prompts) ? prompts : [prompts];\nfor (let i = 0; i < arr.length; i++) {\n  const p = arr[i]; if (!p) continue;\n  const text = typeof p === 'string' ? p : (p.prompt || p.text || JSON.stringify(p));\n  for (const pat of PHI) {\n    const m = text.match(pat.rx);\n    if (m) pf.push({ agent: 'clinical_privacy', severity: pat.type === 'sensitive_diagnosis' ? 'critical' : 'high',\n      type: pat.type, detail: `PHI detected in prompt #${i}: ${pat.type}`, match_count: m.length,\n      tippss_mapping: ['Privacy', 'Protection', 'Trust'] });\n  }\n}\nctx.findings.push(...pf);\nreturn { json: ctx };"
+      },
+      "id": "agent_4_privacy",
+      "name": "Agent 4: Clinical Privacy",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Agent 5: Device Identity Agent\nconst ctx = $input.first().json;\nconst devices = ctx.inputs.device_logs || [];\nconst f = [];\nconst arr = Array.isArray(devices) ? devices : [devices];\nfor (const d of arr) {\n  if (!d || typeof d !== 'object') continue;\n  if (d.cert_present === false || d.certificate === null) {\n    f.push({ agent: 'device_identity', severity: 'high', type: 'missing_certificate',\n      detail: `Device ${d.device_id || 'unknown'} has no certificate`, device_id: d.device_id,\n      tippss_mapping: ['Identity', 'Security'] });\n  }\n  if (d.auth_status === 'failed') {\n    f.push({ agent: 'device_identity', severity: 'critical', type: 'authentication_failed',\n      detail: `Device ${d.device_id || 'unknown'} authentication failed`, device_id: d.device_id,\n      tippss_mapping: ['Identity', 'Safety'] });\n  }\n}\nctx.findings.push(...f);\nreturn { json: ctx };"
+      },
+      "id": "agent_5_identity",
+      "name": "Agent 5: Device Identity",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Agent 6: Prompt Injection Agent\nconst ctx = $input.first().json;\nconst prompts = ctx.inputs.ai_prompt_logs || [];\nconst INJ = [\n  { rx: /ignore\\s+(all\\s+)?(previous|prior|above)\\s+(instructions|prompts|rules)/i, type: 'instruction_override', sev: 'critical' },\n  { rx: /(you are now|switch to|enable)\\s+(admin|dan|developer|jailbreak)\\s*(mode)?/i, type: 'role_manipulation', sev: 'critical' },\n  { rx: /(repeat|show|reveal|print)\\s+(your|the)\\s+(system|initial|original)\\s+prompt/i, type: 'system_prompt_extraction', sev: 'high' },\n  { rx: /\\[(system|admin|override|approved)[^\\]]*\\]/i, type: 'fake_system_message', sev: 'critical' },\n  { rx: /(authentication|consent|hipaa|authorization)\\s+(has been|is)\\s+(waived|bypassed|completed)/i, type: 'fake_authorization', sev: 'critical' }\n];\nconst f = [];\nconst arr = Array.isArray(prompts) ? prompts : [prompts];\nfor (let i = 0; i < arr.length; i++) {\n  const p = arr[i]; if (!p) continue;\n  const text = typeof p === 'string' ? p : (p.prompt || p.text || '');\n  for (const pat of INJ) {\n    if (pat.rx.test(text)) f.push({ agent: 'prompt_injection', severity: pat.sev, type: pat.type,\n      detail: `Prompt injection in #${i}: ${pat.type}`, tippss_mapping: ['Safety', 'Security', 'Trust'] });\n  }\n}\nctx.findings.push(...f);\nreturn { json: ctx };"
+      },
+      "id": "agent_6_injection",
+      "name": "Agent 6: Prompt Injection",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Agent 7: Secret Exposure Agent\nconst ctx = $input.first().json;\nconst logs = ctx.inputs.device_logs || [];\nconst prompts = ctx.inputs.ai_prompt_logs || [];\nconst PAT = [\n  { rx: /sk[-_]live[-_][A-Za-z0-9]{20,}/g, type: 'stripe_live_key', sev: 'critical' },\n  { rx: /AKIA[0-9A-Z]{16}/g, type: 'aws_access_key', sev: 'critical' },\n  { rx: /AIza[0-9A-Za-z\\-_]{35}/g, type: 'google_api_key', sev: 'critical' },\n  { rx: /Bearer\\s+[A-Za-z0-9._\\-+/]+={0,2}/g, type: 'bearer_token', sev: 'high' },\n  { rx: /-----BEGIN (RSA |EC |DSA )?PRIVATE KEY-----/g, type: 'private_key', sev: 'critical' }\n];\nconst f = [];\nconst text = [...(Array.isArray(logs) ? logs : [logs]), ...(Array.isArray(prompts) ? prompts : [prompts])]\n  .map(x => typeof x === 'string' ? x : JSON.stringify(x || {})).join('\\n');\nfor (const pat of PAT) {\n  const m = text.match(pat.rx);\n  if (m) f.push({ agent: 'secret_exposure', severity: pat.sev, type: pat.type,\n    detail: `Exposed ${pat.type} (${m.length}x)`, match_count: m.length,\n    tippss_mapping: ['Protection', 'Security'] });\n}\nctx.findings.push(...f);\nreturn { json: ctx };"
+      },
+      "id": "agent_7_secrets",
+      "name": "Agent 7: Secret Exposure",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1740,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Agent 8: Safety Risk Agent\nconst ctx = $input.first().json;\nconst prompts = ctx.inputs.ai_prompt_logs || [];\nconst UNSAFE = [\n  { rx: /(prescribe|administer|inject|give)\\s+\\d+\\s*(mg|ml|mcg|units?)\\s+(of\\s+)?[a-z]+/i, type: 'autonomous_dosing', sev: 'critical' },\n  { rx: /(auto[-_]?discharge|automatically discharge|discharge\\s+without)/i, type: 'autonomous_discharge', sev: 'critical' },\n  { rx: /(don'?t wait for|skip|bypass)\\s+(physician|doctor|clinician|nurse)\\s+(sign[-\\s]?off|approval|review)/i, type: 'clinician_bypass', sev: 'critical' },\n  { rx: /(override|silence|disable)\\s+(the\\s+)?(alarm|alert|warning)/i, type: 'alarm_override', sev: 'critical' },\n  { rx: /(disclose|share|send|email)\\s+(patient|clinical|medical)\\s+(record|data|info|details)\\s+to/i, type: 'unauthorized_disclosure', sev: 'critical' }\n];\nconst f = [];\nconst arr = Array.isArray(prompts) ? prompts : [prompts];\nfor (let i = 0; i < arr.length; i++) {\n  const p = arr[i]; if (!p) continue;\n  const text = typeof p === 'string' ? p : (p.prompt || p.text || '');\n  for (const pat of UNSAFE) {\n    if (pat.rx.test(text)) f.push({ agent: 'safety_risk', severity: pat.sev, type: pat.type,\n      detail: `Unsafe pattern in #${i}: ${pat.type}`, tippss_mapping: ['Safety', 'Trust'] });\n  }\n}\nctx.findings.push(...f);\nreturn { json: ctx };"
+      },
+      "id": "agent_8_safety",
+      "name": "Agent 8: Safety Risk",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1960,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Agent 9: TIPPSS Mapping Agent\nconst ctx = $input.first().json;\nconst pillars = {\n  Trust: { score: 100, findings: [] },\n  Identity: { score: 100, findings: [] },\n  Privacy: { score: 100, findings: [] },\n  Protection: { score: 100, findings: [] },\n  Safety: { score: 100, findings: [] },\n  Security: { score: 100, findings: [] }\n};\nconst DEDUCT = { critical: 25, high: 15, medium: 8, low: 3 };\nfor (const f of ctx.findings) {\n  const ded = DEDUCT[f.severity] || 5;\n  for (const p of (f.tippss_mapping || [])) {\n    if (pillars[p]) {\n      pillars[p].findings.push(f);\n      pillars[p].score = Math.max(0, pillars[p].score - ded);\n    }\n  }\n}\nctx.tippss = pillars;\nreturn { json: ctx };"
+      },
+      "id": "agent_9_tippss",
+      "name": "Agent 9: TIPPSS Mapping",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2180,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Scoring Engine \u2014 weighted PQ Risk Score 0-100\nconst ctx = $input.first().json;\nconst W = { pkc: 0.30, tls: 0.20, lifetime: 0.20, identity: 0.15, secrets: 0.10, migration: 0.05 };\nconst PTS = { critical: 100, high: 75, medium: 50, low: 25 };\nconst cat = { pkc: 0, tls: 0, lifetime: 0, identity: 0, secrets: 0, migration: 0 };\nfor (const f of ctx.findings) {\n  const p = PTS[f.severity] || 25;\n  if (f.agent === 'crypto_inventory' && f.type === 'deprecated_tls_version') cat.tls = Math.max(cat.tls, p);\n  else if (f.agent === 'pq_benchmark' && f.type === 'long_lifetime_classical_crypto') cat.lifetime = Math.max(cat.lifetime, p);\n  else if (f.agent === 'pq_benchmark' || f.agent === 'crypto_inventory') cat.pkc = Math.max(cat.pkc, p);\n  else if (f.agent === 'device_identity') cat.identity = Math.max(cat.identity, p);\n  else if (f.agent === 'secret_exposure') cat.secrets = Math.max(cat.secrets, p);\n}\nconst tls = ctx.inputs.tls_config;\nconst pqDetected = tls && ((tls.key_exchange && /ML-KEM|ML-DSA|SLH-DSA/.test(tls.key_exchange))\n  || (tls.cert_signature_algo && /ML-DSA|SLH-DSA|FN-DSA/.test(tls.cert_signature_algo)));\ncat.migration = pqDetected ? 0 : 75;\nlet score = 0;\nfor (const k of Object.keys(W)) score += cat[k] * W[k];\nscore = Math.round(score);\nlet status;\nif (score <= 25) status = 'Safe';\nelse if (score <= 50) status = 'Partially Safe';\nelse if (score <= 75) status = 'Not Post-Quantum Safe';\nelse status = 'Critical Quantum Risk';\nctx.scoring = { pq_risk_score: score, status, category_breakdown: cat, weights: W, tippss_scores: ctx.tippss };\nreturn { json: ctx };"
+      },
+      "id": "scoring_engine",
+      "name": "Scoring Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// =====================================================================\n// AGENT 10: QIRO \u2014 Quantum-Inspired Remediation Optimizer\n// =====================================================================\n// Converts TIPPSS-mapped findings into a constrained binary optimization\n// problem. Uses CPU-based simulated annealing (Ising/QUBO-style energy\n// minimization) to find the best remediation portfolio under hospital\n// budget and downtime constraints.\n//\n// NOT actual quantum hardware. NOT QPU. Pure JavaScript on CPU.\n// =====================================================================\nconst ctx = $input.first().json;\nconst constraints = ctx.constraints || { budget_usd: 100000, max_downtime_hrs: 40 };\n\n// ------------------------------------------------------------------\n// Step 1: Convert findings into candidate remediation actions\n// ------------------------------------------------------------------\nconst ACTION_TEMPLATES = {\n  'classical_key_exchange':       { cost: 25000, downtime: 6,  complexity: 7, base_risk_reduction: 30 },\n  'classical_signature':          { cost: 20000, downtime: 4,  complexity: 6, base_risk_reduction: 30 },\n  'deprecated_tls_version':       { cost: 30000, downtime: 8,  complexity: 8, base_risk_reduction: 35 },\n  'weak_hash':                    { cost: 22000, downtime: 5,  complexity: 6, base_risk_reduction: 30 },\n  'pq_migration_required':        { cost: 50000, downtime: 12, complexity: 9, base_risk_reduction: 45 },\n  'long_lifetime_classical_crypto': { cost: 45000, downtime: 10, complexity: 8, base_risk_reduction: 40 },\n  'medical_record_number':        { cost: 8000,  downtime: 1,  complexity: 3, base_risk_reduction: 25 },\n  'sensitive_diagnosis':          { cost: 12000, downtime: 2,  complexity: 4, base_risk_reduction: 35 },\n  'patient_identifier':           { cost: 8000,  downtime: 1,  complexity: 3, base_risk_reduction: 22 },\n  'missing_certificate':          { cost: 15000, downtime: 4,  complexity: 5, base_risk_reduction: 25 },\n  'authentication_failed':        { cost: 10000, downtime: 2,  complexity: 4, base_risk_reduction: 35 },\n  'instruction_override':         { cost: 8000,  downtime: 1,  complexity: 3, base_risk_reduction: 25 },\n  'role_manipulation':            { cost: 8000,  downtime: 1,  complexity: 3, base_risk_reduction: 25 },\n  'system_prompt_extraction':     { cost: 6000,  downtime: 1,  complexity: 2, base_risk_reduction: 18 },\n  'fake_system_message':          { cost: 8000,  downtime: 1,  complexity: 3, base_risk_reduction: 25 },\n  'fake_authorization':           { cost: 8000,  downtime: 1,  complexity: 3, base_risk_reduction: 28 },\n  'stripe_live_key':              { cost: 5000,  downtime: 1,  complexity: 2, base_risk_reduction: 30 },\n  'aws_access_key':               { cost: 5000,  downtime: 1,  complexity: 2, base_risk_reduction: 30 },\n  'google_api_key':               { cost: 5000,  downtime: 1,  complexity: 2, base_risk_reduction: 28 },\n  'bearer_token':                 { cost: 4000,  downtime: 1,  complexity: 2, base_risk_reduction: 22 },\n  'private_key':                  { cost: 8000,  downtime: 2,  complexity: 3, base_risk_reduction: 35 },\n  'autonomous_dosing':            { cost: 15000, downtime: 2,  complexity: 5, base_risk_reduction: 40 },\n  'autonomous_discharge':         { cost: 12000, downtime: 2,  complexity: 4, base_risk_reduction: 35 },\n  'clinician_bypass':             { cost: 12000, downtime: 2,  complexity: 4, base_risk_reduction: 35 },\n  'alarm_override':               { cost: 15000, downtime: 3,  complexity: 5, base_risk_reduction: 40 },\n  'unauthorized_disclosure':      { cost: 15000, downtime: 2,  complexity: 4, base_risk_reduction: 38 }\n};\n\nconst SEV_MULT = { critical: 1.5, high: 1.0, medium: 0.6, low: 0.3 };\nconst PILLAR_WEIGHTS = { Trust: 1.0, Identity: 1.0, Privacy: 1.2, Protection: 1.0, Safety: 1.4, Security: 1.0 };\n\nconst actions = ctx.findings.map((f, idx) => {\n  const tmpl = ACTION_TEMPLATES[f.type] || { cost: 10000, downtime: 2, complexity: 4, base_risk_reduction: 20 };\n  const sevMult = SEV_MULT[f.severity] || 0.5;\n  const pillars = f.tippss_mapping || [];\n  const tippssWeight = pillars.reduce((s, p) => s + (PILLAR_WEIGHTS[p] || 1), 0);\n  const isPQ = f.agent === 'pq_benchmark' || f.type === 'classical_key_exchange'\n            || f.type === 'classical_signature' || f.type === 'long_lifetime_classical_crypto';\n  const isSafety = pillars.includes('Safety');\n  return {\n    id: `A${idx + 1}`,\n    finding_index: idx,\n    finding_type: f.type,\n    severity: f.severity,\n    description: f.detail,\n    risk_reduction: Math.round(tmpl.base_risk_reduction * sevMult),\n    cost_usd: tmpl.cost,\n    downtime_hrs: tmpl.downtime,\n    complexity: tmpl.complexity,\n    pqc_urgency: isPQ ? 25 : 0,\n    safety_criticality: isSafety ? 20 : 0,\n    tippss_weight: Math.round(tippssWeight * 10),\n    tippss_pillars: pillars\n  };\n});\n\nif (actions.length === 0) {\n  ctx.qiro = { selected_actions: [], total_cost: 0, total_downtime: 0, total_risk_reduction: 0,\n    status: 'no_actions_needed', message: 'No remediation actions required (system clean).' };\n  return { json: ctx };\n}\n\n// ------------------------------------------------------------------\n// Step 2: Define energy (objective) function\n// ------------------------------------------------------------------\n// Maximize: risk_reduction + pqc_urgency + tippss_weight + safety_criticality\n// Minimize: cost (scaled), downtime, complexity\n// Penalty: exceeding budget or downtime constraint\nfunction evaluate(selection, actions, budget, maxDowntime) {\n  let totalCost = 0, totalDowntime = 0, totalBenefit = 0, totalPenalty = 0;\n  for (let i = 0; i < selection.length; i++) {\n    if (selection[i] === 1) {\n      const a = actions[i];\n      totalCost += a.cost_usd;\n      totalDowntime += a.downtime_hrs;\n      totalBenefit += a.risk_reduction + a.pqc_urgency + a.safety_criticality + a.tippss_weight;\n      totalPenalty += a.complexity * 0.5;\n    }\n  }\n  let constraintPenalty = 0;\n  if (totalCost > budget) constraintPenalty += (totalCost - budget) / 1000 * 10;\n  if (totalDowntime > maxDowntime) constraintPenalty += (totalDowntime - maxDowntime) * 10;\n  return totalBenefit - totalPenalty - constraintPenalty;\n}\n\n// ------------------------------------------------------------------\n// Step 3: Simulated annealing\n// ------------------------------------------------------------------\nconst N = actions.length;\nconst iterations = Math.min(2000, 100 + N * 50);\nlet T = 100.0;\nconst cooling = 0.995;\n\n// Initialize: greedy start (select high-value low-cost actions)\nlet current = new Array(N).fill(0);\nconst sortedIdx = [...Array(N).keys()].sort((a, b) => {\n  const sa = (actions[a].risk_reduction + actions[a].pqc_urgency + actions[a].safety_criticality) / Math.max(1, actions[a].cost_usd / 5000);\n  const sb = (actions[b].risk_reduction + actions[b].pqc_urgency + actions[b].safety_criticality) / Math.max(1, actions[b].cost_usd / 5000);\n  return sb - sa;\n});\nlet runningCost = 0, runningDowntime = 0;\nfor (const i of sortedIdx) {\n  if (runningCost + actions[i].cost_usd <= constraints.budget_usd\n    && runningDowntime + actions[i].downtime_hrs <= constraints.max_downtime_hrs) {\n    current[i] = 1;\n    runningCost += actions[i].cost_usd;\n    runningDowntime += actions[i].downtime_hrs;\n  }\n}\nlet currentScore = evaluate(current, actions, constraints.budget_usd, constraints.max_downtime_hrs);\nlet best = [...current], bestScore = currentScore;\n\n// Main SA loop\nfor (let iter = 0; iter < iterations; iter++) {\n  const idx = Math.floor(Math.random() * N);\n  const neighbor = [...current];\n  neighbor[idx] = 1 - neighbor[idx];\n  const neighborScore = evaluate(neighbor, actions, constraints.budget_usd, constraints.max_downtime_hrs);\n  const delta = neighborScore - currentScore;\n  if (delta > 0 || Math.random() < Math.exp(delta / T)) {\n    current = neighbor;\n    currentScore = neighborScore;\n    if (currentScore > bestScore) { best = [...current]; bestScore = currentScore; }\n  }\n  T *= cooling;\n}\n\n// ------------------------------------------------------------------\n// Step 4: Build prioritized output\n// ------------------------------------------------------------------\nconst selectedActions = [];\nlet totalCost = 0, totalDowntime = 0, totalRiskReduction = 0;\nfor (let i = 0; i < best.length; i++) {\n  if (best[i] === 1) {\n    selectedActions.push({ ...actions[i], priority_rank: selectedActions.length + 1 });\n    totalCost += actions[i].cost_usd;\n    totalDowntime += actions[i].downtime_hrs;\n    totalRiskReduction += actions[i].risk_reduction;\n  }\n}\n// Sort by combined urgency (PQC + safety + severity)\nselectedActions.sort((a, b) => {\n  const ua = a.pqc_urgency + a.safety_criticality + (SEV_MULT[a.severity] || 0.5) * 100;\n  const ub = b.pqc_urgency + b.safety_criticality + (SEV_MULT[b.severity] || 0.5) * 100;\n  return ub - ua;\n});\nselectedActions.forEach((a, i) => a.priority_rank = i + 1);\n\n// Compute phase plan\nconst phases = {\n  phase_1_immediate_0_6mo: selectedActions.filter(a => a.severity === 'critical' || a.pqc_urgency >= 25).slice(0, 5),\n  phase_2_transitional_6_18mo: selectedActions.filter(a => a.severity === 'high' && a.pqc_urgency < 25),\n  phase_3_full_pq_18_36mo: selectedActions.filter(a => a.severity !== 'critical' && a.severity !== 'high')\n};\n\nctx.qiro = {\n  algorithm: 'CPU-based Quantum-Inspired Simulated Annealing (Ising/QUBO-style)',\n  iterations_run: iterations,\n  final_temperature: T.toFixed(4),\n  optimization_score: Math.round(bestScore),\n  total_candidate_actions: N,\n  selected_actions: selectedActions,\n  selection_count: selectedActions.length,\n  total_cost_usd: totalCost,\n  total_downtime_hrs: totalDowntime,\n  total_risk_reduction: totalRiskReduction,\n  budget_constraint_usd: constraints.budget_usd,\n  downtime_constraint_hrs: constraints.max_downtime_hrs,\n  budget_utilization_pct: Math.round((totalCost / constraints.budget_usd) * 100),\n  downtime_utilization_pct: Math.round((totalDowntime / constraints.max_downtime_hrs) * 100),\n  migration_phase_plan: phases,\n  message: `Optimizer selected ${selectedActions.length} of ${N} candidate remediation actions, achieving ${totalRiskReduction} total risk reduction within $${totalCost.toLocaleString()} budget and ${totalDowntime}h downtime.`\n};\n\nreturn { json: ctx };"
+      },
+      "id": "agent_10_qiro",
+      "name": "Agent 10: QIRO Optimizer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2620,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "critical_check",
+              "leftValue": "={{ $json.scoring.pq_risk_score }}",
+              "rightValue": 75,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "severity_route",
+      "name": "IF Critical Risk",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2840,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.ANTHROPIC_API_ENDPOINT }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "={{ $env.ANTHROPIC_API_KEY }}"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "={{ $env.ANTHROPIC_API_VERSION }}"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"{{ $env.ANTHROPIC_MODEL }}\",\n  \"max_tokens\": 2048,\n  \"temperature\": 0.2,\n  \"system\": \"You are a clinical cybersecurity advisor working with the TIPPSS framework and NIST FIPS 203/204/205 post-quantum standards. Generate concise technical guidance. Cite FIPS numbers. Output clean Markdown.\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"A TIPPSS SafeGuard-PQ assessment produced verdict {{ $json.scoring.status }} with PQ Risk Score {{ $json.scoring.pq_risk_score }}/100. The QIRO Quantum-Inspired Optimizer selected {{ $json.qiro.selection_count }} prioritized remediation actions with total cost ${{ $json.qiro.total_cost_usd }} and {{ $json.qiro.total_downtime_hrs }}h downtime. Generate a 400-word executive remediation report for the hospital CISO covering: (1) verdict summary, (2) top 3 priority actions from the QIRO output, (3) NIST PQC migration recommendations for the detected classical algorithms, (4) phased timeline (0-6mo, 6-18mo, 18-36mo). Findings: \" + {{ JSON.stringify($json.findings) }} + \" QIRO output: \" + {{ JSON.stringify($json.qiro.selected_actions) }}\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "claude_explanation",
+      "name": "Claude API: Generate Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3060,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"system_id\": \"{{ $json.system_id }}\",\n  \"timestamp\": \"{{ $json.timestamp }}\",\n  \"verdict\": \"{{ $json.scoring.status }}\",\n  \"pq_risk_score\": {{ $json.scoring.pq_risk_score }},\n  \"tippss_scores\": {{ JSON.stringify($json.scoring.tippss_scores) }},\n  \"findings_count\": {{ $json.findings.length }},\n  \"findings\": {{ JSON.stringify($json.findings) }},\n  \"qiro_optimization\": {{ JSON.stringify($json.qiro) }},\n  \"category_breakdown\": {{ JSON.stringify($json.scoring.category_breakdown) }}\n}",
+        "options": {}
+      },
+      "id": "webhook_response",
+      "name": "Assessment Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        3280,
+        560
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Entry": {
+      "main": [
+        [
+          {
+            "node": "Agent 1: Data Parser",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 1: Data Parser": {
+      "main": [
+        [
+          {
+            "node": "Agent 2: Crypto Inventory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 2: Crypto Inventory": {
+      "main": [
+        [
+          {
+            "node": "Agent 3: PQ Benchmark",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 3: PQ Benchmark": {
+      "main": [
+        [
+          {
+            "node": "Agent 4: Clinical Privacy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 4: Clinical Privacy": {
+      "main": [
+        [
+          {
+            "node": "Agent 5: Device Identity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 5: Device Identity": {
+      "main": [
+        [
+          {
+            "node": "Agent 6: Prompt Injection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 6: Prompt Injection": {
+      "main": [
+        [
+          {
+            "node": "Agent 7: Secret Exposure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 7: Secret Exposure": {
+      "main": [
+        [
+          {
+            "node": "Agent 8: Safety Risk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 8: Safety Risk": {
+      "main": [
+        [
+          {
+            "node": "Agent 9: TIPPSS Mapping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 9: TIPPSS Mapping": {
+      "main": [
+        [
+          {
+            "node": "Scoring Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scoring Engine": {
+      "main": [
+        [
+          {
+            "node": "Agent 10: QIRO Optimizer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 10: QIRO Optimizer": {
+      "main": [
+        [
+          {
+            "node": "IF Critical Risk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Critical Risk": {
+      "main": [
+        [
+          {
+            "node": "Claude API: Generate Report",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Assessment Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude API: Generate Report": {
+      "main": [
+        [
+          {
+            "node": "Assessment Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "3.0.0",
+  "id": "tippss_safeguard_pq_sequential_v3",
+  "tags": [
+    {
+      "id": "tippss",
+      "name": "TIPPSS"
+    },
+    {
+      "id": "post-quantum",
+      "name": "Post-Quantum"
+    },
+    {
+      "id": "healthcare",
+      "name": "Healthcare"
+    },
+    {
+      "id": "qiro",
+      "name": "QIRO"
+    }
+  ]
+}

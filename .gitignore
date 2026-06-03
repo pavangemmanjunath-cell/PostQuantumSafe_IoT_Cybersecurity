@@ -1,0 +1,41 @@
+# Python virtual environment — never commit this
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Streamlit cache
+.streamlit/
+
+# Environment / secrets — NEVER commit these
+.env
+.env.local
+*.env
+
+# IDE folders
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Real patient data files — must not be committed
+real_data_scenarios.json
+*.csv
