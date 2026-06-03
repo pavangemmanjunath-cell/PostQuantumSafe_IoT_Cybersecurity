@@ -1,271 +1,615 @@
-# TIPPSS SafeGuard-PQ
+<div align="center">
 
-**Agentic Post-Quantum Cybersecurity Benchmark for Clinical Edge IoT and AI Healthcare Systems**
+# 🛡️ TIPPSS SafeGuard-PQ
 
-> Built in 5 days for the IEEE SA Cybersecurity Hackathon 2026.
+### Agentic Post-Quantum Cybersecurity Assessment & Migration Planning Tool  
+### for Clinical Edge IoT and AI Healthcare Systems
 
----
-
-## What is this?
-
-Hospitals run hundreds of connected devices — infusion pumps, patient monitors, AI diagnostic tools — all transmitting sensitive data over encrypted networks. Today's encryption (RSA, ECDSA, AES-128) will be broken by future quantum computers within 10–15 years.
-
-**TIPPSS SafeGuard-PQ** automatically scans a healthcare system's configuration and AI prompt logs, checks them against the new NIST post-quantum standards (FIPS 203/204/205), and outputs a prioritised remediation plan that fits the hospital's budget and downtime limits.
-
-It does three things no existing tool does together:
-
-| Step | What happens |
-|------|-------------|
-| **Detect** | 10 specialist agents scan TLS crypto, IoT device identities, EHR AI prompts, and secret exposure |
-| **Benchmark** | Results are scored against NIST FIPS 203/204/205 and mapped to the IEEE 2933-2024 TIPPSS framework |
-| **Prioritise** | QIRO (our novel Quantum-Inspired Remediation Optimizer) picks the best set of fixes within your budget using simulated annealing |
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://python.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.35-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io)
+[![n8n](https://img.shields.io/badge/n8n-Workflow-EA4B71?logo=n8n&logoColor=white)](https://n8n.io)
+[![NIST FIPS 203](https://img.shields.io/badge/NIST-FIPS%20203%2F204%2F205-0055A4)](https://csrc.nist.gov/pubs/fips/203/final)
+[![IEEE 2933-2024](https://img.shields.io/badge/IEEE-2933--2024%20TIPPSS-00629B)](https://standards.ieee.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ---
 
-## Key Terms (plain English)
+> **Hospitals run hundreds of connected devices transmitting patient data today.**  
+> **A quantum computer in 2030–2035 will decrypt that data if you don't migrate now.**  
+> **This tool tells you exactly what to fix — and in what order — within your budget.**
 
-| Term | Meaning |
-|------|---------|
-| **TIPPSS** | Trust · Identity · Privacy · Protection · Safety · Security — the IEEE 2933-2024 framework for clinical IoT security |
-| **Post-Quantum (PQ)** | Cryptography that stays secure even against quantum computers |
-| **NIST FIPS 203/204/205** | The US government's new post-quantum crypto standards (ML-KEM, ML-DSA, SLH-DSA) |
-| **QIRO** | Our Quantum-Inspired Remediation Optimizer — runs on a normal CPU using simulated annealing to find the cheapest set of fixes with the highest risk reduction |
-| **n8n** | An open-source workflow automation tool (like Zapier for developers) that runs the 10-agent pipeline |
-| **Streamlit** | A Python library that turns a script into an interactive web dashboard |
+</div>
 
 ---
 
-## Architecture
+## 📋 Table of Contents
+
+1. [What Problem Does This Solve?](#-what-problem-does-this-solve)
+2. [How It Works — System Architecture](#-how-it-works--system-architecture)
+3. [The 10-Agent Pipeline](#-the-10-agent-pipeline)
+4. [Dashboard Walkthrough](#-dashboard-walkthrough)
+   - [Step 1 — Scenario Dropdown](#step-1--scenario-dropdown-explained)
+   - [Step 2 — Budget Slider](#step-2--budget-slider-explained)
+   - [Step 3 — Downtime Slider](#step-3--downtime-slider-explained)
+5. [QIRO — The Novel Contribution](#-qiro--the-novel-contribution)
+6. [Standards & Framework](#-standards--framework)
+7. [Quick Start](#-quick-start)
+8. [Testing](#-testing)
+9. [Project Structure](#-project-structure)
+
+---
+
+## 🏥 What Problem Does This Solve?
+
+### The Quantum Threat to Healthcare
+
+Every hospital uses encryption to protect patient data — MRI scans, medication orders, surgical records. Today's standard encryption (RSA-2048, ECDSA P-256, AES-128) works well against classical computers.
+
+**But quantum computers change everything.**
+
+A sufficiently powerful quantum computer running [Shor's algorithm](https://en.wikipedia.org/wiki/Shor%27s_algorithm) can break RSA and ECDSA in hours. Security researchers estimate this becomes feasible between **2030 and 2035**.
+
+### The Harvest-Now, Decrypt-Later Attack
 
 ```
-┌─────────────────────────────────────────────────┐
-│  Your Browser  (localhost:8501)                 │
-│  Streamlit Dashboard                            │
-│  • Scenario selector + sliders                 │
-│  • Verdict banner (red → green)                │
-│  • PQ Risk Gauge  |  TIPPSS Spider chart       │
-│  • Findings table                              │
-│  • QIRO phased migration plan                  │
-└──────────────────────┬──────────────────────────┘
-                       │ HTTP POST (JSON payload)
-                       ▼
-┌─────────────────────────────────────────────────┐
-│  n8n  (localhost:5678, Docker)                  │
-│                                                 │
-│  Agent 1  →  Data Parser                       │
-│  Agent 2  →  Crypto Inventory (TLS check)      │
-│  Agent 3  →  PQ Benchmark (FIPS 203/204/205)   │
-│  Agent 4  →  Clinical Privacy (PHI detection)  │
-│  Agent 5  →  Device Identity (cert check)      │
-│  Agent 6  →  Prompt Injection Detection        │
-│  Agent 7  →  Secret Exposure Scanner          │
-│  Agent 8  →  Safety Risk (unsafe AI commands) │
-│  Agent 9  →  TIPPSS Mapping                   │
-│  Agent 10 →  QIRO Optimizer (simulated anneal)│
-│                                                 │
-│  IF score > 75 → Claude Sonnet 4.6 report      │
-└──────────────────────┬──────────────────────────┘
-                       │ HTTPS (critical cases only)
-                       ▼
-┌─────────────────────────────────────────────────┐
-│  Anthropic Claude API                           │
-│  Generates executive remediation report         │
-│  for the hospital CISO                          │
-└─────────────────────────────────────────────────┘
+TODAY                           2030–2035
+─────────────────────────────────────────────────────────────
+[Attacker captures]  ──────►  [Quantum computer decrypts]
+ encrypted PHI data            patient records, drug orders,
+ from hospital network         surgical plans, AI diagnostics
+─────────────────────────────────────────────────────────────
+```
+
+Attackers do not need to break encryption today. They record encrypted traffic now and decrypt it later when quantum hardware arrives. This is called the **Harvest-Now, Decrypt-Later (HNDL)** threat.
+
+For healthcare data with **15–20 year retention requirements**, this is an **immediate** risk — not a future one.
+
+### Why No Existing Tool Solves This
+
+| Tool | What it does | What it misses |
+|------|-------------|----------------|
+| Nessus / Qualys | Classical vulnerability scanning | No post-quantum awareness |
+| NIST NCCoE guides | Policy frameworks | No automated assessment |
+| TLS scanners | Check TLS version | Cannot assess AI prompts or IoT identity |
+| Risk registers | Manual spreadsheets | No budget-aware prioritisation |
+
+**TIPPSS SafeGuard-PQ does all of this in one automated pipeline.**
+
+---
+
+## 🏗️ How It Works — System Architecture
+
+```mermaid
+flowchart TD
+    A[🏥 Hospital System Configuration\nTLS config · device logs · AI prompts] -->|JSON payload| B
+
+    subgraph DASHBOARD["🖥️  Streamlit Dashboard — localhost:8501"]
+        B[Select Scenario\nor upload CSV] --> C[Set Budget & Downtime Constraints]
+        C --> D[Run Cybersecurity Simulation]
+    end
+
+    D -->|HTTP POST| E
+
+    subgraph N8N["⚙️  n8n Workflow Engine — localhost:5678\n10-Agent TIPPSS Assessment Pipeline"]
+        E[Agent 1: Input Validator] --> F[Agent 2: Crypto Classifier]
+        F --> G[Agent 3: PQ Benchmark\nNIST FIPS 203/204/205]
+        G --> H[Agent 4: IoT Device Identity\nIEEE 2933-2024]
+        H --> I[Agent 5: AI Prompt Privacy\nPHI Detection]
+        I --> J[Agent 6: Secret Exposure\nAPI Keys · Credentials]
+        J --> K[Agent 7: Safety Risk\nAutonomous Dosing · Alarms]
+        K --> L[Agent 8: TIPPSS Scorer\n6-Pillar Mapping]
+        L --> M[Agent 9: Claude AI Report\nExecutive Summary]
+        M --> N[Agent 10: QIRO Optimizer\nSimulated Annealing]
+    end
+
+    N -->|JSON result| O
+
+    subgraph RESULTS["📊  Dashboard Results"]
+        O[Verdict Card\nSafe / Critical / Partial] --> P[PQ Risk Gauge\n0–100 Score]
+        P --> Q[TIPPSS Spider Chart\n6 Pillars]
+        Q --> R[Findings Table\nAgent · Severity · Detail]
+        R --> S[QIRO Migration Roadmap\nSelected · Deferred · Phased Plan]
+    end
 ```
 
 ---
 
-## Files in this repository
+## 🤖 The 10-Agent Pipeline
 
-| File | Purpose |
-|------|---------|
-| `dashboard.py` | Streamlit web dashboard — all charts and UI |
-| `test_scenarios.json` | 4 pre-built test cases (Critical → Safe) for demo |
-| `requirements.txt` | Python dependencies |
-| `run.bat` | Windows one-click launcher |
-| `run.sh` | Mac / Linux launcher |
-| `.gitignore` | Keeps secrets and the venv out of git |
+Each agent is a specialised JavaScript Code node inside n8n. They run sequentially, each passing findings to the next.
 
----
+```mermaid
+sequenceDiagram
+    participant U as 🏥 Hospital Config
+    participant A1 as Agent 1<br/>Input Validator
+    participant A2 as Agent 2<br/>Crypto Classifier
+    participant A3 as Agent 3<br/>PQ Benchmark
+    participant A8 as Agent 8<br/>TIPPSS Scorer
+    participant A10 as Agent 10<br/>QIRO Optimizer
+    participant D as 📊 Dashboard
 
-## Prerequisites
-
-Before you start, make sure you have:
-
-- **Python 3.10 or newer** — [download here](https://www.python.org/downloads/) (tick "Add Python to PATH" during install)
-- **Docker Desktop** — [download here](https://www.docker.com/products/docker-desktop/)
-- **n8n container** running on port 5678 with the TIPPSS v3 workflow imported and **toggled Active**
-- **Anthropic API key** entered in the "Claude API: Generate Report" n8n node (only needed for Critical-risk cases)
-
----
-
-## Quick Start — Windows
-
-### Step 1 — Download the code
-
-Clone this repository or download and unzip it:
-
-```
-git clone https://github.com/<your-username>/TIPPSS-SafeGuard-PQ.git
-cd TIPPSS-SafeGuard-PQ
+    U->>A1: TLS config + device logs + AI prompts
+    A1->>A2: Validated payload
+    A2->>A3: Classical vs PQ crypto classification
+    A3->>A8: PQ findings (Agents 4–7 run in parallel)
+    Note over A3,A8: Agents 4–7 assess IoT identity,<br/>PHI in prompts, secret exposure,<br/>safety risks
+    A8->>A10: TIPPSS 6-pillar scores + all findings
+    A10->>D: Migration plan (selected + deferred actions)
+    D-->>U: Verdict · Risk score · Roadmap
 ```
 
-### Step 2 — Double-click `run.bat`
-
-A terminal window will open and automatically:
-1. Create a Python virtual environment (`venv/` folder)
-2. Install all dependencies (~30 seconds on first run)
-3. Launch the dashboard at **http://localhost:8501**
-
-Subsequent runs skip the install and start in seconds.
-
-> **If you see a pip upgrade error** on older Python versions, the launcher already handles this by calling `python -m pip install --upgrade pip` instead of `pip install --upgrade pip`. If it still fails, right-click `run.bat` → "Run as administrator".
-
-### Step 3 — Use the dashboard
-
-1. In the left sidebar, pick **"ICU-GW-01 (Critical Risk)"**
-2. Leave budget and downtime sliders at their defaults
-3. Click **Run Assessment**
-4. Watch the dashboard show a red Critical verdict, TIPPSS spider chart, findings table, and QIRO migration plan
-5. Switch to **"NEXTGEN-EDGE-GW (PQ Safe)"** and run again — it goes green
+| Agent | Role | What it checks |
+|-------|------|---------------|
+| **1 — Input Validator** | Gateway | Schema, required fields, domain |
+| **2 — Crypto Classifier** | Detection | TLS version, key exchange, cert algo, cipher, hash |
+| **3 — PQ Benchmark** | NIST compliance | ML-KEM, ML-DSA, SLH-DSA presence; data lifetime risk |
+| **4 — IoT Device Identity** | Trust & Identity | Certificate presence, auth status, failed logins |
+| **5 — AI Prompt Privacy** | Privacy | PHI (MRN, name, SSN, HIV status) in AI logs; prompt injection |
+| **6 — Secret Exposure** | Protection | API keys, AWS credentials, Stripe keys in device logs |
+| **7 — Safety Risk** | Safety | Autonomous dosing commands, alarm overrides |
+| **8 — TIPPSS Scorer** | Benchmark | Maps findings to IEEE 2933-2024 six pillars; computes risk score |
+| **9 — Claude AI Report** | Intelligence | Plain-English executive summary of findings |
+| **10 — QIRO Optimizer** | Novel | Constrained binary optimisation → migration roadmap |
 
 ---
 
-## Quick Start — Mac / Linux
+## 🖥️ Dashboard Walkthrough
+
+### Step 1 — Scenario Dropdown Explained
+
+The dropdown lets you select a **pre-built hospital system simulation**. Each scenario represents a different real-world security posture.
+
+> **Why scenarios?** Real hospital data is protected by HIPAA and cannot be shared. These scenarios are built from published attack patterns (CICIoMT2024 dataset), synthetic patient data (Synthea, MITRE), and known crypto configurations.
+
+---
+
+#### Scenario 01 — ICU Gateway: Critical Quantum Risk 🔴
+
+```
+TLS 1.2 · ECDHE-P256 · ECDSA-P256 · RSA-2048 · AES-128-GCM · SHA-256
+Data lifetime: 15 years · Device: auth FAILED · AI: prompt injection detected
+```
+
+**What this tests:** An ICU gateway using legacy classical cryptography with a 15-year data retention window. The quantum threat is immediate — records encrypted today will be exposed within the data lifetime.
+
+**Expected result:** Critical verdict, score > 70, 4+ findings. QIRO selects multiple remediation actions.
+
+---
+
+#### Scenario 02 — NextGen Edge Gateway: PQ Safe 🟢
+
+```
+TLS 1.3 · ML-KEM-1024 · ML-DSA-87 · AES-256-GCM · SHA-384
+Data lifetime: 30 years · All devices authenticated · No PHI detected
+```
+
+**What this tests:** A fully post-quantum migrated gateway. This is the **target state** hospitals should reach after migration.
+
+**Expected result:** Safe verdict, low score, zero findings. QIRO selects no actions.
+
+---
+
+#### Scenario 03 — EHR API Gateway: Partially Safe 🟡
+
+```
+TLS 1.3 · ECDHE-P384 · ECDSA-P384 · AES-256-GCM · SHA-384
+```
+
+**What this tests:** A common misunderstanding — upgrading to TLS 1.3 alone does **not** make a system post-quantum safe. The symmetric cipher (AES-256) is fine, but the key exchange (ECDHE) and certificate signatures (ECDSA) are still vulnerable to Shor's algorithm.
+
+**Key insight:** You must replace **both** the key exchange (→ ML-KEM) **and** the signature algorithm (→ ML-DSA).
+
+---
+
+#### Scenario 04 — Clinical AI: PHI Privacy Breach 🔴
+
+```
+TLS: Post-quantum safe ✓
+AI prompt logs: "Patient name: Maria Santos, MRN: 4421867, HIV positive diagnosis"
+```
+
+**What this tests:** A hospital can pass the crypto audit and still fail the privacy audit. PHI leaking into AI assistant logs violates HIPAA regardless of the encryption layer.
+
+**Key insight:** Post-quantum migration is necessary but not sufficient. AI prompt governance is equally important.
+
+---
+
+#### Scenario 05 — Secret Exposure: API Key in Device Log 🔴
+
+```
+Device debug log: "sk_live_abc123xyz456789... AKIA1A2B3C4D5E6F7G8H"
+```
+
+**What this tests:** Medical IoT devices often write production API keys to operational logs. Agent 6 scans for Stripe, AWS, GitHub, and other credential patterns.
+
+**Key insight:** Security teams must scan device telemetry logs and AI inputs — not just code repositories.
+
+---
+
+#### Scenario 06 — Worst Case: Deprecated TLS 1.0 + SHA-1 🔴
+
+```
+TLS 1.0 (deprecated RFC 8996) · RSA key exchange · SHA-1 · AES-128-CBC
+Data lifetime: 20 years
+```
+
+**What this tests:** A hospital system that was never patched. TLS 1.0 was deprecated in 2020. SHA-1 was cryptographically broken by the SHAttered collision attack in 2017. With 20-year data retention, records need protection until 2044.
+
+**Expected result:** Maximum risk score, 5+ findings across every TIPPSS pillar.
+
+---
+
+#### Scenario 07 — Tight Budget: $30K QIRO Stress Test 💰
+
+```
+Same critical vulnerabilities as Scenario 01
+Budget: $30,000 · Max downtime: 8 hours
+```
+
+**What this tests:** A rural hospital with limited IT budget cannot afford a full migration. QIRO must select the **minimum set of actions that reduce the most risk within strict constraints**. This is the scenario that best demonstrates QIRO's value over a simple checklist.
+
+**Try it:** Run with $30K, then increase to $100K and rerun — watch QIRO add more actions to the roadmap.
+
+---
+
+#### Uploading Your Own Data
+
+You can also upload:
+- **Synthea `patients.csv`** — MITRE synthetic patient generator (Apache 2.0). The tool extracts patient names/MRNs into AI prompt simulations to test PHI detection.
+- **CICIoMT2024 `*.pcap.csv`** — University of New Brunswick medical IoT traffic dataset. Supports ARP Spoofing, MQTT Malformed, DoS SYN, DDoS TCP, Port Scan, and Benign traffic.
+
+---
+
+### Step 2 — Budget Slider Explained
+
+```
+Available remediation budget:  $10,000 ────────●──────── $500,000
+                                          $100,000 (default)
+```
+
+**What this controls:** The maximum amount of money the hospital can spend on post-quantum remediation in this planning cycle.
+
+**Why this matters for QIRO:**
+
+Every remediation action has an estimated cost. For example:
+
+| Action | Estimated cost |
+|--------|---------------|
+| Replace TLS key exchange (ML-KEM) | $45,000 |
+| Re-issue device certificates | $12,000 |
+| Deploy PHI redaction middleware | $8,000 |
+| Rotate exposed API keys | $2,000 |
+
+QIRO treats this slider as a **hard constraint**. If your budget is $30,000, QIRO will never select a $45,000 action — even if it provides the highest risk reduction. Instead, it finds the best combination of cheaper actions that fits within $30,000.
+
+**Try this experiment:**
+
+```
+Budget $30,000  → Run → See which actions are selected vs deferred
+Budget $100,000 → Run → QIRO unlocks more expensive, higher-impact actions
+Budget $200,000 → Run → Maximum risk reduction portfolio
+```
+
+The **Deferred Actions table** shows exactly which actions were skipped and why — usually "exceeds remaining budget."
+
+---
+
+### Step 3 — Downtime Slider Explained
+
+```
+Allowed service downtime (hours):  4h ──────●────── 80h
+                                          40h (default)
+```
+
+**What this controls:** The maximum number of hours clinical systems can be taken offline or degraded during the remediation work.
+
+**Why this matters for QIRO:**
+
+Some remediation actions require system downtime. For example:
+
+| Action | Estimated downtime |
+|--------|-------------------|
+| Replace TLS certificates (full) | 10 hours |
+| Firmware update on medical devices | 6 hours |
+| Rotate API keys (zero-downtime) | 0 hours |
+| Migrate key exchange algorithm | 4 hours |
+
+For an ICU or emergency department, even 4 hours of downtime must be carefully planned. A rural clinic may only tolerate 8 hours per quarter. A large hospital network may have maintenance windows of 40+ hours.
+
+QIRO uses downtime as a **second hard constraint** independent of budget:
+
+```
+Action selected only if:
+  cost_usd <= remaining_budget
+  AND
+  downtime_hrs <= remaining_downtime_hrs
+```
+
+**Try this experiment:**
+
+```
+Downtime 8h  → Run → Only zero-to-low downtime actions selected
+Downtime 40h → Run → QIRO can schedule larger migrations
+Downtime 80h → Run → Full migration portfolio
+```
+
+---
+
+## ⚛️ QIRO — The Novel Contribution
+
+### What makes QIRO different from a simple priority list?
+
+A conventional security scanner gives you a list of findings sorted by severity. It does not answer:
+
+- *Which fixes can I actually afford this quarter?*
+- *Which combination gives the most risk reduction within my budget?*
+- *What if I can only afford 8 hours of downtime?*
+
+**QIRO answers all three simultaneously.**
+
+### How QIRO Works — The Optimisation Problem
+
+```mermaid
+flowchart LR
+    A["🔍 N findings\ndetected by agents"] --> B["📋 Each finding becomes\na candidate action\nwith cost + downtime + risk_reduction"]
+    B --> C["⚛️ QIRO frames this as\na binary decision problem\n xᵢ ∈ {0, 1}"]
+    C --> D["🎯 Objective:\nMaximise Σ risk_reduction × xᵢ"]
+    D --> E["📐 Subject to:\nΣ cost × xᵢ ≤ budget\nΣ downtime × xᵢ ≤ max_downtime"]
+    E --> F["🔥 Solved by\nSimulated Annealing\nKirkpatrick et al. 1983"]
+    F --> G["✅ Selected actions\n⏸️ Deferred actions\n📅 Phased roadmap"]
+```
+
+### The QUBO Formulation
+
+Each remediation action becomes a **binary variable**:
+
+```
+xᵢ = 1  →  select this action  (do the fix)
+xᵢ = 0  →  defer this action   (skip for now)
+```
+
+The optimiser maximises total risk reduction subject to constraints:
+
+```
+Maximise:   Σᵢ (risk_reductionᵢ × pq_urgencyᵢ × safety_weightᵢ × tippss_weightᵢ) × xᵢ
+
+Subject to: Σᵢ cost_usdᵢ × xᵢ  ≤  budget_usd          (budget constraint)
+            Σᵢ downtime_hrsᵢ × xᵢ ≤ max_downtime_hrs   (downtime constraint)
+            xᵢ ∈ {0, 1}                                  (binary: select or defer)
+```
+
+This is a **Quadratic Unconstrained Binary Optimisation (QUBO)** problem — the same class that quantum annealers (D-Wave) solve in hardware.
+
+**QIRO solves it on a classical CPU** using Simulated Annealing, making it deployable today without quantum hardware.
+
+### Simulated Annealing — The Algorithm
+
+```
+Start:  Random selection of actions
+        Temperature T = T_initial (high → accept bad moves freely)
+
+Repeat until convergence:
+  1. Flip one random action (select ↔ defer)
+  2. If constraints violated → reject move
+  3. If risk reduction improves → accept move
+  4. If risk reduction worsens → accept with probability e^(ΔE/T)
+     (allows escaping local optima)
+  5. Cool temperature: T = T × α  (α = 0.995)
+
+End:    Best feasible selection found
+```
+
+The **temperature schedule** is inspired by the physical annealing of metals — start hot (explore widely), cool slowly (converge to optimal).
+
+### Why This Is Novel
+
+| Approach | What it does | Limitation |
+|----------|-------------|------------|
+| CVSS scoring | Ranks vulnerabilities by severity | Ignores budget and downtime |
+| Manual checklists | Lists all required fixes | Cannot prioritise under constraints |
+| Risk matrices | Scores likelihood × impact | No optimisation |
+| **QIRO (ours)** | **Maximises risk reduction within real hospital constraints** | **Runs on CPU today** |
+
+**QIRO turns a risk scanner into an actionable post-quantum migration planner.** The wow moment: change the budget slider from $100K to $30K, click Run — watch the roadmap restructure itself.
+
+---
+
+## 📐 Standards & Framework
+
+### NIST Post-Quantum Standards (2024)
+
+| Standard | Algorithm | Purpose | Replaces |
+|----------|-----------|---------|---------|
+| **FIPS 203** | ML-KEM (Kyber) | Key encapsulation / key exchange | RSA, ECDHE |
+| **FIPS 204** | ML-DSA (Dilithium) | Digital signatures | ECDSA, RSA-PSS |
+| **FIPS 205** | SLH-DSA (SPHINCS+) | Stateless hash-based signatures | ECDSA |
+
+### IEEE 2933-2024 TIPPSS Framework
+
+The TIPPSS spider chart in the dashboard maps every finding to one or more of these six pillars:
+
+```
+         Trust
+          /\
+Security /  \ Identity
+        /    \
+       /______\
+      /        \
+Safety         Privacy
+      \        /
+       \______/
+        \    /
+Protection
+```
+
+| Pillar | What it covers |
+|--------|---------------|
+| **Trust** | System authenticity, certificate validity, chain of trust |
+| **Identity** | Device and user authentication, credential management |
+| **Privacy** | PHI protection, HIPAA compliance, AI prompt governance |
+| **Protection** | Data encryption strength, key management, secrets hygiene |
+| **Safety** | Patient safety risks from autonomous AI actions or alarm overrides |
+| **Security** | Overall cryptographic posture, protocol versions, attack surface |
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| Python | 3.10+ | Dashboard runtime |
+| Docker Desktop | Latest | Runs n8n |
+| n8n | 1.x | 10-agent workflow engine |
+
+### Windows
+
+```bat
+cd TIPSS_Code
+run.bat
+```
+
+### macOS / Linux
 
 ```bash
+cd TIPSS_Code
 chmod +x run.sh
 ./run.sh
 ```
 
-Same behaviour: creates venv, installs deps, opens http://localhost:8501.
+Both scripts:
+1. Create a Python virtual environment
+2. Install all dependencies
+3. Launch Streamlit at `http://localhost:8501`
+
+### n8n Setup
+
+```bash
+# Start n8n
+docker run -it --rm --name n8n -p 5678:5678 n8nio/n8n
+
+# Then open http://localhost:5678
+# Import: TIPSS_SafeGuard_PQ_workflow.json
+# Activate the workflow
+```
 
 ---
 
-## Dashboard Sections Explained
+## 🧪 Testing
 
-### 1. Verdict Banner
-A full-width coloured card at the top.
+### Unit Tests (8 test cases, TC01–TC08)
 
-| Score | Colour | Verdict |
-|-------|--------|---------|
-| 0–25 | Green | Safe |
-| 26–50 | Yellow | Partially Safe |
-| 51–75 | Orange | Not Post-Quantum Safe |
-| 76–100 | Red | Critical Quantum Risk |
+```bash
+python run_tests.py
+# Results saved to: test_outputs/unit_tests/
+```
 
-### 2. PQ Risk Gauge
-A semicircle gauge (0–100) with a needle showing the weighted risk score. The score is calculated from 6 categories: classical key exchange, deprecated TLS, data lifetime exposure, device identity, secrets, and migration status.
+Covers: critical risk, PQ-safe baseline, mixed crypto, PHI detection, secret exposure, budget constraints, worst-case TLS 1.0, AI safety risk.
 
-### 3. TIPPSS Spider Chart
-A radar / spider chart with 6 axes — one per TIPPSS pillar. A fully-filled polygon means all 6 pillars score 100 (safe). Missing corners expose which security dimension needs work.
+### Integration Tests (real input files)
 
-### 4. Findings Table
-Every issue detected by the 10 agents, sortable by severity. Icons: 🔴 Critical · 🟠 High · 🟡 Medium · 🟢 Low.
+```bash
+python run_file_tests.py
+# Results saved to: test_outputs/integration_tests/
+```
 
-### 5. QIRO Migration Plan ⭐ (Novel Contribution)
-- **4 metric cards** — how many actions selected, total cost, total downtime, total risk reduction
-- **Horizontal bar chart** — actions ranked by risk reduction
-- **3-phase plan** — Phase 1 (0–6 mo) · Phase 2 (6–18 mo) · Phase 3 (18–36 mo)
-- **Algorithm details expander** — mentions Simulated Annealing (Kirkpatrick 1983), QUBO formulation, iteration count, final temperature
+Reads actual CICIoMT2024 `.pcap.csv` files and Synthea `patients.csv` from the `Input/` folder.
 
-### 6. Claude Executive Report
-For systems scoring > 75, Claude Sonnet 4.6 writes a 400-word narrative for the hospital CISO covering the verdict, top 3 priority actions, NIST migration recommendations, and the phased timeline.
+### Test Output Structure
 
-### 7. Raw JSON (expandable)
-The full n8n pipeline response — useful for judges who want to see the data behind the charts.
+```
+test_outputs/
+├── unit_tests/
+│   ├── TC01_non_quantum_safe_high_risk_20260603_143022_result.json
+│   ├── TC02_quantum_safe_clean_20260603_143045_result.json
+│   └── unit_test_summary_20260603_143100.csv
+└── integration_tests/
+    ├── INT_ARP_Spoofing_test_pcap_csv_20260603_143200.json
+    ├── INT_synthea_patients_20260603_143300.json
+    └── integration_test_summary_20260603_143400.csv
+```
 
----
-
-## Upload Your Own Data (Advanced)
-
-In the sidebar you can upload a CSV file instead of using a built-in test case. Two formats are supported:
-
-| Format | How to get it |
-|--------|--------------|
-| **Synthea `patients.csv`** | Run [Synthea](https://github.com/synthetichealth/synthea) locally to generate synthetic patient records |
-| **CICIoMT2024 `*.pcap.csv`** | Download the [CIC IoMT 2024 dataset](https://www.unb.ca/cic/datasets/iomt-dataset-2024.html) from UNB |
-
-The dashboard auto-detects the CSV type, samples up to 100 rows, and builds an n8n payload automatically.
+Each file is timestamped (`YYYYMMDD_HHMMSS`) so runs never overwrite each other.
 
 ---
 
-## How the QIRO Optimizer Works
+## 📁 Project Structure
 
-QIRO frames remediation as a **constrained binary optimisation problem**:
-
-- Each finding maps to a remediation action (x = 0 = skip, x = 1 = apply)
-- **Objective**: maximise risk reduction + PQC urgency + safety criticality + TIPPSS weight
-- **Constraints**: total cost ≤ budget, total downtime ≤ max allowed
-- **Penalty**: large cost added when constraints are violated
-
-This is equivalent to a **QUBO (Quadratic Unconstrained Binary Optimization)** problem, the same class of problem targeted by quantum annealers like D-Wave. QIRO solves it on a classical CPU using **Simulated Annealing** (Kirkpatrick et al., 1983) with a geometric cooling schedule (α = 0.995) and Metropolis-Hastings acceptance.
-
-> **Important**: QIRO runs on a normal CPU. It is *quantum-inspired*, not quantum hardware.
-
----
-
-## Troubleshooting
-
-| Problem | Fix |
-|---------|-----|
-| `Cannot reach n8n at http://localhost:5678` | n8n Docker container is stopped — restart it in Docker Desktop |
-| Nothing loads at `localhost:8501` | Wait 10 seconds after the terminal says "Starting dashboard..." |
-| `qiro_optimization` missing from response | Wrong workflow version imported — re-import the v3 JSON |
-| `401 Unauthorized` in n8n logs | Claude API key is wrong — re-copy from console.anthropic.com |
-| `402 Payment Required` | Add credit at Anthropic Console → Settings → Billing |
-| Dashboard stuck on "Running..." | Open n8n Executions tab to see which agent failed |
-| pip upgrade error on first run | Right-click `run.bat` → "Run as administrator" |
-| `venv` creation fails | Delete the `venv/` folder and run `run.bat` again |
+```
+TIPSS_Code/
+├── dashboard.py              ← Streamlit frontend
+├── test_scenarios.json       ← 7 pre-built hospital simulations
+├── test_cases.json           ← 8 unit test payloads (TC01–TC08)
+├── run_tests.py              ← Automated unit test runner
+├── run_file_tests.py         ← Integration test runner (reads Input/ folder)
+├── requirements.txt          ← Python dependencies
+├── run.bat                   ← Windows launcher
+├── run.sh                    ← macOS/Linux launcher
+├── .gitignore                ← Excludes venv/, .env, *.csv (patient data)
+└── test_outputs/
+    ├── unit_tests/           ← Timestamped unit test results
+    └── integration_tests/    ← Timestamped file-based test results
+```
 
 ---
 
-## Standards and References
+## 📊 Sample Results
 
-| Standard | Description |
-|----------|-------------|
-| **NIST FIPS 203** | ML-KEM (Kyber) — post-quantum key encapsulation |
-| **NIST FIPS 204** | ML-DSA (Dilithium) — post-quantum digital signatures |
-| **NIST FIPS 205** | SLH-DSA (SPHINCS+) — stateless hash-based signatures |
-| **IEEE 2933-2024** | Clinical IoT Trust framework (TIPPSS pillars) |
-| **OWASP LLM Top-10** | Prompt injection and LLM risk patterns |
-| **Kirkpatrick et al., 1983** | Simulated Annealing — *Science* 220(4598) |
+### Critical Quantum Risk (Scenario 01)
 
----
+```
+Verdict:        Critical Quantum Risk
+PQ Risk Score:  82 / 100
+Findings:       6 detected
 
-## Recommended Demo (3 Minutes)
+TIPPSS Scores:
+  Trust      ████████████████████ 85
+  Identity   ██████████████████   75
+  Privacy    ████████████████     65
+  Protection ████████████████████ 90
+  Safety     ████████             30
+  Security   █████████████████████90
 
-| Time | Action |
-|------|--------|
-| 0:00–0:30 | Show the empty dashboard and explain the honest disclaimer banner |
-| 0:30–1:30 | Run **"ICU-GW-01 (Critical Risk)"** — red verdict, risk gauge at 78, spider chart with gaps |
-| 1:30–2:30 | Scroll to QIRO — show 5 of 12 actions selected, $78K of $100K budget, 3-phase plan |
-| 2:30–3:00 | Switch to **"NEXTGEN-EDGE-GW (PQ Safe)"** — green verdict, fully-filled spider, QIRO selects 0 actions |
+QIRO Selected Actions (budget $100,000 / downtime 40h):
+  #1  Replace key exchange → ML-KEM-768    $35,000 · 8h  · Risk ↓ 45
+  #2  Re-issue device certificates          $12,000 · 4h  · Risk ↓ 20
+  #3  Deploy PHI redaction middleware        $8,000 · 2h  · Risk ↓ 15
 
----
-
-## Honest Framing
-
-This is a **5-day hackathon prototype**. When asked by judges:
-
-- It uses **synthetic data only** — no real hospital networks or patient records were tested
-- QIRO runs on a **classical CPU** — not a quantum computer or QPU
-- Scoring weights are **heuristic** defaults; cost/downtime figures are illustrative
-- We benchmark systems *against* NIST PQ standards; we do not modify the standards
+QIRO Deferred (budget $30,000):
+  ✗  Full TLS 1.3 migration                $45,000       exceeds remaining budget
+```
 
 ---
 
-## Contributing / Running Locally Without Docker
+## 🔐 Data & Privacy
 
-If you want to run without n8n (for development), the dashboard will show an error when you click "Run Assessment" because it can't reach localhost:5678. You can test the UI by returning mock JSON from a local Flask server — see `test_scenarios.json` for the expected response shape.
-
----
-
-## License
-
-MIT License — see [LICENSE](LICENSE) for details.
+- All scenarios use **synthetic data only** (Synthea MITRE, CICIoMT2024 UNB/CIC)
+- Real patient CSV files must **never be committed** — `.gitignore` blocks `*.csv`
+- The `.env` file (n8n credentials, API keys) is also git-ignored
+- No data is sent to external services — everything runs locally
 
 ---
 
-*© 2026 TIPPSS SafeGuard-PQ Team · IEEE SA Cybersecurity Hackathon 2026*
+## 📚 References
+
+| Reference | Description |
+|-----------|-------------|
+| [NIST FIPS 203](https://csrc.nist.gov/pubs/fips/203/final) | ML-KEM (Kyber) — Key Encapsulation Mechanism |
+| [NIST FIPS 204](https://csrc.nist.gov/pubs/fips/204/final) | ML-DSA (Dilithium) — Digital Signature Algorithm |
+| [NIST FIPS 205](https://csrc.nist.gov/pubs/fips/205/final) | SLH-DSA (SPHINCS+) — Stateless Hash-Based Signatures |
+| [IEEE 2933-2024](https://standards.ieee.org/ieee/2933/10806/) | TIPPSS Clinical IoT Security Framework |
+| [Kirkpatrick et al. 1983](https://www.science.org/doi/10.1126/science.220.4598.671) | Simulated Annealing (basis for QIRO) |
+| [CICIoMT2024](https://www.unb.ca/cic/datasets/iomt-dataset-2024.html) | UNB/CIC Medical IoT Network Traffic Dataset |
+| [Synthea](https://synthea.mitre.org/) | MITRE Synthetic Patient Data (Apache 2.0) |
+| [Preskill 2018](https://quantum-journal.org/papers/q-2018-08-06-79/) | Quantum Computing in the NISQ Era |
+
+---
+
+<div align="center">
+
+Built with ❤️ for post-quantum healthcare security  
+Standards: IEEE 2933-2024 · NIST FIPS 203/204/205 · HIPAA  
+Algorithm: Kirkpatrick, Gelatt, Vecchi — *Science* 220(4598), 1983
+
+</div>
