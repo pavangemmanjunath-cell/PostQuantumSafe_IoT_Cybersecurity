@@ -453,6 +453,71 @@ Protection
 
 ---
 
+## 📂 Uploaded Dataset Testing
+
+The dashboard and the standalone script `run_file_upload_tests.py` both support direct file-based testing — no manual payload writing needed.
+
+### Supported Files
+
+| File | Dataset | Scenario | Expected Risk |
+|------|---------|---------|--------------|
+| `ARP_Spoofing_test.pcap` | CICIoMT2024 | Device identity spoofing | High |
+| `Benign_test.pcap` | CICIoMT2024 | Baseline normal IoT traffic | Low |
+| `MQTT-Malformed_Data_test.pcap` | CICIoMT2024 | Protocol abuse on medical IoT | Medium-High |
+| `Recon-Port_Scan_test.pcap` | CICIoMT2024 | Reconnaissance against clinical systems | Medium-High |
+| `TCP_IP-DoS-SYN_test.pcap` | CICIoMT2024 | SYN flood DoS on clinical gateway | Critical |
+| `TCP_IP-DDoS-TCP_test.pcap` | CICIoMT2024 | TCP DDoS disruption | Critical |
+| `covid19_csv/patients.csv` | Synthea | Patient PHI / privacy risk detection | Privacy |
+| `covid19_csv/conditions.csv` | Synthea | Sensitive diagnosis exposure | Privacy |
+
+### How File Upload Works
+
+The tool does **not** send the raw file to n8n. Instead:
+
+```
+Upload file
+  → Read first 100 rows (CICIoMT) / 20 rows (Synthea)
+  → Detect file type from filename
+  → Extract network feature summary (mean/max/min/sum per column)
+  → Build compact structured JSON payload
+  → POST to n8n 10-agent pipeline
+  → Receive risk assessment + QIRO migration plan
+  → Save result with unique timestamp
+```
+
+### Feature Columns Extracted (CICIoMT2024)
+
+`Header_Length` · `Protocol Type` · `Duration` · `Rate` · `Srate` · `fin_flag_number` · `syn_flag_number` · `rst_flag_number` · `ack_flag_number` · `TCP` · `UDP` · `ARP` · `ICMP` · `Tot sum` · `Min` · `Max` · `AVG` · `Std` · `Variance` · `Weight` · and more.
+
+Derived signals computed automatically: `arp_activity_sum`, `syn_flag_sum`, `rate_mean`, `duration_mean`, `tot_size_mean`, etc.
+
+### Run Automated Folder Tests
+
+```bash
+# Reads all supported files from Input/ folder automatically
+python run_file_upload_tests.py
+
+# Custom input path or n8n URL
+python run_file_upload_tests.py --input C:\path\to\Input --url http://localhost:5678/webhook/tippss-assessment
+```
+
+### Output Structure
+
+Every run saves three files per test into `fileuploadoutput/`:
+
+```
+fileuploadoutput/
+├── ARP_Spoofing_test_20260604_143022_payload.json   ← exact payload sent to n8n
+├── ARP_Spoofing_test_20260604_143022_result.json    ← full n8n response
+├── ARP_Spoofing_test_20260604_143022_summary.csv    ← one-row result summary
+├── ...
+└── all_file_upload_test_summary_20260604_143400.csv ← combined run summary
+```
+
+Combined summary columns: `test_name · source_file · dataset_family · attack_type · rows_sampled · verdict · pq_risk_score · findings_count · qiro_selected_actions · qiro_excluded_actions · qiro_total_cost_usd · qiro_total_downtime_hrs · qiro_budget_remaining_usd · status`
+
+---
+
 ## 🚀 Quick Start
 
 ### Prerequisites
