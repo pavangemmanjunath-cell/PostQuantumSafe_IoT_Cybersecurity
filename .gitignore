@@ -38,4 +38,17 @@ Thumbs.db
 
 # Real patient data files — must not be committed
 real_data_scenarios.json
+
+# Block raw CSV uploads that may contain real patient data
+# (allow known safe datasets below)
 *.csv
+
+# Allow CICIoMT2024 network traffic datasets (public research, UNB/CIC)
+!00_input_files/*.csv
+!00_input_files/*.pcap.csv
+
+# Allow simulation result outputs (no real patient data)
+!fileuploadoutput/*.json
+!fileuploadoutput/*.csv
+!test_outputs/**/*.json
+!test_outputs/**/*.csv

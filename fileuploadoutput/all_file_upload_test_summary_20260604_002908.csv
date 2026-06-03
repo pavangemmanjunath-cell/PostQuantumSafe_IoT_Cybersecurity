@@ -1,0 +1,9 @@
+test_name,source_file,dataset_family,attack_type,rows_sampled,columns_detected_count,system_id,verdict,pq_risk_score,findings_count,qiro_selected_actions,qiro_excluded_actions,qiro_total_cost_usd,qiro_total_downtime_hrs,qiro_budget_remaining_usd,qiro_downtime_remaining_hrs,elapsed_s,status,payload_file,result_file,error
+ARP_Spoofing_test.pcap,C:\Users\pavan\OneDrive\Desktop\Current_Task\IEEE_Hack_UK\Input\ARP_Spoofing_test.pcap,,,0,0,,N/A,N/A,N/A,0,0,0,0,0,0,0.0,FAIL,N/A,N/A,File not found
+Benign_test.pcap,C:\Users\pavan\OneDrive\Desktop\Current_Task\IEEE_Hack_UK\Input\Benign_test.pcap,,,0,0,,N/A,N/A,N/A,0,0,0,0,0,0,0.0,FAIL,N/A,N/A,File not found
+MQTT-Malformed_Data_test.pcap,C:\Users\pavan\OneDrive\Desktop\Current_Task\IEEE_Hack_UK\Input\MQTT-Malformed_Data_test.pcap,,,0,0,,N/A,N/A,N/A,0,0,0,0,0,0,0.0,FAIL,N/A,N/A,File not found
+Recon-Port_Scan_test.pcap,C:\Users\pavan\OneDrive\Desktop\Current_Task\IEEE_Hack_UK\Input\Recon-Port_Scan_test.pcap,,,0,0,,N/A,N/A,N/A,0,0,0,0,0,0,0.0,FAIL,N/A,N/A,File not found
+TCP_IP-DoS-SYN_test.pcap,C:\Users\pavan\OneDrive\Desktop\Current_Task\IEEE_Hack_UK\Input\TCP_IP-DoS-SYN_test.pcap,,,0,0,,N/A,N/A,N/A,0,0,0,0,0,0,0.0,FAIL,N/A,N/A,File not found
+TCP_IP-DDoS-TCP_test.pcap,C:\Users\pavan\OneDrive\Desktop\Current_Task\IEEE_Hack_UK\Input\TCP_IP-DDoS-TCP_test.pcap,,,0,0,,N/A,N/A,N/A,0,0,0,0,0,0,0.0,FAIL,N/A,N/A,File not found
+patients.csv,covid19_csv/patients.csv,Synthea,,,25,FILE-SYNTHEA-20260603185908,Safe,0,8,8,0,64000,8,36000,32,0.45,PASS,patients_20260604_002908_payload.json,patients_20260604_002908_result.json,
+conditions.csv,covid19_csv/conditions.csv,Synthea,,,6,FILE-SYNTHEA-20260603185909,Safe,0,0,0,0,0,0,100000,40,0.32,PASS,conditions_20260604_002908_payload.json,conditions_20260604_002908_result.json,

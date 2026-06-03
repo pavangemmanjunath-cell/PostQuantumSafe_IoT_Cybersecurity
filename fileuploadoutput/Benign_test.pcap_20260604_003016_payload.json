@@ -1,0 +1,367 @@
+{
+  "system_id": "FILE-BENIGN-20260604003017",
+  "domain": "healthcare",
+  "scenario_summary": "CICIoMT2024 Benign Baseline \u2014 automated file upload test",
+  "source_file": "Benign_test.pcap.csv",
+  "tls_config": {
+    "tls_version": "TLS1.3",
+    "key_exchange": "ML-KEM-768",
+    "cert_signature_algo": "ML-DSA-65",
+    "cert_key_algo": "ML-DSA-65",
+    "symmetric_cipher": "AES-256-GCM",
+    "hash": "SHA-384",
+    "data_lifetime_years": 5
+  },
+  "iot_traffic": {
+    "dataset_family": "CICIoMT2024",
+    "attack_type": "benign",
+    "scenario_label": "Benign Baseline",
+    "expected_risk": "low",
+    "rows_sampled": 100,
+    "columns_detected": [
+      "Header_Length",
+      "Protocol Type",
+      "Duration",
+      "Rate",
+      "Srate",
+      "Drate",
+      "fin_flag_number",
+      "syn_flag_number",
+      "rst_flag_number",
+      "psh_flag_number",
+      "ack_flag_number",
+      "ece_flag_number",
+      "cwr_flag_number",
+      "ack_count",
+      "syn_count",
+      "fin_count",
+      "rst_count",
+      "HTTP",
+      "HTTPS",
+      "DNS",
+      "Telnet",
+      "SMTP",
+      "SSH",
+      "IRC",
+      "TCP",
+      "UDP",
+      "DHCP",
+      "ARP",
+      "ICMP",
+      "IGMP",
+      "IPv",
+      "LLC",
+      "Tot sum",
+      "Min",
+      "Max",
+      "AVG",
+      "Std",
+      "Tot size",
+      "IAT",
+      "Number",
+      "Magnitue",
+      "Radius",
+      "Covariance",
+      "Variance",
+      "Weight"
+    ],
+    "feature_summary": {
+      "numeric_columns_detected": 45,
+      "summary_available": true,
+      "Header_Length": {
+        "mean": 3207.13,
+        "max": 8018.3,
+        "min": 86.0,
+        "sum": 320713.0
+      },
+      "Protocol Type": {
+        "mean": 6.235,
+        "max": 8.2,
+        "min": 2.4,
+        "sum": 623.5
+      },
+      "Duration": {
+        "mean": 68.328,
+        "max": 146.2,
+        "min": 25.6,
+        "sum": 6832.8
+      },
+      "Rate": {
+        "mean": 2545.1587,
+        "max": 72928.096,
+        "min": 0.405,
+        "sum": 254515.8723
+      },
+      "Srate": {
+        "mean": 2545.1587,
+        "max": 72928.096,
+        "min": 0.405,
+        "sum": 254515.8723
+      },
+      "fin_flag_number": {
+        "mean": 0.002,
+        "max": 0.1,
+        "min": 0.0,
+        "sum": 0.2
+      },
+      "syn_flag_number": {
+        "mean": 0.002,
+        "max": 0.1,
+        "min": 0.0,
+        "sum": 0.2
+      },
+      "rst_flag_number": {
+        "mean": 0.002,
+        "max": 0.2,
+        "min": 0.0,
+        "sum": 0.2
+      },
+      "psh_flag_number": {
+        "mean": 0.465,
+        "max": 0.6,
+        "min": 0.1,
+        "sum": 46.5
+      },
+      "ack_flag_number": {
+        "mean": 0.939,
+        "max": 1.0,
+        "min": 0.4,
+        "sum": 93.9
+      },
+      "ece_flag_number": {
+        "mean": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "sum": 0.0
+      },
+      "cwr_flag_number": {
+        "mean": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "sum": 0.0
+      },
+      "ack_count": {
+        "mean": 0.005,
+        "max": 0.3,
+        "min": 0.0,
+        "sum": 0.5
+      },
+      "syn_count": {
+        "mean": 0.024,
+        "max": 0.8,
+        "min": 0.0,
+        "sum": 2.4
+      },
+      "fin_count": {
+        "mean": 0.003,
+        "max": 0.3,
+        "min": 0.0,
+        "sum": 0.3
+      },
+      "rst_count": {
+        "mean": 38.817,
+        "max": 99.5,
+        "min": 1.0,
+        "sum": 3881.7
+      },
+      "HTTP": {
+        "mean": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "sum": 0.0
+      },
+      "HTTPS": {
+        "mean": 0.042,
+        "max": 0.8,
+        "min": 0.0,
+        "sum": 4.2
+      },
+      "DNS": {
+        "mean": 0.002,
+        "max": 0.1,
+        "min": 0.0,
+        "sum": 0.2
+      },
+      "Telnet": {
+        "mean": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "sum": 0.0
+      },
+      "SMTP": {
+        "mean": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "sum": 0.0
+      },
+      "SSH": {
+        "mean": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "sum": 0.0
+      },
+      "IRC": {
+        "mean": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "sum": 0.0
+      },
+      "TCP": {
+        "mean": 0.94,
+        "max": 1.0,
+        "min": 0.4,
+        "sum": 94.0
+      },
+      "UDP": {
+        "mean": 0.035,
+        "max": 0.2,
+        "min": 0.0,
+        "sum": 3.5
+      },
+      "DHCP": {
+        "mean": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "sum": 0.0
+      },
+      "ARP": {
+        "mean": 0.025,
+        "max": 0.6,
+        "min": 0.0,
+        "sum": 2.5
+      },
+      "ICMP": {
+        "mean": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "sum": 0.0
+      },
+      "IGMP": {
+        "mean": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "sum": 0.0
+      },
+      "IPv": {
+        "mean": 0.975,
+        "max": 1.0,
+        "min": 0.4,
+        "sum": 97.5
+      },
+      "LLC": {
+        "mean": 0.975,
+        "max": 1.0,
+        "min": 0.4,
+        "sum": 97.5
+      },
+      "Tot sum": {
+        "mean": 1041.736,
+        "max": 4119.0,
+        "min": 372.6,
+        "sum": 104173.6
+      },
+      "Min": {
+        "mean": 67.049,
+        "max": 331.5,
+        "min": 42.0,
+        "sum": 6704.9
+      },
+      "Max": {
+        "mean": 274.591,
+        "max": 1474.0,
+        "min": 83.9,
+        "sum": 27459.1
+      },
+      "AVG": {
+        "mean": 101.7575,
+        "max": 708.1003,
+        "min": 59.8992,
+        "sum": 10175.7462
+      },
+      "Std": {
+        "mean": 61.4784,
+        "max": 448.5295,
+        "min": 7.87,
+        "sum": 6147.8401
+      },
+      "Tot size": {
+        "mean": 99.155,
+        "max": 367.4,
+        "min": 58.5,
+        "sum": 9915.5
+      },
+      "IAT": {
+        "mean": 86429857.6943,
+        "max": 169470311.7462,
+        "min": 0.0,
+        "sum": 8642985769.4317
+      },
+      "Number": {
+        "mean": 9.5,
+        "max": 13.5,
+        "min": 5.5,
+        "sum": 950.0
+      },
+      "Radius": {
+        "mean": 86.4615,
+        "max": 634.3165,
+        "min": 11.1299,
+        "sum": 8646.1473
+      },
+      "Covariance": {
+        "mean": 13597.9858,
+        "max": 235347.2763,
+        "min": 69.8732,
+        "sum": 1359798.5801
+      },
+      "Variance": {
+        "mean": 0.949,
+        "max": 1.0,
+        "min": 0.8,
+        "sum": 94.9
+      },
+      "Weight": {
+        "mean": 141.55,
+        "max": 244.6,
+        "min": 38.5,
+        "sum": 14155.0
+      },
+      "derived_network_signals": {
+        "arp_activity_sum": 2.5000000000000004,
+        "tcp_activity_sum": 94.00000000000001,
+        "udp_activity_sum": 3.5000000000000004,
+        "icmp_activity_sum": 0.0,
+        "syn_flag_sum": 0.2,
+        "ack_flag_sum": 93.90000000000002,
+        "rst_flag_sum": 0.2,
+        "syn_count_sum": 2.4,
+        "fin_count_sum": 0.3,
+        "rst_count_sum": 3881.6999999999994,
+        "rate_mean": 2545.1587226257766,
+        "rate_max": 72928.09597306684,
+        "srate_mean": 2545.1587226257766,
+        "duration_mean": 68.32799999999999,
+        "variance_mean": 0.9490000000000003,
+        "std_mean": 61.478400910977555,
+        "tot_size_mean": 99.15499999999999,
+        "iat_mean": 86429857.69431736
+      }
+    }
+  },
+  "ai_prompt_logs": [
+    "Analyze uploaded medical IoT traffic sample: Benign_test.pcap.csv"
+  ],
+  "device_logs": [
+    {
+      "device_id": "BASELINE-DEVICE-001",
+      "cert_present": true,
+      "auth_status": "passed",
+      "failed_login_count": 0,
+      "source_file": "Benign_test.pcap.csv"
+    }
+  ],
+  "constraints": {
+    "budget_usd": 100000,
+    "max_downtime_hrs": 40
+  }
+}

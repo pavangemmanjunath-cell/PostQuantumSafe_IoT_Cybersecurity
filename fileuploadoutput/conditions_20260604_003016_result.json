@@ -1,0 +1,67 @@
+{
+  "system_id": "FILE-SYNTHEA-20260604003022",
+  "timestamp": "2026-06-03T19:00:22.872Z",
+  "verdict": "Safe",
+  "pq_risk_score": 0,
+  "tippss_scores": {
+    "Trust": {
+      "score": 100,
+      "findings": []
+    },
+    "Identity": {
+      "score": 100,
+      "findings": []
+    },
+    "Privacy": {
+      "score": 100,
+      "findings": []
+    },
+    "Protection": {
+      "score": 100,
+      "findings": []
+    },
+    "Safety": {
+      "score": 100,
+      "findings": []
+    },
+    "Security": {
+      "score": 100,
+      "findings": []
+    }
+  },
+  "findings_count": 0,
+  "findings": [],
+  "qiro_optimization": {
+    "algorithm": "CPU-based Quantum-Inspired Simulated Annealing (Ising/QUBO-style)",
+    "qiro_version": "2.0.0",
+    "selected_actions": [],
+    "excluded_actions": [],
+    "total_candidate_actions": 0,
+    "selection_count": 0,
+    "total_cost_usd": 0,
+    "total_downtime_hrs": 0,
+    "total_risk_reduction": 0,
+    "budget_constraint_usd": 100000,
+    "downtime_constraint_hrs": 40,
+    "budget_remaining_usd": 100000,
+    "downtime_remaining_hrs": 40,
+    "budget_utilization_pct": 0,
+    "downtime_utilization_pct": 0,
+    "status": "no_actions_needed",
+    "constraint_explanation": "No remediation actions were needed because the system produced no findings.",
+    "migration_phase_plan": {
+      "phase_1_immediate_0_6mo": [],
+      "phase_2_transitional_6_18mo": [],
+      "phase_3_full_pq_18_36mo": []
+    },
+    "message": "No remediation actions required. System is already clean for the tested controls."
+  },
+  "category_breakdown": {
+    "pkc": 0,
+    "tls": 0,
+    "lifetime": 0,
+    "identity": 0,
+    "secrets": 0,
+    "migration": 0
+  }
+}

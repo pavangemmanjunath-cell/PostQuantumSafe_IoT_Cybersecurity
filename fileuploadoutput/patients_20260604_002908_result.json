@@ -1,0 +1,860 @@
+{
+  "system_id": "FILE-SYNTHEA-20260603185908",
+  "timestamp": "2026-06-03T18:59:08.914Z",
+  "verdict": "Safe",
+  "pq_risk_score": 0,
+  "tippss_scores": {
+    "Trust": {
+      "score": 0,
+      "findings": [
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #0: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "medical_record_number",
+          "detail": "PHI detected in prompt #1: medical_record_number",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #1: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #2: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #3: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "medical_record_number",
+          "detail": "PHI detected in prompt #4: medical_record_number",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #4: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "prompt_injection",
+          "severity": "critical",
+          "type": "instruction_override",
+          "detail": "Prompt injection in #5: instruction_override",
+          "tippss_mapping": [
+            "Safety",
+            "Security",
+            "Trust"
+          ]
+        }
+      ]
+    },
+    "Identity": {
+      "score": 100,
+      "findings": []
+    },
+    "Privacy": {
+      "score": 0,
+      "findings": [
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #0: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "medical_record_number",
+          "detail": "PHI detected in prompt #1: medical_record_number",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #1: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #2: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #3: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "medical_record_number",
+          "detail": "PHI detected in prompt #4: medical_record_number",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #4: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        }
+      ]
+    },
+    "Protection": {
+      "score": 0,
+      "findings": [
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #0: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "medical_record_number",
+          "detail": "PHI detected in prompt #1: medical_record_number",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #1: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #2: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #3: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "medical_record_number",
+          "detail": "PHI detected in prompt #4: medical_record_number",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        },
+        {
+          "agent": "clinical_privacy",
+          "severity": "high",
+          "type": "patient_identifier",
+          "detail": "PHI detected in prompt #4: patient_identifier",
+          "match_count": 1,
+          "tippss_mapping": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ]
+        }
+      ]
+    },
+    "Safety": {
+      "score": 75,
+      "findings": [
+        {
+          "agent": "prompt_injection",
+          "severity": "critical",
+          "type": "instruction_override",
+          "detail": "Prompt injection in #5: instruction_override",
+          "tippss_mapping": [
+            "Safety",
+            "Security",
+            "Trust"
+          ]
+        }
+      ]
+    },
+    "Security": {
+      "score": 75,
+      "findings": [
+        {
+          "agent": "prompt_injection",
+          "severity": "critical",
+          "type": "instruction_override",
+          "detail": "Prompt injection in #5: instruction_override",
+          "tippss_mapping": [
+            "Safety",
+            "Security",
+            "Trust"
+          ]
+        }
+      ]
+    }
+  },
+  "findings_count": 8,
+  "findings": [
+    {
+      "agent": "clinical_privacy",
+      "severity": "high",
+      "type": "patient_identifier",
+      "detail": "PHI detected in prompt #0: patient_identifier",
+      "match_count": 1,
+      "tippss_mapping": [
+        "Privacy",
+        "Protection",
+        "Trust"
+      ]
+    },
+    {
+      "agent": "clinical_privacy",
+      "severity": "high",
+      "type": "medical_record_number",
+      "detail": "PHI detected in prompt #1: medical_record_number",
+      "match_count": 1,
+      "tippss_mapping": [
+        "Privacy",
+        "Protection",
+        "Trust"
+      ]
+    },
+    {
+      "agent": "clinical_privacy",
+      "severity": "high",
+      "type": "patient_identifier",
+      "detail": "PHI detected in prompt #1: patient_identifier",
+      "match_count": 1,
+      "tippss_mapping": [
+        "Privacy",
+        "Protection",
+        "Trust"
+      ]
+    },
+    {
+      "agent": "clinical_privacy",
+      "severity": "high",
+      "type": "patient_identifier",
+      "detail": "PHI detected in prompt #2: patient_identifier",
+      "match_count": 1,
+      "tippss_mapping": [
+        "Privacy",
+        "Protection",
+        "Trust"
+      ]
+    },
+    {
+      "agent": "clinical_privacy",
+      "severity": "high",
+      "type": "patient_identifier",
+      "detail": "PHI detected in prompt #3: patient_identifier",
+      "match_count": 1,
+      "tippss_mapping": [
+        "Privacy",
+        "Protection",
+        "Trust"
+      ]
+    },
+    {
+      "agent": "clinical_privacy",
+      "severity": "high",
+      "type": "medical_record_number",
+      "detail": "PHI detected in prompt #4: medical_record_number",
+      "match_count": 1,
+      "tippss_mapping": [
+        "Privacy",
+        "Protection",
+        "Trust"
+      ]
+    },
+    {
+      "agent": "clinical_privacy",
+      "severity": "high",
+      "type": "patient_identifier",
+      "detail": "PHI detected in prompt #4: patient_identifier",
+      "match_count": 1,
+      "tippss_mapping": [
+        "Privacy",
+        "Protection",
+        "Trust"
+      ]
+    },
+    {
+      "agent": "prompt_injection",
+      "severity": "critical",
+      "type": "instruction_override",
+      "detail": "Prompt injection in #5: instruction_override",
+      "tippss_mapping": [
+        "Safety",
+        "Security",
+        "Trust"
+      ]
+    }
+  ],
+  "qiro_optimization": {
+    "algorithm": "CPU-based Quantum-Inspired Simulated Annealing (Ising/QUBO-style)",
+    "qiro_version": "2.0.0",
+    "iterations_run": 840,
+    "final_temperature": "1.4838",
+    "optimization_score": 464,
+    "objective": "Maximize risk reduction + PQ urgency + safety criticality + TIPPSS impact, constrained by budget and downtime.",
+    "total_candidate_actions": 8,
+    "selected_actions": [
+      {
+        "id": "A8",
+        "finding_index": 7,
+        "finding_type": "instruction_override",
+        "severity": "critical",
+        "source_agent": "prompt_injection",
+        "description": "Prompt injection in #5: instruction_override",
+        "remediation": "Add prompt-injection firewall and system instruction isolation.",
+        "risk_reduction": 38,
+        "cost_usd": 8000,
+        "downtime_hrs": 1,
+        "complexity": 3,
+        "pqc_urgency": 0,
+        "safety_criticality": 20,
+        "tippss_weight": 34,
+        "tippss_pillars": [
+          "Safety",
+          "Security",
+          "Trust"
+        ],
+        "optimization_benefit": 92,
+        "value_density": 7.077,
+        "priority_rank": 1,
+        "selection_reason": "Selected because of critical severity, clinical safety impact, high TIPPSS impact, low-cost quick win."
+      },
+      {
+        "id": "A1",
+        "finding_index": 0,
+        "finding_type": "patient_identifier",
+        "severity": "high",
+        "source_agent": "clinical_privacy",
+        "description": "PHI detected in prompt #0: patient_identifier",
+        "remediation": "Mask patient names and identifiers in AI prompt logs.",
+        "risk_reduction": 22,
+        "cost_usd": 8000,
+        "downtime_hrs": 1,
+        "complexity": 3,
+        "pqc_urgency": 0,
+        "safety_criticality": 0,
+        "tippss_weight": 32,
+        "tippss_pillars": [
+          "Privacy",
+          "Protection",
+          "Trust"
+        ],
+        "optimization_benefit": 54,
+        "value_density": 4.154,
+        "priority_rank": 2,
+        "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+      },
+      {
+        "id": "A2",
+        "finding_index": 1,
+        "finding_type": "medical_record_number",
+        "severity": "high",
+        "source_agent": "clinical_privacy",
+        "description": "PHI detected in prompt #1: medical_record_number",
+        "remediation": "Add PHI redaction and MRN masking before AI prompt processing.",
+        "risk_reduction": 25,
+        "cost_usd": 8000,
+        "downtime_hrs": 1,
+        "complexity": 3,
+        "pqc_urgency": 0,
+        "safety_criticality": 0,
+        "tippss_weight": 32,
+        "tippss_pillars": [
+          "Privacy",
+          "Protection",
+          "Trust"
+        ],
+        "optimization_benefit": 57,
+        "value_density": 4.385,
+        "priority_rank": 3,
+        "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+      },
+      {
+        "id": "A3",
+        "finding_index": 2,
+        "finding_type": "patient_identifier",
+        "severity": "high",
+        "source_agent": "clinical_privacy",
+        "description": "PHI detected in prompt #1: patient_identifier",
+        "remediation": "Mask patient names and identifiers in AI prompt logs.",
+        "risk_reduction": 22,
+        "cost_usd": 8000,
+        "downtime_hrs": 1,
+        "complexity": 3,
+        "pqc_urgency": 0,
+        "safety_criticality": 0,
+        "tippss_weight": 32,
+        "tippss_pillars": [
+          "Privacy",
+          "Protection",
+          "Trust"
+        ],
+        "optimization_benefit": 54,
+        "value_density": 4.154,
+        "priority_rank": 4,
+        "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+      },
+      {
+        "id": "A4",
+        "finding_index": 3,
+        "finding_type": "patient_identifier",
+        "severity": "high",
+        "source_agent": "clinical_privacy",
+        "description": "PHI detected in prompt #2: patient_identifier",
+        "remediation": "Mask patient names and identifiers in AI prompt logs.",
+        "risk_reduction": 22,
+        "cost_usd": 8000,
+        "downtime_hrs": 1,
+        "complexity": 3,
+        "pqc_urgency": 0,
+        "safety_criticality": 0,
+        "tippss_weight": 32,
+        "tippss_pillars": [
+          "Privacy",
+          "Protection",
+          "Trust"
+        ],
+        "optimization_benefit": 54,
+        "value_density": 4.154,
+        "priority_rank": 5,
+        "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+      },
+      {
+        "id": "A5",
+        "finding_index": 4,
+        "finding_type": "patient_identifier",
+        "severity": "high",
+        "source_agent": "clinical_privacy",
+        "description": "PHI detected in prompt #3: patient_identifier",
+        "remediation": "Mask patient names and identifiers in AI prompt logs.",
+        "risk_reduction": 22,
+        "cost_usd": 8000,
+        "downtime_hrs": 1,
+        "complexity": 3,
+        "pqc_urgency": 0,
+        "safety_criticality": 0,
+        "tippss_weight": 32,
+        "tippss_pillars": [
+          "Privacy",
+          "Protection",
+          "Trust"
+        ],
+        "optimization_benefit": 54,
+        "value_density": 4.154,
+        "priority_rank": 6,
+        "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+      },
+      {
+        "id": "A6",
+        "finding_index": 5,
+        "finding_type": "medical_record_number",
+        "severity": "high",
+        "source_agent": "clinical_privacy",
+        "description": "PHI detected in prompt #4: medical_record_number",
+        "remediation": "Add PHI redaction and MRN masking before AI prompt processing.",
+        "risk_reduction": 25,
+        "cost_usd": 8000,
+        "downtime_hrs": 1,
+        "complexity": 3,
+        "pqc_urgency": 0,
+        "safety_criticality": 0,
+        "tippss_weight": 32,
+        "tippss_pillars": [
+          "Privacy",
+          "Protection",
+          "Trust"
+        ],
+        "optimization_benefit": 57,
+        "value_density": 4.385,
+        "priority_rank": 7,
+        "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+      },
+      {
+        "id": "A7",
+        "finding_index": 6,
+        "finding_type": "patient_identifier",
+        "severity": "high",
+        "source_agent": "clinical_privacy",
+        "description": "PHI detected in prompt #4: patient_identifier",
+        "remediation": "Mask patient names and identifiers in AI prompt logs.",
+        "risk_reduction": 22,
+        "cost_usd": 8000,
+        "downtime_hrs": 1,
+        "complexity": 3,
+        "pqc_urgency": 0,
+        "safety_criticality": 0,
+        "tippss_weight": 32,
+        "tippss_pillars": [
+          "Privacy",
+          "Protection",
+          "Trust"
+        ],
+        "optimization_benefit": 54,
+        "value_density": 4.154,
+        "priority_rank": 8,
+        "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+      }
+    ],
+    "excluded_actions": [],
+    "selection_count": 8,
+    "excluded_count": 0,
+    "budget_constraint_usd": 100000,
+    "downtime_constraint_hrs": 40,
+    "total_cost_usd": 64000,
+    "total_downtime_hrs": 8,
+    "budget_remaining_usd": 36000,
+    "downtime_remaining_hrs": 32,
+    "budget_utilization_pct": 64,
+    "downtime_utilization_pct": 20,
+    "total_risk_reduction": 198,
+    "migration_phase_plan": {
+      "phase_1_immediate_0_6mo": [
+        {
+          "id": "A8",
+          "finding_index": 7,
+          "finding_type": "instruction_override",
+          "severity": "critical",
+          "source_agent": "prompt_injection",
+          "description": "Prompt injection in #5: instruction_override",
+          "remediation": "Add prompt-injection firewall and system instruction isolation.",
+          "risk_reduction": 38,
+          "cost_usd": 8000,
+          "downtime_hrs": 1,
+          "complexity": 3,
+          "pqc_urgency": 0,
+          "safety_criticality": 20,
+          "tippss_weight": 34,
+          "tippss_pillars": [
+            "Safety",
+            "Security",
+            "Trust"
+          ],
+          "optimization_benefit": 92,
+          "value_density": 7.077,
+          "priority_rank": 1,
+          "selection_reason": "Selected because of critical severity, clinical safety impact, high TIPPSS impact, low-cost quick win."
+        }
+      ],
+      "phase_2_transitional_6_18mo": [
+        {
+          "id": "A1",
+          "finding_index": 0,
+          "finding_type": "patient_identifier",
+          "severity": "high",
+          "source_agent": "clinical_privacy",
+          "description": "PHI detected in prompt #0: patient_identifier",
+          "remediation": "Mask patient names and identifiers in AI prompt logs.",
+          "risk_reduction": 22,
+          "cost_usd": 8000,
+          "downtime_hrs": 1,
+          "complexity": 3,
+          "pqc_urgency": 0,
+          "safety_criticality": 0,
+          "tippss_weight": 32,
+          "tippss_pillars": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ],
+          "optimization_benefit": 54,
+          "value_density": 4.154,
+          "priority_rank": 2,
+          "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+        },
+        {
+          "id": "A2",
+          "finding_index": 1,
+          "finding_type": "medical_record_number",
+          "severity": "high",
+          "source_agent": "clinical_privacy",
+          "description": "PHI detected in prompt #1: medical_record_number",
+          "remediation": "Add PHI redaction and MRN masking before AI prompt processing.",
+          "risk_reduction": 25,
+          "cost_usd": 8000,
+          "downtime_hrs": 1,
+          "complexity": 3,
+          "pqc_urgency": 0,
+          "safety_criticality": 0,
+          "tippss_weight": 32,
+          "tippss_pillars": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ],
+          "optimization_benefit": 57,
+          "value_density": 4.385,
+          "priority_rank": 3,
+          "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+        },
+        {
+          "id": "A3",
+          "finding_index": 2,
+          "finding_type": "patient_identifier",
+          "severity": "high",
+          "source_agent": "clinical_privacy",
+          "description": "PHI detected in prompt #1: patient_identifier",
+          "remediation": "Mask patient names and identifiers in AI prompt logs.",
+          "risk_reduction": 22,
+          "cost_usd": 8000,
+          "downtime_hrs": 1,
+          "complexity": 3,
+          "pqc_urgency": 0,
+          "safety_criticality": 0,
+          "tippss_weight": 32,
+          "tippss_pillars": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ],
+          "optimization_benefit": 54,
+          "value_density": 4.154,
+          "priority_rank": 4,
+          "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+        },
+        {
+          "id": "A4",
+          "finding_index": 3,
+          "finding_type": "patient_identifier",
+          "severity": "high",
+          "source_agent": "clinical_privacy",
+          "description": "PHI detected in prompt #2: patient_identifier",
+          "remediation": "Mask patient names and identifiers in AI prompt logs.",
+          "risk_reduction": 22,
+          "cost_usd": 8000,
+          "downtime_hrs": 1,
+          "complexity": 3,
+          "pqc_urgency": 0,
+          "safety_criticality": 0,
+          "tippss_weight": 32,
+          "tippss_pillars": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ],
+          "optimization_benefit": 54,
+          "value_density": 4.154,
+          "priority_rank": 5,
+          "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+        },
+        {
+          "id": "A5",
+          "finding_index": 4,
+          "finding_type": "patient_identifier",
+          "severity": "high",
+          "source_agent": "clinical_privacy",
+          "description": "PHI detected in prompt #3: patient_identifier",
+          "remediation": "Mask patient names and identifiers in AI prompt logs.",
+          "risk_reduction": 22,
+          "cost_usd": 8000,
+          "downtime_hrs": 1,
+          "complexity": 3,
+          "pqc_urgency": 0,
+          "safety_criticality": 0,
+          "tippss_weight": 32,
+          "tippss_pillars": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ],
+          "optimization_benefit": 54,
+          "value_density": 4.154,
+          "priority_rank": 6,
+          "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+        },
+        {
+          "id": "A6",
+          "finding_index": 5,
+          "finding_type": "medical_record_number",
+          "severity": "high",
+          "source_agent": "clinical_privacy",
+          "description": "PHI detected in prompt #4: medical_record_number",
+          "remediation": "Add PHI redaction and MRN masking before AI prompt processing.",
+          "risk_reduction": 25,
+          "cost_usd": 8000,
+          "downtime_hrs": 1,
+          "complexity": 3,
+          "pqc_urgency": 0,
+          "safety_criticality": 0,
+          "tippss_weight": 32,
+          "tippss_pillars": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ],
+          "optimization_benefit": 57,
+          "value_density": 4.385,
+          "priority_rank": 7,
+          "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+        },
+        {
+          "id": "A7",
+          "finding_index": 6,
+          "finding_type": "patient_identifier",
+          "severity": "high",
+          "source_agent": "clinical_privacy",
+          "description": "PHI detected in prompt #4: patient_identifier",
+          "remediation": "Mask patient names and identifiers in AI prompt logs.",
+          "risk_reduction": 22,
+          "cost_usd": 8000,
+          "downtime_hrs": 1,
+          "complexity": 3,
+          "pqc_urgency": 0,
+          "safety_criticality": 0,
+          "tippss_weight": 32,
+          "tippss_pillars": [
+            "Privacy",
+            "Protection",
+            "Trust"
+          ],
+          "optimization_benefit": 54,
+          "value_density": 4.154,
+          "priority_rank": 8,
+          "selection_reason": "Selected because of high TIPPSS impact, low-cost quick win."
+        }
+      ],
+      "phase_3_full_pq_18_36mo": []
+    },
+    "constraint_explanation": "QIRO selected all 8 remediation actions because they fit within the available budget of $100,000 and allowed downtime of 40h.",
+    "message": "QIRO selected 8 of 8 candidate remediation actions, achieving 198 total risk reduction within $64,000 cost and 8h downtime. Budget remaining: $36,000; downtime remaining: 32h."
+  },
+  "category_breakdown": {
+    "pkc": 0,
+    "tls": 0,
+    "lifetime": 0,
+    "identity": 0,
+    "secrets": 0,
+    "migration": 0
+  }
+}

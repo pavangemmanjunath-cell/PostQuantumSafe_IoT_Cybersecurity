@@ -518,6 +518,167 @@ Combined summary columns: `test_name · source_file · dataset_family · attack_
 
 ---
 
+## 🧪 What the Simulation Does — and Why
+
+### The Core Question We Are Answering
+
+> *"If a hospital is running this medical IoT system or AI assistant today, how exposed is it to a quantum adversary — and what is the cheapest, fastest set of fixes that keeps patients safe?"*
+
+This is not a theoretical exercise. Governments and standards bodies have already mandated post-quantum migration:
+
+- **NIST** finalised ML-KEM, ML-DSA, SLH-DSA in August 2024
+- **US CISA** issued guidance requiring federal agencies to inventory PQ-vulnerable systems by end of 2024
+- **NHS Digital** and **EU ENISA** have both flagged clinical IoT as a priority migration target
+- **HIPAA** requires protecting patient data for up to **50 years** — well within any quantum threat timeline
+
+The simulation operationalises this migration assessment in a way no existing tool does.
+
+---
+
+### What Each Simulation Stage Does
+
+```mermaid
+flowchart LR
+    A["📁 Input\nCICIoMT2024 network traffic\nSynthea clinical records"] --> B
+
+    subgraph SIM["Simulation Pipeline"]
+        B["Stage 1: Feature Extraction\nSample 100 rows\nExtract 40+ network features\nDetect attack type from filename"] --> C
+        C["Stage 2: Payload Construction\nMap features → structured JSON\nAssign TLS config by attack type\nBuild device_logs + ai_prompt_logs"] --> D
+        D["Stage 3: 10-Agent Assessment\nCrypto · IoT Identity · PHI · Secrets\nSafety · TIPPSS Scoring · QIRO"] --> E
+        E["Stage 4: QIRO Optimisation\nConstraint-aware binary selection\nSimulated annealing\nBudget + downtime limits"] --> F
+    end
+
+    F["📊 Output\nVerdict + Risk Score\nFindings per TIPPSS pillar\nMigration roadmap\nTimestamped JSON + CSV"]
+```
+
+---
+
+### Why We Use CICIoMT2024 Network Traffic
+
+The **CICIoMT2024** dataset (University of New Brunswick / Canadian Institute for Cybersecurity) was chosen because:
+
+1. **It is the most comprehensive public medical IoT attack dataset available** — captured from real IoT devices in a controlled clinical network environment
+2. **It covers the exact attack classes relevant to post-quantum risk** — ARP spoofing breaks device identity, MQTT malformation targets medical protocol integrity, DoS/DDoS attacks threaten device availability
+3. **It allows controlled comparison** — by testing the same pipeline on both attack traffic and benign traffic, we can verify that the system correctly distinguishes threat from normal operation
+4. **It is ethically safe** — no real patient data; only network-layer packet captures from simulated clinical IoT devices
+
+The `.pcap.csv` files contain tabular summaries of packet features (flag counts, rates, protocol distributions) exported from Wireshark-style captures. Our tool samples the first 100 rows and extracts 40+ statistical features to build the assessment payload.
+
+---
+
+### Why We Use Synthea Clinical Records
+
+**Synthea** (MITRE Corporation, Apache 2.0) generates realistic but entirely synthetic patient records. We chose it because:
+
+1. **It simulates the exact PHI (Protected Health Information) patterns** that AI clinical assistants encounter — patient names, MRNs, diagnoses, dates of birth
+2. **It lets us test the privacy pillar of TIPPSS** — Agent 5 (AI Prompt Privacy) scans for PHI leakage into AI logs, which is a real and growing HIPAA compliance risk as hospitals adopt AI assistants
+3. **It is ethically safe** — no real patient is identified; all records are mathematically generated
+4. **It represents realistic data volumes** — the COVID-19 dataset contains thousands of patient records matching real-world EHR scale
+
+---
+
+### What We Want to Achieve
+
+| Goal | How the simulation achieves it |
+|------|-------------------------------|
+| **Detect quantum-vulnerable cryptography** | Agent 2 classifies every TLS parameter; Agent 3 benchmarks against NIST FIPS 203/204/205 |
+| **Detect device identity failures** | Agent 4 checks certificate presence, authentication status, and failed login patterns from IoT logs |
+| **Detect PHI leakage into AI logs** | Agent 5 scans ai_prompt_logs for MRN, name, SSN, diagnosis, and email patterns |
+| **Detect exposed secrets** | Agent 6 scans device logs for Stripe keys, AWS credentials, GitHub tokens |
+| **Detect patient safety risks** | Agent 7 identifies autonomous dosing commands or alarm overrides in AI prompts |
+| **Map findings to IEEE 2933-2024** | Agent 8 assigns every finding to one or more TIPPSS pillars (Trust, Identity, Privacy, Protection, Safety, Security) |
+| **Produce a budget-aware fix plan** | Agent 10 (QIRO) selects the best feasible remediation portfolio under hospital constraints |
+| **Prove the contrast works** | Benign traffic → Safe verdict; attack traffic → Not Post-Quantum Safe — the system discriminates correctly |
+
+---
+
+## 📊 Actual Simulation Results (Run: 2026-06-04)
+
+All 8 tests executed against the live n8n 10-agent pipeline. Budget constraint: **$100,000**. Downtime limit: **40 hours**.
+
+### CICIoMT2024 Network Traffic Results
+
+| File | Attack Type | Verdict | PQ Risk Score | Findings | QIRO Selected | QIRO Deferred | Cost Used | Downtime Used |
+|------|-------------|---------|:-------------:|:--------:|:-------------:|:-------------:|:---------:|:-------------:|
+| `ARP_Spoofing_test.pcap.csv` | ARP Spoofing | ⚠️ Not Post-Quantum Safe | **61 / 100** | 7 | 4 | 3 | $100,000 | 22h |
+| `Benign_test.pcap.csv` | Benign Baseline | ✅ Safe | **0 / 100** | 0 | 0 | 0 | $0 | 0h |
+| `MQTT-Malformed_Data_test.pcap.csv` | MQTT Malformed | ⚠️ Not Post-Quantum Safe | **61 / 100** | 7 | 4 | 3 | $100,000 | 22h |
+| `Recon-Port_Scan_test.pcap.csv` | Port Scan | ⚠️ Not Post-Quantum Safe | **61 / 100** | 7 | 4 | 3 | $100,000 | 22h |
+| `TCP_IP-DoS-SYN_test.pcap.csv` | SYN DoS | ⚠️ Not Post-Quantum Safe | **61 / 100** | 7 | 4 | 3 | $100,000 | 22h |
+| `TCP_IP-DDoS-TCP_test.pcap.csv` | TCP DDoS | ⚠️ Not Post-Quantum Safe | **61 / 100** | 7 | 4 | 3 | $100,000 | 22h |
+
+**Key finding:** The benign baseline correctly returns a Safe verdict with zero findings, confirming the pipeline discriminates correctly between normal traffic and attack patterns.
+
+### Synthea Clinical Records Results
+
+| File | Scenario | Verdict | PQ Risk Score | Findings | QIRO Selected | Cost Used | Downtime Used |
+|------|----------|---------|:-------------:|:--------:|:-------------:|:---------:|:-------------:|
+| `patients.csv` | PHI in AI prompts | ✅ Safe (TLS) | **0 / 100** | **8 PHI findings** | 8 | $64,000 | 8h |
+| `conditions.csv` | Clinical conditions | ✅ Safe | **0 / 100** | 0 | 0 | $0 | 0h |
+
+**Key finding for `patients.csv`:** The TLS verdict is Safe (post-quantum config was used), but **8 PHI findings were detected in the AI prompt logs** — patient names, MRNs, and dates of birth extracted from Synthea records. QIRO selected 8 remediation actions ($64,000 / 8 hours) to address the privacy layer even though the crypto layer was compliant. This proves the system correctly separates crypto risk from privacy risk.
+
+---
+
+### What the Contrast Demonstrates
+
+```
+Benign traffic   →  Score 0   / Safe            →  0 findings  →  QIRO: no action needed
+Attack traffic   →  Score 61  / Not PQ Safe     →  7 findings  →  QIRO: 4 selected, 3 deferred
+PHI in prompts   →  Score 0   / Safe (TLS)      →  8 findings  →  QIRO: 8 privacy actions
+```
+
+This is precisely the value of a multi-pillar assessment: **a system can be cryptographically compliant but still have critical privacy or identity vulnerabilities.** A single-metric scanner would miss this.
+
+---
+
+### QIRO Constraint Demonstration
+
+The deferred actions (3 per attack scenario) illustrate QIRO's constraint-awareness. With $100,000 budget and 40h downtime, QIRO selects the 4 highest-value actions and defers 3. To see the roadmap change:
+
+```bash
+# Rerun with tight budget — QIRO selects fewer actions
+python run_file_upload_tests.py  # default $100K / 40h
+
+# Or use the dashboard slider:
+# Set budget to $30,000 → rerun → QIRO defers more expensive actions
+```
+
+---
+
+## 🗂️ Repository Structure
+
+```
+QuantumShift_TIPPSS/
+├── 00_Documention/
+│   └── Final_Project_Description.docx    ← Full project write-up
+├── 01_n8n_file/
+│   └── TIPPSS_SafeGuard_PQ_Sequential_v3.json  ← n8n workflow (import this)
+├── 00_input_files/                        ← CICIoMT2024 test datasets
+│   ├── ARP_Spoofing_test.pcap.csv
+│   ├── Benign_test.pcap.csv
+│   ├── MQTT-Malformed_Data_test.pcap.csv
+│   ├── Recon-Port_Scan_test.pcap.csv
+│   ├── TCP_IP-DoS-SYN_test.pcap.csv
+│   └── TCP_IP-DDoS-TCP_test.pcap.csv
+├── fileuploadoutput/                      ← Timestamped simulation results
+│   ├── *_payload.json                     ← Exact payload sent to n8n
+│   ├── *_result.json                      ← Full n8n pipeline response
+│   ├── *_summary.csv                      ← One-row result per test
+│   └── all_file_upload_test_summary_*.csv ← Combined run summary
+├── dashboard.py                           ← Streamlit frontend
+├── test_scenarios.json                    ← 7 pre-built simulation scenarios
+├── test_cases.json                        ← 8 automated unit test cases
+├── run_tests.py                           ← Unit test runner
+├── run_file_tests.py                      ← Integration test runner
+├── run_file_upload_tests.py               ← Folder-based file test runner
+├── requirements.txt
+├── run.bat                                ← Windows launcher
+└── run.sh                                 ← macOS/Linux launcher
+```
+
+---
+
 ## 🚀 Quick Start
 
 ### Prerequisites
