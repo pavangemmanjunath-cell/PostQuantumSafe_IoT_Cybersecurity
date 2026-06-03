@@ -679,6 +679,228 @@ QuantumShift_TIPPSS/
 
 ---
 
+## ⚛️ QIRO — Quantum-Inspired Remediation Optimizer
+
+### What Is QIRO?
+
+Most cybersecurity tools stop at detection — they show a list of vulnerabilities and leave the prioritisation to a human. QIRO goes one step further: it converts every detected finding into a candidate remediation action, then selects the **best feasible combination** of fixes under the hospital's real operational constraints.
+
+```
+Traditional scanner:   Finds problems.
+QIRO:                  Finds problems → selects what to fix now → explains what is deferred and why.
+```
+
+---
+
+### Why QIRO Is Required
+
+Healthcare is a constrained environment. A hospital **cannot** shut down an ICU gateway, infusion pump network, or EHR API whenever a vulnerability is found. Two hard limits always apply:
+
+| Constraint | Example |
+|-----------|---------|
+| **Remediation budget** | A rural clinic may have only $30,000 for the quarter |
+| **Allowed service downtime** | An ICU gateway can tolerate at most 8 hours offline |
+
+Without a constraint-aware planner, a security report may recommend $150,000 of work when only $50,000 is available. QIRO makes the plan **operationally realistic**.
+
+---
+
+### Why QIRO Is Novel
+
+The novel contribution is the formulation of post-quantum cybersecurity remediation as a **Quadratic Unconstrained Binary Optimisation (QUBO)** problem — the same problem class solved by quantum annealers. QIRO solves it on a **classical CPU** using Simulated Annealing, making it deployable today without quantum hardware.
+
+No existing post-quantum migration tool combines:
+- Automated multi-pillar finding detection
+- QUBO-style binary decision formulation
+- Budget and downtime as hard constraints
+- Phased migration roadmap output
+
+> ⚠️ **Important:** QIRO is *quantum-inspired*, not quantum hardware. It models the problem in the QUBO/Ising style and solves it via CPU-based Simulated Annealing (Kirkpatrick et al., *Science* 1983).
+
+---
+
+### Mathematical Formulation
+
+#### 1. Decision Variable
+
+For each candidate remediation action $i$, QIRO defines a binary variable:
+
+$$x_i \in \{0, 1\}$$
+
+where $x_i = 1$ means **select this action** and $x_i = 0$ means **defer this action**.
+
+---
+
+#### 2. Benefit Score per Action
+
+Each action receives a composite benefit score:
+
+$$B_i = R_i + P_i + S_i + T_i$$
+
+| Symbol | Meaning |
+|--------|---------|
+| $R_i$ | Risk reduction — how much this fix lowers the PQ risk score |
+| $P_i$ | Post-quantum urgency — how critical the PQ migration is |
+| $S_i$ | Clinical safety criticality — patient safety impact |
+| $T_i$ | TIPPSS pillar impact — how many IEEE 2933-2024 pillars improve |
+
+**Example** — PQ certificate migration action:
+
+$$B_i = 30 + 25 + 0 + 30 = 85$$
+
+---
+
+#### 3. QIRO Objective Function
+
+$$\max_{x} \sum_{i=1}^{n} B_i \, x_i$$
+
+subject to:
+
+$$\sum_{i=1}^{n} C_i \, x_i \leq C_{\max} \quad \text{(budget constraint)}$$
+
+$$\sum_{i=1}^{n} D_i \, x_i \leq D_{\max} \quad \text{(downtime constraint)}$$
+
+$$x_i \in \{0, 1\}$$
+
+where $C_i$ is the cost of action $i$, $D_i$ is its downtime, $C_{\max}$ is the available budget, and $D_{\max}$ is the allowed downtime.
+
+---
+
+#### 4. Penalty-Based Energy Function (Simulated Annealing)
+
+For the Simulated Annealing solver, the constrained problem is converted into an unconstrained energy minimisation:
+
+$$E(x) = -\sum_{i=1}^{n} B_i x_i \;+\; \lambda_C \max\!\left(0,\, \sum C_i x_i - C_{\max}\right)^2 \;+\; \lambda_D \max\!\left(0,\, \sum D_i x_i - D_{\max}\right)^2 \;+\; \lambda_K \sum K_i x_i$$
+
+| Term | Role |
+|------|------|
+| $-\sum B_i x_i$ | Rewards high-benefit selected actions |
+| $\lambda_C(\cdots)^2$ | Penalises budget overrun |
+| $\lambda_D(\cdots)^2$ | Penalises downtime overrun |
+| $\lambda_K \sum K_i x_i$ | Penalises high implementation complexity |
+
+QIRO minimises $E(x)$ to find the optimal portfolio:
+
+$$x^* = \arg\min_{x} \; E(x)$$
+
+---
+
+#### 5. QIRO Output
+
+$$\mathcal{A}_{\text{selected}} = \{i \mid x_i^* = 1\}$$
+
+$$\mathcal{A}_{\text{deferred}} = \{i \mid x_i^* = 0\}$$
+
+$$C_{\text{remaining}} = C_{\max} - \sum_{i=1}^{n} C_i x_i^*$$
+
+$$D_{\text{remaining}} = D_{\max} - \sum_{i=1}^{n} D_i x_i^*$$
+
+---
+
+### Worked Example
+
+Three candidate actions detected from an ICU gateway assessment:
+
+| Action | $R_i$ | $P_i$ | $S_i$ | $T_i$ | $B_i$ | $C_i$ | $D_i$ |
+|--------|:-----:|:-----:|:-----:|:-----:|:-----:|------:|------:|
+| Prompt injection firewall | 25 | 0 | 20 | 30 | **75** | $8,000 | 1h |
+| Device re-authentication | 35 | 0 | 20 | 20 | **75** | $10,000 | 2h |
+| PQ certificate migration | 30 | 25 | 0 | 30 | **85** | $20,000 | 4h |
+
+With $C_{\max} = \$50{,}000$ and $D_{\max} = 20\text{h}$, QIRO selects all three:
+
+```
+Total benefit:  75 + 75 + 85 = 235
+Budget used:    $8,000 + $10,000 + $20,000 = $38,000   (remaining: $12,000)
+Downtime used:  1h + 2h + 4h = 7h                       (remaining: 13h)
+```
+
+If budget were reduced to $\$15{,}000$, QIRO would select only the prompt injection firewall and device re-authentication (total $18,000 — still over) or just the two cheapest options that fit, deferring the PQ migration.
+
+---
+
+### QIRO Internal Flow
+
+```mermaid
+flowchart TD
+    A[Detected Findings from 10 Agents] --> B[Generate Candidate Remediation Actions]
+    B --> C[Score each action: Bᵢ = Rᵢ + Pᵢ + Sᵢ + Tᵢ]
+    C --> D[Assign Cᵢ cost and Dᵢ downtime]
+    D --> E[Build energy function E of x]
+    E --> F[Simulated Annealing\nT_start → cool → T_final\nMetropolis-Hastings acceptance]
+    F --> G{Feasible?}
+    G -->|Yes| H[Selected Actions ✅]
+    G -->|No| I[Deferred Actions ⏸️]
+    H --> J[Phase 1: 0–6 months\nCritical + PQ-urgent]
+    H --> K[Phase 2: 6–18 months\nHigh-severity transitional]
+    H --> L[Phase 3: 18–36 months\nFull PQ deployment]
+```
+
+---
+
+### QIRO Constraint Sensitivity
+
+QIRO produces a different migration plan for different constraint inputs:
+
+| Budget | Downtime | QIRO Behaviour |
+|-------:|--------:|----------------|
+| $200,000 | 80h | Selects maximum risk-reduction portfolio |
+| $100,000 | 40h | Balances cost and risk across all pillars |
+| $50,000 | 20h | Prioritises critical and safety-affecting actions |
+| $30,000 | 8h | Selects only low-cost, zero/minimal downtime controls |
+
+**Try it in the dashboard:** change the budget slider and click *Run Cybersecurity Simulation* — the Selected Actions and Deferred Actions tables update to reflect the new constraints.
+
+---
+
+### QIRO Output Fields
+
+| Field | Meaning |
+|-------|---------|
+| `selected_actions` | Fixes to perform now, in priority order |
+| `excluded_actions` | Fixes deferred under current constraints |
+| `selection_reason` | Why each action was selected |
+| `reason` | Why each action was deferred |
+| `budget_remaining_usd` | Budget left after selected actions |
+| `downtime_remaining_hrs` | Downtime capacity left |
+| `constraint_explanation` | Human-readable plan summary |
+| `migration_phase_plan` | 0–6 / 6–18 / 18–36 month roadmap |
+| `qiro_version` | Algorithm version |
+| `objective` | Objective function description |
+| `iterations_run` | Simulated annealing iterations |
+| `final_temperature` | Cooling schedule end temperature |
+
+---
+
+### Uploaded File Testing Matrix
+
+| File | Simulation Purpose | Expected Risk |
+|------|--------------------|--------------|
+| `ARP_Spoofing_test.pcap.csv` | Device impersonation / identity spoofing | High — identity + security |
+| `Benign_test.pcap.csv` | Normal medical IoT baseline | Low — Safe verdict |
+| `MQTT-Malformed_Data_test.pcap.csv` | Malformed medical protocol traffic | Medium-High — protocol integrity |
+| `Recon-Port_Scan_test.pcap.csv` | Reconnaissance / port scanning | Medium-High — security |
+| `TCP_IP-DoS-SYN_test.pcap.csv` | SYN flood gateway disruption | Critical — availability |
+| `TCP_IP-DDoS-TCP_test.pcap.csv` | TCP DDoS disruption | Critical — availability |
+| `covid19_csv/patients.csv` | Synthetic patient PHI in AI prompts | Privacy — PHI findings |
+| `covid19_csv/conditions.csv` | Clinical condition text exposure | Privacy — sensitive diagnosis |
+
+---
+
+### Final Positioning
+
+TIPPSS SafeGuard-PQ is not only a post-quantum risk scanner. It is a **migration decision-support system**. QIRO answers the three questions a hospital CISO actually needs answered:
+
+```
+1. What is at risk?           → 10-agent assessment across 6 TIPPSS pillars
+2. What should be fixed first? → QIRO selected actions, ranked by benefit
+3. What must wait?            → QIRO deferred actions, with reasons + revised plan when budget increases
+```
+
+This makes the tool useful for **realistic post-quantum migration planning** in clinical IoT and healthcare AI environments where patient-care continuity must never be compromised.
+
+---
+
 ## 🚀 Quick Start
 
 ### Prerequisites
