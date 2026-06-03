@@ -37,14 +37,14 @@ TIMEOUT_SECS     = 120
 
 # Ordered list of files to test
 FILE_TESTS = [
-    {"file": "ARP_Spoofing_test.pcap",       "type": "ciciomt"},
-    {"file": "Benign_test.pcap",             "type": "ciciomt"},
-    {"file": "MQTT-Malformed_Data_test.pcap","type": "ciciomt"},
-    {"file": "Recon-Port_Scan_test.pcap",    "type": "ciciomt"},
-    {"file": "TCP_IP-DoS-SYN_test.pcap",    "type": "ciciomt"},
-    {"file": "TCP_IP-DDoS-TCP_test.pcap",   "type": "ciciomt"},
-    {"file": "covid19_csv/patients.csv",     "type": "synthea"},
-    {"file": "covid19_csv/conditions.csv",   "type": "synthea"},
+    {"file": "ARP_Spoofing_test.pcap.csv",       "type": "ciciomt"},
+    {"file": "Benign_test.pcap.csv",             "type": "ciciomt"},
+    {"file": "MQTT-Malformed_Data_test.pcap.csv","type": "ciciomt"},
+    {"file": "Recon-Port_Scan_test.pcap.csv",    "type": "ciciomt"},
+    {"file": "TCP_IP-DoS-SYN_test.pcap.csv",    "type": "ciciomt"},
+    {"file": "TCP_IP-DDoS-TCP_test.pcap.csv",   "type": "ciciomt"},
+    {"file": "covid19_csv/patients.csv",         "type": "synthea"},
+    {"file": "covid19_csv/conditions.csv",       "type": "synthea"},
 ]
 
 _CICIOMT_COLS = [
@@ -126,7 +126,7 @@ def build_ciciomt_payload(fname: str, df: pd.DataFrame) -> dict:
     sample = df.head(MAX_ROWS_CICIOMT)
     feats  = safe_numeric_summary(sample)
     atk    = info["is_attack"]
-    ts     = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    ts     = datetime.now().strftime("%Y%m%d%H%M%S")
     return {
         "system_id":        f"FILE-{info['attack_type'].upper()}-{ts}",
         "domain":           "healthcare",
@@ -166,7 +166,7 @@ def build_synthea_payload(fname: str, df: pd.DataFrame) -> dict:
     sample = df.head(MAX_ROWS_SYNTHEA)
     cols   = {c.lower(): c for c in sample.columns}
     prompts: list[str] = []
-    ts = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    ts = datetime.now().strftime("%Y%m%d%H%M%S")
 
     if "patients" in fname.lower():
         for _, row in sample.head(5).iterrows():
@@ -366,8 +366,8 @@ def run_all_tests(input_dir: pathlib.Path, url: str):
             w.writeheader(); w.writerows(summary)
         all_json.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
-        print(f"\n  CSV  → {all_csv}")
-        print(f"  JSON → {all_json}")
+        print(f"\n  CSV  -> {all_csv}")
+        print(f"  JSON -> {all_json}")
 
     passed = sum(1 for r in summary if r["status"] == "PASS")
     total  = len(summary)

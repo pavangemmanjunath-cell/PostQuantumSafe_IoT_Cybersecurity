@@ -510,8 +510,8 @@ with st.sidebar:
     )
     uploaded_file = st.file_uploader(
         "Choose a file",
-        type=["csv", "pcap"],
-        help="CICIoMT2024 ARP/MQTT/DoS/DDoS/Recon/Benign .pcap files or Synthea clinical .csv files",
+        type=["csv", "pcap", "pcap.csv"],
+        help="CICIoMT2024 *.pcap.csv files or Synthea patients.csv / conditions.csv",
         label_visibility="collapsed",
     )
 
