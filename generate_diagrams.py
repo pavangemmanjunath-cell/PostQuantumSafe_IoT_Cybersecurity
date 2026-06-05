@@ -216,41 +216,32 @@ def diagram_data_flow():
     # ══════════════════════════════════════════════════════════════════════
     # ROW 3: SCORING & AI
     # ══════════════════════════════════════════════════════════════════════
-    # Agent 8
-    shadow_box(ax, 3.5, 5.0, 4.5, 1.55, P["navy"]+"66", P["lblue"], lw=2.5, radius=0.03)
-    label(ax, 5.75, 5.85, "Agent 8 — TIPPSS Six-Pillar Scorer", size=10, bold=True, color=P["lblue"])
+    # Agent 8 — TIPPSS Scorer (wider, centred)
+    shadow_box(ax, 3.5, 5.0, 7.5, 1.55, P["navy"]+"66", P["lblue"], lw=2.5, radius=0.03)
+    label(ax, 7.25, 5.85, "Agent 8 — TIPPSS Six-Pillar Scorer", size=10, bold=True, color=P["lblue"])
     pillars = ["Trust","Identity","Privacy","Protection","Safety","Security"]
     pcols   = [P["teal"],P["blue"],P["purple"],P["navy"],P["red"],P["orange"]]
     for pi, (pil, pcol) in enumerate(zip(pillars, pcols)):
-        px = 3.8 + pi * 0.73
-        box(ax, px-0.3, 5.07, 0.6, 0.4, pcol+"88", pcol, lw=1.2, radius=0.01)
-        label(ax, px, 5.27, pil[:4], size=6.5, color=P["white"])
-
-    # Agent 9
-    shadow_box(ax, 9.0, 5.0, 4.5, 1.55, P["navy"]+"44", P["blue"], lw=2.2, radius=0.03)
-    label(ax, 11.25, 5.85, "Agent 9 — Claude AI Report", size=10, bold=True, color=P["lblue"])
-    label(ax, 11.25, 5.35,
-          "Plain-English executive summary\nfor clinical leadership",
-          size=8.5, color=P["mgray"])
+        px = 4.0 + pi * 1.15
+        box(ax, px-0.45, 5.07, 0.9, 0.4, pcol+"88", pcol, lw=1.2, radius=0.01)
+        label(ax, px, 5.27, pil[:5], size=7, color=P["white"])
 
     # Verdict card
-    shadow_box(ax, 14.5, 5.0, 4.5, 1.55, P["green"]+"44", P["lgreen"], lw=2.5, radius=0.03)
-    label(ax, 16.75, 5.85, "Risk Verdict", size=10, bold=True, color=P["lgreen"])
+    shadow_box(ax, 12.0, 5.0, 5.0, 1.55, P["green"]+"44", P["lgreen"], lw=2.5, radius=0.03)
+    label(ax, 14.5, 5.85, "Risk Verdict", size=10, bold=True, color=P["lgreen"])
     for vi, (vtxt, vcol) in enumerate([
-        ("Safe  0-25",                P["lgreen"]),
-        ("Partially Safe  26-50",     P["gold"]),
-        ("Not PQ Safe  51-75",        P["orange"]),
-        ("Critical Risk  76-100",     P["red"]),
+        ("Safe  0-25",            P["lgreen"]),
+        ("Partially Safe  26-50", P["gold"]),
+        ("Not PQ Safe  51-75",    P["orange"]),
+        ("Critical Risk  76-100", P["red"]),
     ]):
-        vx = 14.75; vy = 5.6 - vi * 0.3
-        box(ax, vx, vy-0.1, 4.0, 0.26, vcol+"44", vcol, lw=1.0, radius=0.008)
-        label(ax, vx+2.0, vy+0.03, vtxt, size=7.5, color=P["white"])
+        vx = 12.25; vy = 5.6 - vi * 0.3
+        box(ax, vx, vy-0.1, 4.5, 0.26, vcol+"44", vcol, lw=1.0, radius=0.008)
+        label(ax, vx+2.25, vy+0.03, vtxt, size=7.5, color=P["white"])
 
-    arrow(ax, 20.1, 8.15, 16.75, 6.55, col=P["mgray"], lw=1.6)
-    arrow(ax, 8.0,  8.15, 5.75,  6.55, col=P["mgray"], lw=1.6)
-    arrow(ax, 8.0,  6.55, 8.5,   6.55, col=P["lblue"], lw=1.6)
-    arrow(ax, 11.25,6.55,11.25,  6.55, col=P["lblue"], lw=1.0)
-    arrow(ax, 13.5,  6.55, 14.5,  6.55, col=P["lblue"], lw=1.6)
+    arrow(ax, 20.1, 8.15, 14.5, 6.55, col=P["mgray"], lw=1.6)
+    arrow(ax, 8.0,  8.15, 7.25, 6.55, col=P["mgray"], lw=1.6)
+    arrow(ax, 11.0, 5.77, 12.0, 5.77, col=P["lblue"], lw=1.8)
 
     # ══════════════════════════════════════════════════════════════════════
     # ROW 4: QIRO
@@ -279,19 +270,18 @@ def diagram_data_flow():
     label(ax, 13.9, 3.67, "Budget <= Cmax\nDowntime <= Dmax", size=8.5, color=P["white"])
     arrow(ax, 12.0, 3.85, 11.15, 3.49, col=P["red"], lw=1.8, ms=11)
 
-    arrow(ax, 16.75, 5.0, 16.75, 4.68, col=P["mgray"], lw=1.6)
-    arrow(ax, 16.75, 4.68, 6.75, 4.68, col=P["mgray"], lw=1.6)
+    arrow(ax, 14.5, 5.0, 14.5, 4.68, col=P["mgray"], lw=1.6)
+    arrow(ax, 14.5, 4.68, 6.75, 4.68, col=P["mgray"], lw=1.6)
     arrow(ax, 6.75, 4.68, 6.75, 4.65, col=P["amber"], lw=2.0)
 
     # ══════════════════════════════════════════════════════════════════════
     # ROW 5: OUTPUT
     # ══════════════════════════════════════════════════════════════════════
     outputs = [
-        (4.0,  "Verdict Card\nPQ Risk Score",         P["green"],  P["lgreen"]),
+        (3.5,  "Verdict Card\nPQ Risk Score",         P["green"],  P["lgreen"]),
         (7.5,  "TIPPSS Spider\nSix-Pillar Chart",     P["blue"],   P["lblue"]),
-        (11.0, "QIRO Roadmap\nSelected + Deferred",   P["amber"],  P["gold"]),
-        (14.5, "Claude Report\nExecutive Summary",    P["navy"],   P["lblue"]),
-        (18.0, "JSON + CSV\nTimestamped Results",     P["teal"],   P["lteal"]),
+        (11.5, "QIRO Roadmap\nSelected + Deferred",   P["amber"],  P["gold"]),
+        (16.0, "JSON + CSV\nTimestamped Results",     P["teal"],   P["lteal"]),
     ]
     for ox, otxt, ofc, oec in outputs:
         shadow_box(ax, ox-1.5, 0.6, 3.0, 1.2, ofc+"44", oec, lw=2.0, radius=0.025)
@@ -370,23 +360,21 @@ def diagram_architecture():
     ax.text(0.7, 11.0, "Sequential Agentic Framework  (localhost:5678)  ·  10-Agent Pipeline",
             fontsize=9.5, color=P["mgray"], zorder=10)
 
-    # Agent boxes
+    # Agent boxes — 9 agents (no Claude AI)
     agents_arch = [
-        (1.8,  9.0, "Agent 1",  "Input\nValidator",     "Schema · Fields\n· Normalise",                P["blue"],   P["lblue"]),
-        (4.2,  9.0, "Agent 2",  "Crypto\nClassifier",   "PQ-safe / Classical\n/ Deprecated",           P["blue"],   P["lblue"]),
-        (6.6,  9.0, "Agent 3",  "PQ\nBenchmark",        "NIST FIPS 203/204\n/205 · HNDL rule",         P["purple"], P["lpurple"]),
-        (9.0,  9.0, "Agent 4",  "IoT Device\nIdentity", "Cert · Auth\n· Login count",                  P["purple"], P["lpurple"]),
-        (11.4, 9.0, "Agent 5",  "AI Prompt\nPrivacy",   "PHI · MRN\n· Injection",                      P["pink"],   P["gold"]),
-        (13.8, 9.0, "Agent 6",  "Secret\nExposure",     "API keys\n· Credentials",                     P["orange"], P["gold"]),
-        (16.2, 9.0, "Agent 7",  "Safety\nRisk",         "Dosing · Alarms\n· Autonomous AI",            P["red"],    P["gold"]),
-        (18.6, 9.0, "Agent 8",  "TIPPSS\nScorer",       "6-pillar score\n· Risk verdict",              P["navy"],   P["lblue"]),
-        (21.0, 9.0, "Agent 9",  "Claude AI\nReport",    "Executive\nsummary NL",                       P["navy"],   P["lblue"]),
-        (22.5, 6.8, "Agent 10", "QIRO\nOptimizer",      "QUBO · SA\n· Roadmap",                        P["amber"],  P["gold"]),
+        (1.8,  9.0, "Agent 1", "Input\nValidator",    "Schema · Fields\n· Normalise",       P["blue"],   P["lblue"]),
+        (4.5,  9.0, "Agent 2", "Crypto\nClassifier",  "PQ-safe / Classical\n/ Deprecated",  P["blue"],   P["lblue"]),
+        (7.2,  9.0, "Agent 3", "PQ\nBenchmark",       "NIST FIPS 203/204\n/205 · HNDL rule",P["purple"], P["lpurple"]),
+        (9.9,  9.0, "Agent 4", "IoT Device\nIdentity","Cert · Auth\n· Login count",          P["purple"], P["lpurple"]),
+        (12.6, 9.0, "Agent 5", "AI Prompt\nPrivacy",  "PHI · MRN\n· Injection",             P["pink"],   P["gold"]),
+        (15.3, 9.0, "Agent 6", "Secret\nExposure",    "API keys\n· Credentials",            P["orange"], P["gold"]),
+        (18.0, 9.0, "Agent 7", "Safety\nRisk",        "Dosing · Alarms\n· Autonomous AI",   P["red"],    P["gold"]),
+        (20.7, 9.0, "Agent 8", "TIPPSS\nScorer",      "6-pillar score\n· Risk verdict",     P["navy"],   P["lblue"]),
+        (22.5, 6.8, "Agent 9", "QIRO\nOptimizer",     "QUBO · SA\n· Roadmap",               P["amber"],  P["gold"]),
     ]
 
     for i, (ax_x, ax_y, atag, aname, adesc, afc, aec) in enumerate(agents_arch[:-1]):
         shadow_box(ax, ax_x-1.0, ax_y-1.5, 2.0, 3.0, afc+"44", aec, lw=2.2, radius=0.025)
-        # Agent tag header
         box(ax, ax_x-1.0, ax_y+1.05, 2.0, 0.47, afc+"88", aec, lw=1.5, radius=0.01)
         label(ax, ax_x, ax_y+1.28, atag, size=8, bold=True, color=P["white"])
         label(ax, ax_x, ax_y+0.4, aname, size=9, bold=True, color=P["white"])
@@ -396,19 +384,18 @@ def diagram_architecture():
                   agents_arch[i+1][0]-1.0, agents_arch[i+1][1],
                   col=P["mgray"], lw=1.4, ms=10)
 
-    # Agent 10 special position
+    # Agent 9 (QIRO) — special lower position
     ax10_x, ax10_y = agents_arch[-1][0], agents_arch[-1][1]
     afc10, aec10 = agents_arch[-1][-2], agents_arch[-1][-1]
     shadow_box(ax, ax10_x-1.1, ax10_y-1.5, 2.2, 3.2, afc10+"44", aec10, lw=2.8, radius=0.03)
     box(ax, ax10_x-1.1, ax10_y+1.25, 2.2, 0.47, afc10+"88", aec10, lw=2, radius=0.01)
-    label(ax, ax10_x, ax10_y+1.48, "Agent 10", size=8, bold=True, color=P["white"])
+    label(ax, ax10_x, ax10_y+1.48, "Agent 9", size=8, bold=True, color=P["white"])
     label(ax, ax10_x, ax10_y+0.5, "QIRO\nOptimizer", size=9, bold=True, color=P["gold"])
     label(ax, ax10_x, ax10_y-0.35, "QUBO · SA\n· Roadmap", size=7.5, color=P["mgray"])
-    # novel badge
     box(ax, ax10_x-0.9, ax10_y-1.42, 1.8, 0.32, P["gold"]+"55", P["gold"], lw=1.5, radius=0.01)
     label(ax, ax10_x, ax10_y-1.27, "NOVEL", size=8, bold=True, color=P["gold"])
 
-    arrow(ax, 21.0+1.0, 9.0, ax10_x-0.5, ax10_y+1.25+0.23,
+    arrow(ax, 20.7+1.0, 9.0, ax10_x-0.5, ax10_y+1.25+0.23,
           col=P["amber"], lw=2.0, ms=12, conn="arc3,rad=-0.2")
 
     # Standards reference boxes
@@ -432,13 +419,12 @@ def diagram_architecture():
             fontsize=11, fontweight="bold", color=P["lgreen"], zorder=10)
 
     output_comps = [
-        (2.0,  2.4, "fileuploadoutput/",  "payload.json\nresult.json\nsummary.csv",  P["teal"]),
-        (5.5,  2.4, "test_outputs/\nunit_tests/",    "TC01-TC08\nTimestamped JSON\n8 test cases",  P["blue"]),
-        (9.0,  2.4, "test_outputs/\nintegration/",  "CICIoMT + Synthea\nFile results",  P["blue"]),
-        (12.5, 2.4, "Verdict Card",       "Safe / Partial /\nNot PQ Safe /\nCritical",  P["green"]),
-        (16.0, 2.4, "TIPPSS\nSpider Chart", "6-pillar\nradar plot",  P["purple"]),
-        (19.5, 2.4, "QIRO Roadmap",       "Selected\nDeferred\nPhased Plan",  P["amber"]),
-        (22.5, 2.4, "Claude AI\nReport",  "Executive\nSummary",  P["navy"]),
+        (2.2,  2.4, "fileuploadoutput/",    "payload.json\nresult.json\nsummary.csv",    P["teal"]),
+        (6.0,  2.4, "test_outputs/\nunit_tests/", "TC01–TC08\nTimestamped JSON\n8 test cases", P["blue"]),
+        (9.8,  2.4, "test_outputs/\nintegration/","CICIoMT + Synthea\nFile results",     P["blue"]),
+        (13.6, 2.4, "Verdict Card",         "Safe / Partial /\nNot PQ Safe /\nCritical", P["green"]),
+        (17.4, 2.4, "TIPPSS\nSpider Chart", "6-pillar\nradar plot",                      P["purple"]),
+        (21.2, 2.4, "QIRO Roadmap",         "Selected · Deferred\nPhased Plan",          P["amber"]),
     ]
     for ox, oy, otitle, odesc, ocol in output_comps:
         shadow_box(ax, ox-1.3, oy-1.0, 2.6, 1.9, ocol+"33", ocol, lw=2, radius=0.025)
