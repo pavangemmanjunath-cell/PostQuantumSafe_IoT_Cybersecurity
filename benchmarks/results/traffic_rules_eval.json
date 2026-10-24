@@ -1,0 +1,84 @@
+{
+  "benchmark": "traffic_rules_window_eval",
+  "software_version": "0.1.0",
+  "date": "2026-10-17",
+  "window_rows": 100,
+  "max_windows_per_file": 2000,
+  "python": "3.13.5",
+  "caveat": "Thresholds were chosen by inspecting this same data; results are optimistic and not a generalisation estimate.",
+  "results": [
+    {
+      "file": "ARP_Spoofing_test.pcap.csv",
+      "expected": "attack",
+      "windows": 17,
+      "flagged_windows": 15,
+      "flag_rate": 0.8824,
+      "metric": "detection_rate",
+      "rule_hits": {
+        "protocol_mix_anomaly": 15
+      }
+    },
+    {
+      "file": "Benign_test.pcap.csv",
+      "expected": "benign",
+      "windows": 376,
+      "flagged_windows": 10,
+      "flag_rate": 0.0266,
+      "metric": "false_positive_rate",
+      "rule_hits": {
+        "protocol_flag_anomaly": 7,
+        "protocol_mix_anomaly": 3
+      }
+    },
+    {
+      "file": "MQTT-Malformed_Data_test.pcap.csv",
+      "expected": "attack",
+      "windows": 17,
+      "flagged_windows": 13,
+      "flag_rate": 0.7647,
+      "metric": "detection_rate",
+      "rule_hits": {
+        "protocol_flag_anomaly": 13
+      }
+    },
+    {
+      "file": "Recon-Port_Scan_test.pcap.csv",
+      "expected": "attack",
+      "windows": 226,
+      "flagged_windows": 223,
+      "flag_rate": 0.9867,
+      "metric": "detection_rate",
+      "rule_hits": {
+        "port_scan_pattern": 191,
+        "syn_flood_pattern": 21,
+        "protocol_mix_anomaly": 13,
+        "protocol_flag_anomaly": 3,
+        "volumetric_flood_pattern": 1
+      }
+    },
+    {
+      "file": "TCP_IP-DDoS-TCP_test.pcap.csv",
+      "expected": "attack",
+      "windows": 1825,
+      "flagged_windows": 1750,
+      "flag_rate": 0.9589,
+      "metric": "detection_rate",
+      "rule_hits": {
+        "volumetric_flood_pattern": 1750
+      }
+    },
+    {
+      "file": "TCP_IP-DoS-SYN_test.pcap.csv",
+      "expected": "attack",
+      "windows": 985,
+      "flagged_windows": 985,
+      "flag_rate": 1.0,
+      "metric": "detection_rate",
+      "rule_hits": {
+        "syn_flood_pattern": 984,
+        "volumetric_flood_pattern": 4,
+        "port_scan_pattern": 1
+      }
+    }
+  ]
+}

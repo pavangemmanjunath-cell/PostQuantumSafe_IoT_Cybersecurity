@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software in your research, please cite it."
+title: "PostQuantumSafe IoT Cybersecurity (TIPPSS SafeGuard-PQ): An Agentic Testing Framework for Post-Quantum Safety of IoT and Edge Environments"
+type: software
+authors:
+  - family-names: "Manjunath"
+    given-names: "Pavan"
+    orcid: "https://orcid.org/0000-0002-2694-8807"
+version: "0.1.0"
+date-released: "2026-10-24"
+repository-code: "https://github.com/pavangemmanjunath-cell/PostQuantumSafe_IoT_Cybersecurity"
+url: "https://github.com/pavangemmanjunath-cell/PostQuantumSafe_IoT_Cybersecurity"
+license: "Apache-2.0"
+abstract: >-
+  Open-source research prototype of an agentic testing framework that checks whether an IoT and edge-device
+  environment is safe against post-quantum (quantum computer) attacks. Fourteen deterministic agents inventory the
+  cryptographic primitives of each device, identify post-quantum exposure against NIST FIPS 203, 204 and 205, detect
+  identity, privacy, AI-prompt and network risks, map every finding to the IEEE 2933-2024 TIPPSS pillars (trust,
+  identity, privacy, protection, safety, security), explain every result with evidence, exact score attributions and
+  counterfactuals, and plan countermeasures under budget and downtime limits with a quantum-inspired optimiser (QIRO).
+  Includes a FastAPI backend, a React and three.js interface with an IoT fleet simulator, post-quantum attack
+  injection and a Q-Day what-if, and PDF reports that state whether the environment is safe. Contributions are welcome.
+keywords:
+  - post-quantum cryptography
+  - quantum-safe
+  - Internet of Things
+  - IoT security
+  - edge devices
+  - cybersecurity
+  - agentic testing
+  - multi-agent systems
+  - explainable AI
+  - TIPPSS
+  - IEEE 2933
+  - healthcare security
+  - research software

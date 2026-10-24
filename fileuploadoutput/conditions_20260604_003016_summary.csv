@@ -1,2 +1,0 @@
-test_name,source_file,dataset_family,attack_type,rows_sampled,columns_detected_count,system_id,verdict,pq_risk_score,findings_count,qiro_selected_actions,qiro_excluded_actions,qiro_total_cost_usd,qiro_total_downtime_hrs,qiro_budget_remaining_usd,qiro_downtime_remaining_hrs,elapsed_s,status,payload_file,result_file,error
-conditions.csv,covid19_csv/conditions.csv,Synthea,,,6,FILE-SYNTHEA-20260604003022,Safe,0,0,0,0,0,0,100000,40,0.13,PASS,conditions_20260604_003016_payload.json,conditions_20260604_003016_result.json,

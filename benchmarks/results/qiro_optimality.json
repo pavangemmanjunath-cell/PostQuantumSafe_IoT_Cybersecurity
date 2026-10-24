@@ -1,0 +1,21 @@
+{
+  "benchmark": "qiro_optimality_vs_exhaustive",
+  "software_version": "0.1.0",
+  "date": "2026-10-24",
+  "python": "3.13.5",
+  "instances_with_nonzero_optimum": 500,
+  "annealing_only": {
+    "optimal_share": 0.948,
+    "mean_gap_pct": 0.1913,
+    "p95_gap_pct": 0.1616,
+    "max_gap_pct": 20.1592
+  },
+  "annealing_plus_local_search": {
+    "optimal_share": 0.976,
+    "mean_gap_pct": 0.0532,
+    "p95_gap_pct": 0.0,
+    "max_gap_pct": 6.0606
+  },
+  "mean_optimize_ms_including_exact_solver": 6.76,
+  "caveat": "Synthetic random instances drawn from the illustrative remediation catalogue; not real hospital data."
+}

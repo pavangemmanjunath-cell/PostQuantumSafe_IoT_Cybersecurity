@@ -1,0 +1,37 @@
+name: Bug report
+description: Something does not work as documented
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Please use **synthetic data only**. Never paste real patient data, credentials or confidential configurations. Security vulnerabilities: see SECURITY.md (do not report them here)."
+  - type: textarea
+    id: description
+    attributes: { label: Description, description: What happened? }
+    validations: { required: true }
+  - type: input
+    id: version
+    attributes: { label: Version / commit, placeholder: "v0.1.0 or commit SHA" }
+    validations: { required: true }
+  - type: input
+    id: environment
+    attributes: { label: Operating system and environment, placeholder: "Windows 11, Python 3.13, Node 22, Chrome 130" }
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes: { label: Reproduction steps, description: Exact commands or GUI steps }
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes: { label: Expected behaviour }
+    validations: { required: true }
+  - type: textarea
+    id: actual
+    attributes: { label: Actual behaviour }
+    validations: { required: true }
+  - type: textarea
+    id: logs
+    attributes: { label: Logs, render: shell }
+  - type: textarea
+    id: context
+    attributes: { label: Additional context }

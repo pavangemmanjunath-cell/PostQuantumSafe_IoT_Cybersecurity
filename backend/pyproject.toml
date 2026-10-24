@@ -1,0 +1,72 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "safeguard-pq"
+version = "0.1.0"
+description = "Agentic testing framework that checks whether IoT and edge-device environments are safe against post-quantum attacks (research prototype)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{ name = "Pavan Manjunath" }]
+keywords = [
+  "post-quantum-cryptography",
+  "quantum-safe",
+  "iot-security",
+  "edge-devices",
+  "cybersecurity",
+  "agentic-testing",
+  "healthcare-security",
+  "multi-agent-systems",
+  "explainable-ai",
+  "simulated-annealing",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Security :: Cryptography",
+]
+dependencies = [
+  "fastapi>=0.115,<1",
+  "uvicorn[standard]>=0.30",
+  "pydantic>=2.7,<3",
+  "pydantic-settings>=2.4,<3",
+  "httpx>=0.27,<1",
+  "python-multipart>=0.0.9",
+  "reportlab>=4.2,<6",
+]
+
+[project.urls]
+Homepage = "https://github.com/pavangemmanjunath-cell/PostQuantumSafe_IoT_Cybersecurity"
+Repository = "https://github.com/pavangemmanjunath-cell/PostQuantumSafe_IoT_Cybersecurity"
+Issues = "https://github.com/pavangemmanjunath-cell/PostQuantumSafe_IoT_Cybersecurity/issues"
+Changelog = "https://github.com/pavangemmanjunath-cell/PostQuantumSafe_IoT_Cybersecurity/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.6"]
+
+[project.scripts]
+safeguard-pq = "safeguard_pq.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/safeguard_pq"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+filterwarnings = ["ignore:Using `httpx` with `starlette.testclient`"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.File", "fastapi.Form", "fastapi.Body", "fastapi.Query"]

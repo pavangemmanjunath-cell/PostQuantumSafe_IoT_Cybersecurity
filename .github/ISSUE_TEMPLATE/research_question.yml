@@ -1,0 +1,23 @@
+name: Research question
+description: Methodology, assumptions, reproduction results or comparisons
+labels: [research]
+body:
+  - type: textarea
+    id: question
+    attributes: { label: Research question }
+    validations: { required: true }
+  - type: dropdown
+    id: component
+    attributes:
+      label: Relevant component
+      options: [Post-quantum identification, Detection rules, Traffic rules, Scoring model, QIRO optimizer, Explainability, Simulator, Benchmarks, Other]
+    validations: { required: true }
+  - type: textarea
+    id: hypothesis
+    attributes: { label: Hypothesis or concern }
+  - type: textarea
+    id: experiment
+    attributes: { label: Experiment / reproduction information, description: Commands, seeds, versions, data sources (no sensitive data) }
+  - type: textarea
+    id: references
+    attributes: { label: References }
