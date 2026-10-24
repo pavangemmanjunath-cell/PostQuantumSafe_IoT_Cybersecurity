@@ -1,14 +1,16 @@
 # PostQuantumSafe IoT Cybersecurity · TIPPSS SafeGuard-PQ
 
-**An open, agentic testing framework that checks whether an IoT and edge-device environment is safe against
-post-quantum (quantum computer) attacks, explains why, and plans the fixes. It is built on the IEEE 2933-2024
-TIPPSS framework (Trust, Identity, Privacy, Protection, Safety, Security) and implemented first for healthcare
-(clinical IoT). Research prototype; contributions welcome.**
+**A TIPPSS-based framework.** TIPPSS SafeGuard-PQ is an open, agentic testing framework built on the IEEE 2933-2024
+**TIPPSS** framework (**T**rust, **I**dentity, **P**rivacy, **P**rotection, **S**afety, **S**ecurity). It checks
+whether an IoT and edge-device environment is safe against post-quantum (quantum computer) attacks, scores it on all
+six TIPPSS pillars, explains why, and plans the fixes. It is implemented first for **healthcare (clinical IoT)**.
+Research prototype; contributions welcome.
 
 [![CI](https://github.com/pavangemmanjunath-cell/PostQuantumSafe_IoT_Cybersecurity/actions/workflows/ci.yml/badge.svg)](https://github.com/pavangemmanjunath-cell/PostQuantumSafe_IoT_Cybersecurity/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
 ![Status: research prototype](https://img.shields.io/badge/status-research%20prototype-orange)
+[![Framework: TIPPSS (IEEE 2933-2024)](https://img.shields.io/badge/framework-TIPPSS%20(IEEE%202933--2024)-0b7285)](#built-on-the-tippss-framework)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 **Keywords:** post-quantum cryptography · quantum-safe · IoT · edge devices · cybersecurity · agentic testing ·
@@ -39,7 +41,7 @@ multi-agent systems · explainable security · NIST FIPS 203/204/205 · IEEE 293
 
 ## Overview
 
-SafeGuard-PQ is an **agentic testing framework**: 14 cooperating software agents test a connected IoT or edge
+SafeGuard-PQ is a **TIPPSS-based agentic testing framework**: 14 cooperating software agents test a connected IoT or edge
 environment (an ICU gateway, an infusion pump, a factory PLC, a clinical AI assistant, or a whole simulated fleet) and
 decide whether it is quantum safe. Healthcare is the first worked use case; the device profiles and attack catalogue
 are designed to be extended to other IoT and edge domains. It answers three questions:

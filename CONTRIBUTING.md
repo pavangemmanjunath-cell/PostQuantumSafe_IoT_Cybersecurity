@@ -2,7 +2,8 @@
 
 ## Welcome
 
-Thank you for considering a contribution. SafeGuard-PQ is an early-stage research prototype, so independent scrutiny is
+Thank you for considering a contribution. SafeGuard-PQ is a TIPPSS-based framework (IEEE 2933-2024: Trust, Identity, Privacy, Protection, Safety, Security)
+for post-quantum safety testing of IoT and edge environments, implemented first for healthcare. It is an early-stage research prototype, so independent scrutiny is
 especially valuable: bug reports, reproductions that *fail*, and critiques of the methodology are as welcome as code.
 
 ## Ways to contribute

@@ -1,6 +1,7 @@
 # SafeGuard-PQ — frontend
 
-React + TypeScript + three.js (React Three Fiber) GUI built with Vite.
+React + TypeScript + three.js (React Three Fiber) GUI built with Vite for the TIPPSS-based post-quantum testing framework
+(shows the six TIPPSS pillar scores, the healthcare IoT fleet simulator and agent activity).
 
 ```bash
 npm ci

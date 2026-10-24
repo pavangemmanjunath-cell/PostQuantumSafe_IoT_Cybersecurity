@@ -8,7 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [0.1.0] - 2026-10-24
 
-First public release of PostQuantumSafe IoT Cybersecurity (TIPPSS SafeGuard-PQ): an agentic testing framework that
+First public release of PostQuantumSafe IoT Cybersecurity (TIPPSS SafeGuard-PQ): a TIPPSS-based (IEEE 2933-2024) agentic testing framework that
 checks whether IoT and edge-device environments are safe against post-quantum attacks. Complete re-implementation of
 the hackathon prototype (v0) as an open, contributable research codebase.
 

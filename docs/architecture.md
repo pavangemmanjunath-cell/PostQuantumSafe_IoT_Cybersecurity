@@ -1,5 +1,8 @@
 # Architecture
 
+SafeGuard-PQ is a TIPPSS-based framework: the six IEEE 2933-2024 TIPPSS pillars (Trust, Identity, Privacy, Protection,
+Safety, Security) are the assessment model that every agent, score, plan and report is organised around.
+
 ## System context
 
 A user (security researcher, analyst or student) supplies a description of a system — crypto configuration, device logs,
