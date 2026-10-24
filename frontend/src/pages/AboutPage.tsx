@@ -39,6 +39,7 @@ export function AboutPage({ health }: { health: Health | null }) {
         <div className="panel-b small stack">
           <div>Pavan Manjunath · ORCID <a href="https://orcid.org/0000-0002-2694-8807" target="_blank" rel="noreferrer">0000-0002-2694-8807</a></div>
           <div>Repository: <a href="https://github.com/pavangemmanjunath-cell/PostQuantumSafe_IoT_Cybersecurity" target="_blank" rel="noreferrer">PostQuantumSafe_IoT_Cybersecurity</a> · contributions welcome (see CONTRIBUTING.md).</div>
+          <div>Software DOI (all versions): <a href="https://doi.org/10.5281/zenodo.23618135" target="_blank" rel="noreferrer">10.5281/zenodo.23618135</a></div>
           <div>Cite via the repository's <span className="mono">CITATION.cff</span> ("Cite this repository" on GitHub). Licensed under Apache-2.0.</div>
           <div className="hint">Datasets referenced for evaluation (CICIoMT2024, Synthea) are not redistributed; see datasets/README.md for sources and licences.</div>
         </div>

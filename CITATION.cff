@@ -11,6 +11,17 @@ date-released: "2026-10-24"
 repository-code: "https://github.com/pavangemmanjunath-cell/PostQuantumSafe_IoT_Cybersecurity"
 url: "https://github.com/pavangemmanjunath-cell/PostQuantumSafe_IoT_Cybersecurity"
 license: "Apache-2.0"
+doi: "10.5281/zenodo.23618135"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23618135"
+    description: "Concept DOI: all versions (resolves to the latest version)"
+  - type: doi
+    value: "10.5281/zenodo.23618136"
+    description: "Version DOI for the v0.1.0 release"
+  - type: doi
+    value: "10.5281/zenodo.23618173"
+    description: "Version DOI for the v0.2.0 release"
 abstract: >-
   Open-source research prototype of an agentic testing framework that checks whether an IoT and edge-device
   environment is safe against post-quantum (quantum computer) attacks. Fourteen deterministic agents inventory the

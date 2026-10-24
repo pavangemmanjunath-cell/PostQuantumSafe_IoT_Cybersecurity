@@ -6,6 +6,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added
+- Zenodo DOIs in `CITATION.cff`, README, release notes and the About page (all versions: 10.5281/zenodo.23618135).
+
 ## [0.1.0] - 2026-10-24
 
 First public release of PostQuantumSafe IoT Cybersecurity (TIPPSS SafeGuard-PQ): a TIPPSS-based (IEEE 2933-2024) agentic testing framework that

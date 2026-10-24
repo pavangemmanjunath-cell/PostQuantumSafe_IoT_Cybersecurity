@@ -10,6 +10,7 @@ Research prototype; contributions welcome.
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
 ![Status: research prototype](https://img.shields.io/badge/status-research%20prototype-orange)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23618135.svg)](https://doi.org/10.5281/zenodo.23618135)
 [![Framework: TIPPSS (IEEE 2933-2024)](https://img.shields.io/badge/framework-TIPPSS%20(IEEE%202933--2024)-0b7285)](#built-on-the-tippss-framework)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -387,8 +388,26 @@ Associated publication information will be added when available.
 
 ## Software citation
 
-Cite this software using [CITATION.cff](CITATION.cff) or GitHub's **"Cite this repository"** button.
-A software DOI will be added after the first archived release.
+The software is archived on Zenodo. Cite it using [CITATION.cff](CITATION.cff), GitHub's **"Cite this repository"**
+button, or the DOI below.
+
+| DOI | Use it for |
+|---|---|
+| [10.5281/zenodo.23618135](https://doi.org/10.5281/zenodo.23618135) | **All versions** (concept DOI, always resolves to the latest version). Recommended. |
+| [10.5281/zenodo.23618136](https://doi.org/10.5281/zenodo.23618136) | Release v0.1.0 |
+| [10.5281/zenodo.23618173](https://doi.org/10.5281/zenodo.23618173) | Release v0.2.0 |
+
+```bibtex
+@software{manjunath_postquantumsafe_2026,
+  author    = {Manjunath, Pavan},
+  title     = {PostQuantumSafe IoT Cybersecurity (TIPPSS SafeGuard-PQ): An Agentic Testing Framework
+               for Post-Quantum Safety of IoT and Edge Environments},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.23618135},
+  url       = {https://doi.org/10.5281/zenodo.23618135}
+}
+```
 
 ## Research impact & adoption
 
@@ -404,9 +423,12 @@ for the workflow and [ROADMAP.md](ROADMAP.md) for open tasks; genuine contributo
 
 ## Releases
 
-| Version | Date | Release notes |
-|---|---|---|
-| v0.1.0 | 2026-10-24 | [docs/releases/v0.1.0.md](docs/releases/v0.1.0.md) |
+| Version | Date | Release notes | DOI |
+|---|---|---|---|
+| v0.1.0 | 2026-10-24 | [docs/releases/v0.1.0.md](docs/releases/v0.1.0.md) | [10.5281/zenodo.23618136](https://doi.org/10.5281/zenodo.23618136) |
+| v0.2.0 | 2026-10-24 | same notes as v0.1.0 (re-release that adds the CLI table fix in the notes) | [10.5281/zenodo.23618173](https://doi.org/10.5281/zenodo.23618173) |
+
+All versions: [10.5281/zenodo.23618135](https://doi.org/10.5281/zenodo.23618135).
 
 All versions are indexed in [RELEASE_NOTES.md](RELEASE_NOTES.md) and published on the
 [GitHub Releases page](https://github.com/pavangemmanjunath-cell/PostQuantumSafe_IoT_Cybersecurity/releases).
