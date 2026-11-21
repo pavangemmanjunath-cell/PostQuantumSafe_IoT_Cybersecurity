@@ -3,14 +3,16 @@ import { api } from "./api/client";
 import type { AgentInfo, Health } from "./api/types";
 import { AboutPage } from "./pages/AboutPage";
 import { AgentsPage } from "./pages/AgentsPage";
+import { BenchmarksPage } from "./pages/BenchmarksPage";
 import { LabPage } from "./pages/LabPage";
 import { SimulationPage } from "./pages/SimulationPage";
 import { WhyPage } from "./pages/WhyPage";
 
-type Tab = "simulation" | "lab" | "why" | "agents" | "about";
+type Tab = "simulation" | "lab" | "results" | "why" | "agents" | "about";
 const TABS: [Tab, string][] = [
   ["simulation", "Simulation"],
   ["lab", "Assessment"],
+  ["results", "Research Results"],
   ["why", "Why Post-Quantum"],
   ["agents", "Agents & Tools"],
   ["about", "About"],
@@ -66,6 +68,7 @@ export default function App() {
         {offline && <div className="error" style={{ marginBottom: 14 }}>Cannot reach the API. Start the backend: <span className="mono">safeguard-pq serve</span>.</div>}
         {tab === "simulation" && <SimulationPage agents={agents} />}
         {tab === "lab" && <LabPage agents={agents} />}
+        {tab === "results" && <BenchmarksPage />}
         {tab === "why" && <WhyPage />}
         {tab === "agents" && <AgentsPage agents={agents} />}
         {tab === "about" && <AboutPage health={health} />}

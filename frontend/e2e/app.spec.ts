@@ -215,4 +215,12 @@ test.describe("TIPPSS SafeGuard-PQ — user journeys", () => {
     await page.getByTestId("tab-about").click();
     await expect(page.getByTestId("research-status")).toContainText("early-stage concept");
   });
+
+  test("Research results show benchmark metrics and limitations", async ({ page }) => {
+    await page.goto("/#results");
+    await expect(page.getByTestId("benchmark-page")).toBeVisible();
+    await expect(page.getByTestId("qiro-optimal-share")).toHaveText("97.6%");
+    await expect(page.getByTestId("benchmark-caveat")).toContainText("not a generalization estimate");
+    await expect(page.getByTestId("traffic-results").locator("tbody tr")).toHaveCount(6);
+  });
 });

@@ -11,14 +11,14 @@ Machine-readable results live in [`results/`](results/). Every number reported i
 | Dataset | 500 random synthetic instances: n ∈ [3, 14] actions drawn from the remediation catalogue, budgets {20k, 50k, 100k} USD, downtime {4, 10, 40} h |
 | Metrics | share of instances solved optimally; mean / p95 / max relative gap |
 | Command | `python benchmarks/qiro_optimality.py --instances 500 --seed 0` |
-| Environment | Python 3.13.5, Windows 11, v0.1.0, 2026-10-24 |
+| Environment | Python 3.13.5, Windows, v0.1.0, rerun 2026-11-22 |
 
 | Method | Optimal | Mean gap | p95 gap | Max gap |
 |---|---|---|---|---|
 | Annealing only | 94.8 % | 0.19 % | 0.16 % | 20.16 % |
 | Annealing + local search | 97.6 % | 0.05 % | 0.00 % | 6.06 % |
 
-Mean run time per instance including the exhaustive solver: 6.76 ms.
+Mean run time per instance including the exhaustive solver: 8.62 ms in the recorded rerun. Runtime varies by machine and load.
 Limitation: synthetic instances; exact solver limited to n ≤ 14.
 
 ## 2. Traffic rules (`traffic_rules_eval.py`)

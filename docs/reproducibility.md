@@ -59,14 +59,15 @@ python benchmarks/traffic_rules_eval.py --data-dir /path/to/CICIoMT2024/test --w
 ## Expected outputs
 
 `benchmarks/results/qiro_optimality.json` and `benchmarks/results/traffic_rules_eval.json` — compare with the committed
-versions (see [benchmarks/README.md](../benchmarks/README.md)). The QIRO numbers are deterministic for a given seed and
-Python version.
+versions (see [benchmarks/README.md](../benchmarks/README.md)). QIRO objective metrics are deterministic for a given
+seed and Python version; the recorded date and runtime are machine-dependent. The traffic benchmark requires the
+external dataset and reflects thresholds selected after inspecting that same split.
 
 ## Evaluation commands
 
 ```bash
 cd backend && ruff check src tests && pytest           # expected: 148 passed
-cd frontend && npm run typecheck && npm run build && npx playwright test   # expected: 10 passed
+cd frontend && npm run typecheck && npm run build && npx playwright test   # expected: 11 passed
 ```
 
 ## Troubleshooting

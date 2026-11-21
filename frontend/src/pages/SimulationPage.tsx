@@ -209,7 +209,7 @@ export function SimulationPage({ agents }: { agents: AgentInfo[] }) {
           {/* use case */}
           <div className="card" data-testid="drill-panel">
             <div className="card-h"><span className="h"><Play size={13} /> Use case · ICU Q-Day drill</span>{drillDone && <span className="pill status-SAFE">done</span>}</div>
-            <div className="xs muted">An ICU ward with long-lived patient data and classical crypto. Watch the post-quantum risk unfold, the agents detect it, and the defences remove it.</div>
+            <div className="xs muted">An ICU ward with long-lived patient data and classical crypto. Observe the simulated risk, run the assessment, apply simulated defences, and compare the reassessed configuration.</div>
             <div className="row" style={{ marginTop: 8 }}>
               {!drillRunning ? (
                 <button className="btn btn-primary btn-sm" style={{ flex: 1 }} onClick={runDrill} disabled={!sid || template !== DRILL_TEMPLATE} data-testid="run-drill">

@@ -161,7 +161,7 @@ Only capabilities present in this repository are listed.
 ### Reproducibility
 - Seeded optimizer and simulator; deterministic finding/action identifiers.
 - Regression parity tests against outputs recorded from the earlier JavaScript prototype.
-- Benchmark scripts with machine-readable results; 148 backend tests and 10 browser end-to-end tests.
+- Benchmark scripts with machine-readable results; 148 backend tests and 11 browser end-to-end tests.
 
 ## How this work differs
 
@@ -330,7 +330,7 @@ See [docs/reproducibility.md](docs/reproducibility.md). In short:
 
 ```bash
 cd backend && pytest                                         # 148 tests
-cd frontend && npx playwright install chromium && npx playwright test   # 10 browser E2E tests
+cd frontend && npx playwright install chromium && npx playwright test   # 11 browser E2E tests
 python benchmarks/qiro_optimality.py --instances 500 --seed 0
 python benchmarks/traffic_rules_eval.py --data-dir <CICIoMT2024 test CSV folder>
 ```

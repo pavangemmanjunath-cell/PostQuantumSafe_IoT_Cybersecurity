@@ -39,7 +39,7 @@ interactive what-if analysis.
 ## Evidence currently available
 
 - Optimiser: shipped solver reaches the exact optimum on 97.6 % of 500 synthetic instances (mean gap 0.05 %).
-- Determinism and correctness: 148 backend tests including parity with the v0 prototype; 10 GUI end-to-end tests.
+- Determinism and correctness: 148 backend tests including parity with the v0 prototype; 11 GUI end-to-end tests.
 - Traffic rules: window-level rates on the CICIoMT2024 test split (optimistic; same data used for tuning).
 
 ## Evidence still required

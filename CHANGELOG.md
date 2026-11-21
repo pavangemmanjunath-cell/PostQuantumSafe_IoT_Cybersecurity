@@ -7,7 +7,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ## [Unreleased]
 
 ### Added
+- Research Results page showing committed QIRO and traffic-rule benchmark outputs with their limitations.
 - Zenodo DOIs in `CITATION.cff`, README, release notes and the About page (all versions: 10.5281/zenodo.23618135).
+
+### Changed
+- The ICU simulation drill describes defences as simulated configuration changes rather than implying real-world protection.
+- Refreshed the seeded 500-instance QIRO benchmark artifact and documented its machine-dependent runtime.
 
 ## [0.1.0] - 2026-10-24
 
