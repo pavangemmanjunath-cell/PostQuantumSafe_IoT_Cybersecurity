@@ -14,3 +14,16 @@
 - `.\backend\.venv\Scripts\python.exe -m pytest .\backend\tests` — passed; 148 tests.
 - `npm --prefix .\frontend run build` — passed.
 - `npm --prefix .\frontend run test:e2e` — passed; 11 tests.
+
+### Independent re-check (2026-11-22)
+
+All of the above were repeated on a clean checkout of `feat/research-results-dashboard` before pushing:
+
+- Backend lint passed; 148 backend tests passed; frontend type-check and build passed; 11 browser end-to-end tests passed.
+- A second QIRO run (`--instances 500 --seed 0`, written to a temporary file) matched the committed
+  `benchmarks/results/qiro_optimality.json` exactly for instance count, optimal share, and mean / p95 / max gap for both
+  methods. Mean runtime was 8.51 ms versus 8.62 ms in the committed artifact, consistent with runtime being
+  machine- and load-dependent.
+- README, `docs/novelty.md`, `benchmarks/README.md` and this note were cross-checked against both JSON artifacts.
+  The "10 browser tests" counts in `CHANGELOG.md` [0.1.0] and `docs/releases/v0.1.0.md` are historical and were left
+  unchanged.
