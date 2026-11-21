@@ -8,21 +8,37 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [0.3.0] - 2026-11-22
 
-Release notes: [docs/releases/v0.3.0.md](docs/releases/v0.3.0.md).
+Release 3: reviewer-evidence release. Release notes: [docs/releases/v0.3.0.md](docs/releases/v0.3.0.md); evidence
+pack: [docs/release-3/README.md](docs/release-3/README.md).
 
 ### Added
-- Research Results page showing committed QIRO and traffic-rule benchmark outputs with their limitations.
-- Browser end-to-end test for the Research Results page (11 Playwright tests in total).
-- "Novelty and scope" section in the README.
-- Zenodo DOIs in `CITATION.cff`, README, release notes and the About page (all versions: 10.5281/zenodo.23618135).
+- **Reassessment** of remediation plans at configuration level (`optimizer/reassess.py`), `POST /api/v1/assessments/{id}/reassess`,
+  and retention of the original request in the assessment store.
+- **Shared-root-cause planner** (`options.group_shared_root_causes`, default off): findings fixed by one mitigation form one
+  decision unit; the hybrid ML-KEM → TLS 1.3 dependency is recorded; `planner_mode` and `root_cause_groups` in every plan.
+- `assumptions.lifetime_threshold_years` (default 10) for the long-lifetime rule; parameterised scoring functions.
+- `knowledge/standards_map.py` and `GET /api/v1/standards-map` (42 finding types → pillars → deductions → public references).
+- Benchmarks and artifacts: E7 `sensitivity_analysis.py`, E8 `qiro_scalability.py` with a HiGHS ILP reference, E9
+  `plan_reassessment.py`, E10 `traffic_rules_holdout.py` (capture-level, cross-source and temporal protocols with
+  bootstrap/Wilson intervals and baselines), E11 `attack_simulation_eval.py`, `make_synthetic_traffic_dataset.py`,
+  `make_figures.py`; `datasets/synthetic_holdout/`.
+- Research Results tab with one section per experiment (`frontend/src/pages/results/`); 12 browser tests.
+- `docs/release-3/` evidence pack (Markdown and Word): reviewer tables, threat model, formulas, deployment
+  feasibility, standards mapping, nine vector figures; `scripts/gen_standards_map_doc.py`, `scripts/build_release3_docx.py`,
+  `scripts/svg_to_pdf.cjs`; optional `benchmark` extra (`highspy`, `matplotlib`).
+- 68 backend tests (216 in total).
+- "Novelty and scope" section in the README; Zenodo DOIs in `CITATION.cff`, README, release notes and the About page.
 
 ### Changed
 - The ICU simulation drill describes defences as simulated configuration changes rather than implying real-world protection.
 - Refreshed the seeded 500-instance QIRO benchmark artifact (objective metrics unchanged) and documented its
   machine-dependent runtime.
-- README, novelty, reproducibility and benchmark documents label the traffic-rule results as previously recorded and
-  restate the same-split threshold-selection caveat.
+- README, `docs/novelty.md`, `docs/limitations.md`, `docs/reproducibility.md`, `benchmarks/README.md` and
+  `datasets/README.md` rewritten around the Release 3 evidence.
 - Version 0.3.0 in `backend/pyproject.toml`, `safeguard_pq.__version__`, `frontend/package.json` and `CITATION.cff`.
+
+### Unchanged
+- Detection rules and thresholds, scoring constants, default planner output (byte-identical), simulator, PDF reports, CLI.
 
 ## [0.2.0] - 2026-10-24
 

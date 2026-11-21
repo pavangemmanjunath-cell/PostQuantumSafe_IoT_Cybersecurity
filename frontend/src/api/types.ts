@@ -201,6 +201,30 @@ export interface Health {
   tools: number;
 }
 
+export interface StandardsMapRow {
+  finding_type: string;
+  agent: string;
+  severity: Severity;
+  pillars: string[];
+  pillar_deduction: number;
+  score_category: string | null;
+  score_weight: number | null;
+  rationale: string;
+  references: { standard: string; ref: string; note: string }[];
+  attack_technique: string | null;
+  tippss_2933_pillars: string[];
+  tippss_2933_clause: string | null;
+}
+
+export interface StandardsMap {
+  standard: string;
+  note: string;
+  pillar_deductions: Record<string, number>;
+  score_weights: Record<string, number>;
+  rows: StandardsMapRow[];
+  pillar_coverage: Record<string, { finding_types: number; agents: string[] }>;
+}
+
 export interface LiveStatus {
   status: "ok" | "warning" | "alert";
   alerts: string[];

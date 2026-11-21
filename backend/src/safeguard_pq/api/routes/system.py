@@ -8,7 +8,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException
 
 from ... import __version__
 from ...agents import describe_agents
-from ...knowledge import patterns, pqc_catalog, remediation
+from ...knowledge import patterns, pqc_catalog, remediation, standards_map
 from ...tools import default_registry
 from ...tools.registry import ToolError
 from ..state import AppState
@@ -62,3 +62,9 @@ def knowledge() -> dict[str, Any]:
         "remediation_templates": remediation.catalog(),
         "remediation_note": "Costs/downtimes are illustrative placeholders.",
     }
+
+
+@router.get("/standards-map")
+def standards_mapping() -> dict[str, Any]:
+    """Finding type → TIPPSS pillar(s) → deduction / score category → public references (pillar level only)."""
+    return standards_map.standards_map()

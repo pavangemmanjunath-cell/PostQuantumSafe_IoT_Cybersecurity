@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" font-family="Helvetica, Arial, sans-serif" font-size="12.5">
+  <title>Figure 2. Threat model and attacker–defender loop</title>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker>
+  </defs>
+  <rect width="1400" height="760" fill="#fff"/>
+
+  <!-- column headers -->
+  <g font-size="14.5" font-weight="bold" fill="#111">
+    <text x="40" y="36">(a) Adversary</text>
+    <text x="330" y="36">(b) Attack (simulator)</text>
+    <text x="640" y="36">(c) Observable precondition</text>
+    <text x="960" y="36">(d) Detector → mitigation</text>
+  </g>
+
+  <!-- row backgrounds by layer -->
+  <g stroke="none">
+    <rect x="30" y="48" width="1340" height="156" fill="#f7f2fb"/>
+    <rect x="30" y="212" width="1340" height="118" fill="#eef5fb"/>
+    <rect x="30" y="338" width="1340" height="118" fill="#f3faf0"/>
+    <rect x="30" y="464" width="1340" height="48" fill="#fff8ec"/>
+  </g>
+  <g font-size="11" fill="#666" font-style="italic">
+    <text x="1260" y="62">quantum / crypto layer</text>
+    <text x="1297" y="226">network layer</text>
+    <text x="1297" y="352">AI / data layer</text>
+    <text x="1300" y="478">identity layer</text>
+  </g>
+
+  <!-- ===== rows: adversary | attack | precondition | detector -> mitigation ===== -->
+  <g stroke="#222" stroke-width="1" fill="#fff">
+    <!-- quantum -->
+    <rect x="40" y="56" width="270" height="34" rx="3"/><rect x="330" y="56" width="290" height="34" rx="3"/><rect x="640" y="56" width="300" height="34" rx="3"/><rect x="960" y="56" width="290" height="34" rx="3"/>
+    <rect x="40" y="96" width="270" height="34" rx="3"/><rect x="330" y="96" width="290" height="34" rx="3"/><rect x="640" y="96" width="300" height="34" rx="3"/><rect x="960" y="96" width="290" height="34" rx="3"/>
+    <rect x="40" y="136" width="270" height="34" rx="3"/><rect x="330" y="136" width="290" height="34" rx="3"/><rect x="640" y="136" width="300" height="34" rx="3"/><rect x="960" y="136" width="290" height="34" rx="3"/>
+    <rect x="330" y="166" width="290" height="34" rx="3"/><rect x="640" y="166" width="300" height="34" rx="3"/><rect x="960" y="166" width="290" height="34" rx="3"/>
+    <!-- network -->
+    <rect x="40" y="220" width="270" height="34" rx="3"/><rect x="330" y="220" width="290" height="34" rx="3"/><rect x="640" y="220" width="300" height="34" rx="3"/><rect x="960" y="220" width="290" height="34" rx="3"/>
+    <rect x="330" y="256" width="290" height="34" rx="3"/><rect x="640" y="256" width="300" height="34" rx="3"/><rect x="960" y="256" width="290" height="34" rx="3"/>
+    <rect x="330" y="292" width="290" height="34" rx="3"/><rect x="640" y="292" width="300" height="34" rx="3"/><rect x="960" y="292" width="290" height="34" rx="3"/>
+    <!-- ai -->
+    <rect x="40" y="346" width="270" height="34" rx="3"/><rect x="330" y="346" width="290" height="34" rx="3"/><rect x="640" y="346" width="300" height="34" rx="3"/><rect x="960" y="346" width="290" height="34" rx="3"/>
+    <rect x="330" y="382" width="290" height="34" rx="3"/><rect x="640" y="382" width="300" height="34" rx="3"/><rect x="960" y="382" width="290" height="34" rx="3"/>
+    <rect x="330" y="418" width="290" height="34" rx="3"/><rect x="640" y="418" width="300" height="34" rx="3"/><rect x="960" y="418" width="290" height="34" rx="3"/>
+    <!-- identity -->
+    <rect x="40" y="472" width="270" height="34" rx="3"/><rect x="330" y="472" width="290" height="34" rx="3"/><rect x="640" y="472" width="300" height="34" rx="3"/><rect x="960" y="472" width="290" height="34" rx="3"/>
+  </g>
+  <g fill="#111" font-size="11.5">
+    <!-- quantum rows -->
+    <text x="48" y="78">A1 passive recorder + future CRQC</text>
+    <text x="338" y="78">hndl_capture (harvest now, decrypt later)</text>
+    <text x="648" y="78">classical KEX ∧ (lifetime ≥ L ∨ x + y &gt; z)</text>
+    <text x="968" y="78">pq_identification → enable_hybrid_mlkem</text>
+
+    <text x="48" y="118">A2 active on-path (MITM)</text>
+    <text x="338" y="118">tls_downgrade · pq_strip</text>
+    <text x="648" y="118">legacy TLS accepted; classical-only groups accepted</text>
+    <text x="968" y="118">crypto_inventory, pq_identification → pq_policy_pinning</text>
+
+    <text x="48" y="158">A3 CRQC-equipped impersonator</text>
+    <text x="338" y="158">cert_spoof (Shor on ECDSA/RSA certificate)</text>
+    <text x="648" y="158">classical certificate signature / key algorithm</text>
+    <text x="968" y="158">device_identity, crypto_inventory → pq_certificates</text>
+
+    <text x="338" y="188" fill="#555">(A2 also) arp_spoofing — see network layer</text>
+    <text x="648" y="188" fill="#555">MITM-like flow mix (UDP-heavy, low ACK share)</text>
+    <text x="968" y="188" fill="#555">traffic_anomaly → network_segmentation (+ DAI)</text>
+
+    <!-- network rows -->
+    <text x="48" y="242">A6 in-VLAN flooder / scanner</text>
+    <text x="338" y="242">syn_flood · ddos_volumetric</text>
+    <text x="648" y="242">SYN-dominated or header-only tiny packets</text>
+    <text x="968" y="242">traffic_anomaly → rate_limiting</text>
+    <text x="338" y="278">port_scan</text>
+    <text x="648" y="278">SYN probes answered by RST, small packets</text>
+    <text x="968" y="278">traffic_anomaly → network_segmentation</text>
+    <text x="338" y="314">mqtt_malformed</text>
+    <text x="648" y="314">elevated control-flag share on TCP sessions</text>
+    <text x="968" y="314">traffic_anomaly → network_segmentation</text>
+
+    <!-- ai rows -->
+    <text x="48" y="368">A4 prompt-channel adversary</text>
+    <text x="338" y="368">prompt_injection · pq_downgrade_prompt</text>
+    <text x="648" y="368">override / downgrade instruction in prompt log</text>
+    <text x="968" y="368">prompt_injection → prompt_firewall</text>
+    <text x="338" y="404">phi_leak</text>
+    <text x="648" y="404">HIPAA identifiers in prompt text</text>
+    <text x="968" y="404">clinical_privacy → phi_redaction</text>
+    <text x="338" y="440">unsafe_command</text>
+    <text x="648" y="440">dosing / alarm-silencing instruction to the assistant</text>
+    <text x="968" y="440">safety_risk → clinician_approval_gate</text>
+
+    <!-- identity row -->
+    <text x="48" y="494">A5 log reader</text>
+    <text x="338" y="494">secret_leak</text>
+    <text x="648" y="494">credential-shaped string in device debug log</text>
+    <text x="968" y="494">secret_exposure → secret_rotation</text>
+  </g>
+  <!-- row arrows -->
+  <g stroke="#888" stroke-width="1" marker-end="url(#g)">
+    <line x1="310" y1="73" x2="328" y2="73"/><line x1="620" y1="73" x2="638" y2="73"/><line x1="940" y1="73" x2="958" y2="73"/>
+    <line x1="310" y1="113" x2="328" y2="113"/><line x1="620" y1="113" x2="638" y2="113"/><line x1="940" y1="113" x2="958" y2="113"/>
+    <line x1="310" y1="153" x2="328" y2="153"/><line x1="620" y1="153" x2="638" y2="153"/><line x1="940" y1="153" x2="958" y2="153"/>
+    <line x1="620" y1="183" x2="638" y2="183"/><line x1="940" y1="183" x2="958" y2="183"/>
+    <line x1="310" y1="237" x2="328" y2="237"/><line x1="620" y1="237" x2="638" y2="237"/><line x1="940" y1="237" x2="958" y2="237"/>
+    <line x1="620" y1="273" x2="638" y2="273"/><line x1="940" y1="273" x2="958" y2="273"/>
+    <line x1="620" y1="309" x2="638" y2="309"/><line x1="940" y1="309" x2="958" y2="309"/>
+    <line x1="310" y1="363" x2="328" y2="363"/><line x1="620" y1="363" x2="638" y2="363"/><line x1="940" y1="363" x2="958" y2="363"/>
+    <line x1="620" y1="399" x2="638" y2="399"/><line x1="940" y1="399" x2="958" y2="399"/>
+    <line x1="620" y1="435" x2="638" y2="435"/><line x1="940" y1="435" x2="958" y2="435"/>
+    <line x1="310" y1="489" x2="328" y2="489"/><line x1="620" y1="489" x2="638" y2="489"/><line x1="940" y1="489" x2="958" y2="489"/>
+  </g>
+
+  <!-- ===== (e) attacker–defender loop ===== -->
+  <text x="40" y="548" font-size="14.5" font-weight="bold" fill="#111">(e) Measurement loop of experiment E11 (per device, attack and seed)</text>
+  <g stroke="#222" stroke-width="1.1" fill="#fff">
+    <rect x="40" y="562" width="190" height="60" rx="4"/>
+    <rect x="270" y="562" width="190" height="60" rx="4"/>
+    <rect x="500" y="562" width="190" height="60" rx="4"/>
+    <rect x="730" y="562" width="190" height="60" rx="4"/>
+    <rect x="960" y="562" width="190" height="60" rx="4"/>
+    <rect x="1190" y="562" width="170" height="60" rx="4"/>
+  </g>
+  <g fill="#111" font-size="11.5">
+    <text x="50" y="582" font-weight="bold">1 · Baseline</text><text x="50" y="599">assess device → S₀, status₀</text>
+    <text x="280" y="582" font-weight="bold">2 · Inject attack</text><text x="280" y="599">simulator changes config /</text><text x="280" y="613">telemetry (or: precondition absent)</text>
+    <text x="510" y="582" font-weight="bold">3 · Detect</text><text x="510" y="599">assess → S₁; new finding from</text><text x="510" y="613">the expected agent? (detected)</text>
+    <text x="740" y="582" font-weight="bold">4 · Mitigate</text><text x="740" y="599">apply blocked_by mitigation(s)</text><text x="740" y="613">from the catalogue</text>
+    <text x="970" y="582" font-weight="bold">5 · Reassess</text><text x="970" y="599">assess → S₂, status₂</text><text x="970" y="613">(configuration-level check)</text>
+    <text x="1200" y="582" font-weight="bold">6 · Re-inject</text><text x="1200" y="599">blocked by mitigation?</text><text x="1200" y="613">(simulator model)</text>
+  </g>
+  <g stroke="#222" stroke-width="1.2" marker-end="url(#a)">
+    <line x1="230" y1="592" x2="268" y2="592"/><line x1="460" y1="592" x2="498" y2="592"/><line x1="690" y1="592" x2="728" y2="592"/>
+    <line x1="920" y1="592" x2="958" y2="592"/><line x1="1150" y1="592" x2="1188" y2="592"/>
+  </g>
+  <g font-size="11.5" fill="#333">
+    <text x="40" y="652">Recorded per run: detected ∈ {0,1}, ΔS = S₁ − S₀, status transitions, mitigation restores status ≤ baseline ∈ {0,1}, re-injection blocked ∈ {0,1}, and the attacker's view</text>
+    <text x="40" y="670">"succeeded undetected" = injected ∧ ¬detected. Out of scope (not simulated): firmware exploitation, physical access, side channels, supply chain, real cryptanalysis.</text>
+  </g>
+  <text x="40" y="712" font-size="12" fill="#333">Figure 2. Threat model of SafeGuard-PQ: adversaries A1–A6 (a), the simulated attacks (b), the configuration- or telemetry-level precondition the agents check (c), and the detecting agent</text>
+  <text x="40" y="730" font-size="12" fill="#333">with the catalogue mitigation (d). Panel (e) is the measurement loop of the attack-simulation experiment. All detections are rule checks on supplied snapshots, not observed intrusions.</text>
+</svg>

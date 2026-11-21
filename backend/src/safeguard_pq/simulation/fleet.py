@@ -17,9 +17,10 @@ async def assess_fleet(sim: Simulation, pipeline: AssessmentPipeline, budget_usd
                        store: Any | None = None) -> dict[str, Any]:
     results: list[tuple[str, AssessmentResult]] = []
     for d in sim.devices.values():
-        res = await pipeline.run(sim.to_request(d.id))
+        req = sim.to_request(d.id)
+        res = await pipeline.run(req)
         if store is not None:
-            store.put(res)
+            store.put(res, req)
         d.last_assessment = {"assessment_id": res.assessment_id, "environment_status": res.environment_status,
                              "pq_risk_score": res.pq_risk_score, "findings_count": res.findings_count, "tick": sim.tick}
         results.append((d.id, res))

@@ -65,9 +65,19 @@ class QIROAgent(Agent):
         for t in sorted({f.type for f in ctx.findings}):
             await rec.tool("remediation.lookup", finding_type=t)
         c = ctx.request.constraints
-        result = qiro.optimize([f.model_dump() for f in ctx.findings], c.budget_usd, c.max_downtime_hrs, ctx.seed)
+        grouped = ctx.request.options.group_shared_root_causes
+        result = qiro.optimize([f.model_dump() for f in ctx.findings], c.budget_usd, c.max_downtime_hrs, ctx.seed,
+                               group_shared_root_causes=grouped)
         ctx.artifacts["qiro"] = result
         await rec.note(result["message"])
+        if grouped and result.get("root_cause_groups"):
+            shared = [g for g in result["root_cause_groups"] if len(g["finding_ids"]) > 1]
+            detail = "; ".join(f"{g['group_id']} {g['mitigation']} → {', '.join(g['finding_ids'])}" for g in shared)
+            await rec.note(f"Shared-root-cause planning: {len(result['root_cause_groups'])} group(s), "
+                           f"{len(shared)} covering more than one finding{': ' + detail if detail else ''}.")
+            for dep in result.get("root_cause_dependencies", []):
+                await rec.note(f"Dependency: {dep['group_id']} ({dep['mitigation']}) is partly implied by {dep['implied_by']} "
+                               f"({dep['implied_by_mitigation']}) via {', '.join(dep['shared_config'])}.")
         opt = result.get("optimality")
         if opt and opt.get("exact_objective") is not None:
             await rec.note(f"Annealing objective {opt['heuristic_objective']:g} vs exact optimum {opt['exact_objective']:g} "

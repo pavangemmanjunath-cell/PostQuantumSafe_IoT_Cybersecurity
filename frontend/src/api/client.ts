@@ -7,6 +7,7 @@ import type {
   SimCatalog,
   SimDevice,
   SimSnapshot,
+  StandardsMap,
   ToolInfo,
 } from "./types";
 
@@ -43,6 +44,7 @@ export const api = {
   health: () => request<Health>("/health"),
   agents: () => request<AgentInfo[]>("/agents"),
   tools: () => request<ToolInfo[]>("/tools"),
+  standardsMap: () => request<StandardsMap>("/standards-map"),
   callTool: (name: string, args: Record<string, unknown>) =>
     request<{ tool: string; summary: string; result: unknown }>(`/tools/${encodeURIComponent(name)}`, json(args)),
   scenarios: () => request<ScenarioInfo[]>("/scenarios"),
