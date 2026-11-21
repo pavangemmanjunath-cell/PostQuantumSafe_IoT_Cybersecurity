@@ -45,7 +45,7 @@ protection, clinical safety, standards conformance or calibrated risk. Section 1
 | 5 | Projected vs actual remediation outcomes; root causes and dependencies | **Done.** Reassessment applies the plan to the configuration by code and re-runs the pipeline; a shared-root-cause planner mode (`group_shared_root_causes`) merges findings fixed by one mitigation; the one catalogue-grounded dependency (hybrid ML-KEM implies TLS 1.3) is modelled; all ten systems report summed benefit, projected S and reassessed S; plans are compared with every feasible subset. | Table 3, Fig. 6, `plan_reassessment.json`, `POST /assessments/{id}/reassess` | "Table 3 reports summed benefit, projected and reassessed scores for every system; the projection error falls from 9.3 to 2.7 points with the root-cause planner. The worked-example plan remains best by reassessment but is not the cheapest plan attaining it." |
 | 6 | Separate development and held-out data; precision, recall, F1 | **Done with a caveat.** E10 implements capture-level, cross-source and temporal protocols with bootstrap and Wilson intervals and three baselines. The CICIoMT2024 train split was not available, so the capture-level protocol could not be run; P1 and P2 use the test split only. | Table 4, Figs. 7–8, `traffic_rules_holdout_cic_p1.json`, `_p2.json` | "Table 4 reports held-out precision / recall / F1 with 95 % intervals under two protocols; on this flood-dominated split a packet-size baseline matches the rules' F1, so we claim low false-positive rate and attack-type attribution, not detection superiority." |
 | 7 | Clinical deployment feasibility | **Discussed from published figures; no measurements.** Object sizes (ML-KEM-768 1 184 B key / 1 088 B ciphertext; ML-DSA-65 1 952 B key / 3 309 B signature), Cortex-M4 cycle and stack figures (pqm4), gateway pattern, certificate lifecycle, downtime placeholders. | `deployment_feasibility.md` | "Section VII-F discusses compatibility, overhead, memory, certificate lifecycle and downtime using published measurements; no device measurements were performed in this work." |
-| 8 | Reproducibility; affiliations; figure readability | **Software side done.** Scenario generation, instance distributions, costs, versions, seeds and one command per experiment are documented; figures are regenerated as vector SVG/PDF with ≥ 6 pt text. Affiliation and header placeholders are manuscript tasks. | `formulas.md` §9–10, `docs/reproducibility.md`, `figures/` | "All experiments are reproducible with the listed commands and seeds (Appendix); figures were re-exported as vector graphics." |
+| 8 | Reproducibility; affiliations; figure readability | **Software side done.** Scenario generation, instance distributions, costs, versions, seeds and one command per experiment are documented; result figures are redrawn at printed width with ≥ 6.5 pt text as vector SVG/PDF; the two schematic figures still need simplification (Section 13). Affiliation and header placeholders are manuscript tasks. | `formulas.md` §9–10, `docs/reproducibility.md`, `figures/` | "All experiments are reproducible with the listed commands and seeds (Appendix); figures were re-exported as vector graphics." |
 
 ## 3. Point-by-point status for Reviewer 2
 
@@ -253,13 +253,19 @@ See [docs/reproducibility.md](../reproducibility.md): one command per experiment
 
 ---
 
-## 13. Figures (vector SVG and PDF, 300-dpi PNG; text ≥ 6 pt at the stated width)
+## 13. Figures
 
-| Figure | File | Width | Caption |
+Result figures 3–9 are drawn by `benchmarks/make_figures.py` at their printed width (single column 3.5 in, double
+column 7.16 in) with 7–8 pt text and no text below 6.5 pt, without in-figure titles (the captions below carry them),
+and exported as vector SVG and PDF with embedded TrueType fonts plus 300-dpi PNG. Figures 1–2 are schematic drafts
+drawn at 14.6 in: at a 7.16-in two-column width their smallest text falls to about 4–5 pt, so they must be simplified
+or set as full-page figures before submission.
+
+| Figure | File | Printed width | Caption |
 |---|---|---|---|
-| 1 | `figures/fig1_evaluation_design` | 2-column | Evaluation design: inputs, five-stage pipeline, experiments E1–E12, data and claim boundary. |
-| 2 | `figures/fig2_threat_model` | 2-column | Threat model: adversaries, simulated attacks, observable preconditions, detectors and mitigations; E11 measurement loop. |
-| 3 | `figures/fig_e3_optimizer_small_n` | 1-column | E3: share of 500 small instances solved optimally and gap distribution for annealing alone and with local search. |
+| 1 | `figures/fig1_evaluation_design` | full page (draft) | Evaluation design: inputs, five-stage pipeline, experiments E1–E12, data and claim boundary. |
+| 2 | `figures/fig2_threat_model` | full page (draft) | Threat model: adversaries, simulated attacks, observable preconditions, detectors and mitigations; E11 measurement loop. |
+| 3 | `figures/fig_e3_optimizer_small_n` | 2-column | E3: share of 500 small instances solved optimally and gap distribution for annealing alone and with local search. |
 | 4 | `figures/fig_e8_scalability` | 2-column | E8: optimal share, mean and maximum gap to the HiGHS optimum, and runtime for n = 20–200. |
 | 5 | `figures/fig_e7_sensitivity` | 2-column | E7: max |ΔS| and share of systems whose verdict / status changes per perturbation; PQ score vs lifetime threshold per scenario. |
 | 6 | `figures/fig_e9_reassessment` | 2-column | E9: baseline, projected and reassessed PQ score per system for both planners; status after plan A. |
