@@ -1,6 +1,6 @@
 # Use Cases
 
-Status legend: **Implemented** (works in v0.1.0) · **Conceptual** (possible with current code, not validated) · **Proposed** (future).
+Status legend: **Implemented** (works in v0.3.0) · **Conceptual** (possible with current code, not validated) · **Proposed** (future).
 
 ## 1. PQ readiness check of a clinical gateway — Implemented
 

@@ -6,13 +6,27 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-22
+
+Release notes: [docs/releases/v0.3.0.md](docs/releases/v0.3.0.md).
+
 ### Added
 - Research Results page showing committed QIRO and traffic-rule benchmark outputs with their limitations.
+- Browser end-to-end test for the Research Results page (11 Playwright tests in total).
+- "Novelty and scope" section in the README.
 - Zenodo DOIs in `CITATION.cff`, README, release notes and the About page (all versions: 10.5281/zenodo.23618135).
 
 ### Changed
 - The ICU simulation drill describes defences as simulated configuration changes rather than implying real-world protection.
-- Refreshed the seeded 500-instance QIRO benchmark artifact and documented its machine-dependent runtime.
+- Refreshed the seeded 500-instance QIRO benchmark artifact (objective metrics unchanged) and documented its
+  machine-dependent runtime.
+- README, novelty, reproducibility and benchmark documents label the traffic-rule results as previously recorded and
+  restate the same-split threshold-selection caveat.
+- Version 0.3.0 in `backend/pyproject.toml`, `safeguard_pq.__version__`, `frontend/package.json` and `CITATION.cff`.
+
+## [0.2.0] - 2026-10-24
+
+Re-release of 0.1.0 with the corrected CLI row in the release-notes table; no code changes.
 
 ## [0.1.0] - 2026-10-24
 

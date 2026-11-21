@@ -453,6 +453,7 @@ for the workflow and [ROADMAP.md](ROADMAP.md) for open tasks; genuine contributo
 
 | Version | Date | Release notes | DOI |
 |---|---|---|---|
+| v0.3.0 | 2026-11-22 | [docs/releases/v0.3.0.md](docs/releases/v0.3.0.md) | assigned by Zenodo on publication |
 | v0.1.0 | 2026-10-24 | [docs/releases/v0.1.0.md](docs/releases/v0.1.0.md) | [10.5281/zenodo.23618136](https://doi.org/10.5281/zenodo.23618136) |
 | v0.2.0 | 2026-10-24 | same notes as v0.1.0 (re-release that adds the CLI table fix in the notes) | [10.5281/zenodo.23618173](https://doi.org/10.5281/zenodo.23618173) |
 

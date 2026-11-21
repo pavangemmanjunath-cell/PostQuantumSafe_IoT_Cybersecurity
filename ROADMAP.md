@@ -2,7 +2,7 @@
 
 This roadmap describes intentions, not commitments. Items marked **Proposed** are research ideas that may change or be dropped.
 
-## Current stable capabilities (v0.1.0)
+## Current stable capabilities (v0.3.0)
 
 - 14-agent assessment pipeline with live streaming, tool APIs and full traces
 - Post-quantum identification (FIPS 203/204/205, NIST IR 8547 draft timeline, hybrid detection, Mosca's inequality)

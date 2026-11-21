@@ -11,7 +11,7 @@ body:
     validations: { required: true }
   - type: input
     id: version
-    attributes: { label: Version / commit, placeholder: "v0.1.0 or commit SHA" }
+    attributes: { label: Version / commit, placeholder: "v0.3.0 or commit SHA" }
     validations: { required: true }
   - type: input
     id: environment
