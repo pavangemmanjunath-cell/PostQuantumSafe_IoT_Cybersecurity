@@ -38,9 +38,11 @@ interactive what-if analysis.
 
 ## Evidence currently available
 
-- Optimiser: shipped solver reaches the exact optimum on 97.6 % of 500 synthetic instances (mean gap 0.05 %).
+- Optimiser: on the 2026-11-22 seeded rerun, annealing plus local search reached the exact optimum on 97.6 % of 500
+  synthetic instances (mean objective gap 0.0532 %; mean measured runtime 8.62 ms including the exact solver).
 - Determinism and correctness: 148 backend tests including parity with the v0 prototype; 11 GUI end-to-end tests.
-- Traffic rules: window-level rates on the CICIoMT2024 test split (optimistic; same data used for tuning).
+- Traffic rules: previously recorded window-level rates on the CICIoMT2024 test split (optimistic; same data used for
+  threshold selection). The dataset was not rerun with the 2026-11-22 optimizer benchmark.
 
 ## Evidence still required
 

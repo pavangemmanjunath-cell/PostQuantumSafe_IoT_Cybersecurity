@@ -135,6 +135,24 @@ several risk dimensions (device identity, PHI leakage into AI tools, unsafe auto
 The research question explored here is whether a **transparent, multi-agent pipeline** can (a) identify PQ exposure
 together with these other TIPPSS risks, (b) explain its conclusions, and (c) produce a **constraint-aware** migration plan.
 
+## Novelty and scope
+
+The software contribution is an integrated, explainable workflow, not a new post-quantum cryptographic primitive,
+quantum algorithm, or standards-compliance claim. Its engineering contribution combines:
+
+- Configuration-evidence-based PQ identification and Mosca exposure assessment with identity, privacy, safety, and
+  network findings in one multi-agent pipeline.
+- Finding-level evidence, tool traces, score attribution, and counterfactuals so that assessment outputs can be audited.
+- Budget- and downtime-constrained remediation planning, with an exhaustive-optimum comparison for small instances.
+- A seeded fleet simulator and a reassessment step that checks whether the supplied configuration now satisfies the
+  framework's own rules.
+
+The reassessment is a configuration-consistency check, not independent evidence that a mitigation works against a
+real attacker. The optimizer benchmark uses synthetic instances; the traffic-rule results are exploratory and were
+measured on a split inspected during threshold selection. No comparative evaluation against other tools or held-out
+traffic generalization claim is made. See [docs/novelty.md](docs/novelty.md) and
+[docs/limitations.md](docs/limitations.md).
+
 ## Key contributions
 
 Only capabilities present in this repository are listed.
@@ -162,6 +180,8 @@ Only capabilities present in this repository are listed.
 - Seeded optimizer and simulator; deterministic finding/action identifiers.
 - Regression parity tests against outputs recorded from the earlier JavaScript prototype.
 - Benchmark scripts with machine-readable results; 148 backend tests and 11 browser end-to-end tests.
+- Open the web application's **Research Results** tab (`/#results`) to inspect the recorded optimizer and traffic
+  metrics together with their caveats.
 
 ## How this work differs
 
@@ -339,16 +359,24 @@ Seeds: optimizer default `QIRO_DEFAULT_SEED=2026` (per-request `seed`), simulato
 
 ## Benchmarks
 
-Recorded on 2026-10-24, software v0.1.0, Python 3.13.5, Windows 11. Raw results in [benchmarks/results/](benchmarks/results/).
+The Research Results tab in the web application displays these metrics and limitations. Raw results are in
+[benchmarks/results/](benchmarks/results/); reproduction instructions are in
+[docs/reproducibility.md](docs/reproducibility.md).
 
-**QIRO vs exhaustive optimum** — 500 random synthetic instances (n = 3–14 actions, budgets 20k–100k USD, downtime 4–40 h):
+**QIRO vs. exhaustive optimum** — rerun 2026-11-22 using Python 3.13.5 on 500 random synthetic instances (n = 3–14
+actions, budgets 20k–100k USD, downtime 4–40 h; instance-generator seed 0):
 
 | Method | Instances solved optimally | Mean gap | p95 gap | Max gap |
 |---|---|---|---|---|
 | Simulated annealing only | 94.8 % | 0.19 % | 0.16 % | 20.16 % |
-| Annealing + local search (shipped) | 97.6 % | 0.05 % | 0.00 % | 6.06 % |
+| Annealing + local search (shipped) | 97.6 % | 0.0532 % | 0.0000 % | 6.0606 % |
 
-**Traffic rules, window level (100 rows)** on the CICIoMT2024 *test* split (user-downloaded; not redistributed):
+The measured mean runtime, including the exact solver, was 8.62 ms per instance in this run. Runtime is machine- and
+load-dependent and is not a performance guarantee. These optimization results measure closeness to the exact optimum
+of the same synthetic objective; they do not establish clinical or security effectiveness.
+
+**Traffic rules, window level (100 rows)** — previously recorded 2026-10-17 on the CICIoMT2024 *test* split
+(user-downloaded; not redistributed):
 
 | File | Windows | Flag rate | Metric |
 |---|---|---|---|
