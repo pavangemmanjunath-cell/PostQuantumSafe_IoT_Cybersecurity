@@ -5,7 +5,7 @@ GitHub [Releases page](https://github.com/pavangemmanjunath-cell/PostQuantumSafe
 
 | Version | Date | Notes | DOI | Summary |
 |---|---|---|---|---|
-| v0.3.0 | 2026-11-22 | [docs/releases/v0.3.0.md](docs/releases/v0.3.0.md) | assigned by Zenodo on publication | Release 3 (validation evidence): plan reassessment and shared-root-cause planner, adjustable lifetime threshold, standards traceability API, experiments E7–E12 (sensitivity, ILP scalability, reassessment, held-out traffic, attack simulation), one-command reproduction checked in CI, Research Results tab, evidence summary in docs/release-3 |
+| v0.3.0 | 2026-11-22 | [docs/releases/v0.3.0.md](docs/releases/v0.3.0.md) | assigned by Zenodo on publication | Release 3 (validation evidence): plan reassessment and shared-root-cause planner, adjustable lifetime threshold, standards traceability API, scripted paper experiments E1–E5 checked against the paper's numbers, experiments E7–E12 (sensitivity, ILP scalability, reassessment, held-out traffic; supplementary attack simulation and standards map), one-command reproduction checked in CI, Windows launcher `start_all.bat`, Research Results tab, evidence summary in docs/release-3 |
 | v0.1.0 | 2026-10-24 | [docs/releases/v0.1.0.md](docs/releases/v0.1.0.md) | [10.5281/zenodo.23618136](https://doi.org/10.5281/zenodo.23618136) | First public release: TIPPSS-based (IEEE 2933-2024) agentic testing framework that checks whether IoT and edge-device environments are safe against post-quantum attacks, implemented first for healthcare |
 | v0.2.0 | 2026-10-24 | same notes as v0.1.0 | [10.5281/zenodo.23618173](https://doi.org/10.5281/zenodo.23618173) | Re-release of v0.1.0 that includes the corrected release-notes table |
 

@@ -139,7 +139,9 @@ def _rows() -> list[MappingRow]:
         MappingRow("long_lifetime_classical_crypto", "pq_identification", "critical", ("Privacy", "Protection", "Security"),
                    "lifetime", "Data lifetime ≥ threshold (default 10 y) with classical key exchange: harvest-now-"
                    "decrypt-later exposure", (MOSCA, IR8547, HIPAA_TS), "ATT&CK T1040 (network sniffing)"),
-        MappingRow("mosca_hndl_exposure", "pq_identification", "medium", ("Privacy", "Protection"), "lifetime",
+        # Scored under pkc, not lifetime: only the critical lifetime override feeds the lifetime category
+        # (agents/scoring.py: category_of).
+        MappingRow("mosca_hndl_exposure", "pq_identification", "medium", ("Privacy", "Protection"), "pkc",
                    "Mosca's inequality x + y > z holds under the user's assumptions although the lifetime is below "
                    "the threshold", (MOSCA,), "ATT&CK T1040 (network sniffing)"),
         # --- protected health information in AI prompts

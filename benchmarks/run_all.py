@@ -1,18 +1,21 @@
-"""Run every Release 3 experiment, rebuild the figures and the Word summary, and check the results against git.
+"""Run every experiment of the paper and of Release 3, rebuild the figures and the Word summary, and check the
+results against git.
 
     python benchmarks/run_all.py --cic-test-dir <CICIoMT2024 test CSV folder> \\
         --figures-python <python with matplotlib> --check
 
 Steps, in this order and with the arguments documented in docs/reproducibility.md (each command is printed with its
-wall time; the run stops with a non-zero exit status at the first failure):
+wall time; the run stops with a non-zero exit status at the first failure). Experiment numbers are those of the
+journal paper (E1-E10); E11 and E12 are supplementary (not reported in the paper):
 
-  E3 qiro_optimality, E7 sensitivity_analysis, E8 qiro_scalability (about 100 s; skipped with --skip-slow),
-  E9 plan_reassessment, the synthetic held-out dataset, E10 on the synthetic dataset; with --cic-test-dir also
-  E6 traffic_rules_eval and E10 protocols P1 (cross_source) and P2 (temporal_split); E11 attack_simulation_eval;
-  the E12 standards table (scripts/gen_standards_map_doc.py); the result figures (benchmarks/make_figures.py, run
-  with --figures-python in isolated mode); the schematic figure PDFs (node scripts/svg_to_pdf.cjs) and the Word
-  summary (scripts/build_release3_docx.py), both only when Node.js is available. --no-figures and --no-docx leave
-  out the figure and Word steps.
+  the paper experiments E1-E5 (paper_experiments.py: Table II, attack conditions, Q-Day sweep, budget sweep, worked
+  example; a few seconds), E4 solver quality qiro_optimality, E7 sensitivity_analysis, E8 qiro_scalability (about
+  100 s; skipped with --skip-slow), E9 plan_reassessment, the synthetic held-out dataset, E10 on the synthetic
+  dataset; with --cic-test-dir also E6 traffic_rules_eval and E10 protocols P1 (cross_source) and P2
+  (temporal_split); E11 attack_simulation_eval; the E12 standards table (scripts/gen_standards_map_doc.py); the
+  result figures (benchmarks/make_figures.py, run with --figures-python in isolated mode); the schematic figure PDFs
+  (node scripts/svg_to_pdf.cjs) and the Word summary (scripts/build_release3_docx.py), both only when Node.js is
+  available. --no-figures and --no-docx leave out the figure and Word steps.
 
 --check compares every regenerated artifact in benchmarks/results/ and datasets/synthetic_holdout/ with the
 committed version (``git show HEAD:<path>``): JSON files value by value without the volatile fields (dates,
@@ -40,6 +43,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 CHECKED_DIRS = ("benchmarks/results", "datasets/synthetic_holdout")
 RESULTS = "benchmarks/results/"
+PAPER_ARTIFACTS = ("paper_e1_systems.json", "paper_e2_attack_conditions.json", "paper_e3_qday_sweep.json",
+                   "paper_e4_budget_sweep.json", "paper_e5_worked_example.json")  # written by paper_experiments.py
 SYNTHETIC = "datasets/synthetic_holdout"
 # Label recorded as test_dir for the CICIoMT2024 runs, so the artifacts do not depend on the local folder name.
 CIC_LABEL = "<CICIoMT2024 test CSV folder, user-supplied; not redistributed>"
@@ -249,7 +254,9 @@ def build_steps(args: argparse.Namespace) -> tuple[list[Step], list[str]]:
     py = sys.executable
     syn_train, syn_test = f"{SYNTHETIC}/train", f"{SYNTHETIC}/test"
     steps = [
-        Step("E3 optimizer vs exhaustive optimum", [py, "benchmarks/qiro_optimality.py", "--instances", "500", "--seed", "0"],
+        Step("paper E1-E5 (Table II, E2, E3, E4 budget sweep, E5)", [py, "benchmarks/paper_experiments.py"],
+             tuple(RESULTS + name for name in PAPER_ARTIFACTS)),
+        Step("E4 optimizer vs exhaustive optimum", [py, "benchmarks/qiro_optimality.py", "--instances", "500", "--seed", "0"],
              (RESULTS + "qiro_optimality.json",)),
         Step("E7 scoring sensitivity", [py, "benchmarks/sensitivity_analysis.py", "--seed", "2026"],
              (RESULTS + "sensitivity_analysis.json",)),

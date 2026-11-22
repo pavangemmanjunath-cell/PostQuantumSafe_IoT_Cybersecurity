@@ -24,7 +24,7 @@ interface Step { step: string; fleet_status: string; mean_pq_risk_score: number;
 const pc = (x: number) => `${Math.round(100 * x)}%`;
 const Status = ({ s }: { s: string }) => <span className={`pill status-${s}`}>{s.replace("_", " ")}</span>;
 
-/** E11 — attacker-versus-defender measurement on the hospital-ward simulator. */
+/** E11 (supplementary, not reported in the paper) — attacker-versus-defender measurement on the hospital-ward simulator. */
 export function AttackSimulationSection() {
   const attacks = sim.attacks as unknown as Record<string, AttackAgg>;
   const s = sim.summary;
@@ -34,7 +34,7 @@ export function AttackSimulationSection() {
     <div className="stack">
       <section className="card" data-testid="attack-results">
         <div className="card-h">
-          <span className="h">E11 · Attack simulation on the {sim.template_label} template</span>
+          <span className="h">E11 · Attack simulation on the {sim.template_label} template (supplementary, not reported in the paper)</span>
           <span className="pill">seeds {sim.seeds.join(", ")} · {sim.devices.length} devices · {Object.keys(attacks).length} attacks · {sim.date}</span>
         </div>
         <div className="kpi-strip">

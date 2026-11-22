@@ -2379,7 +2379,7 @@
     },
     "systems_with_unmodelled_network_mitigations": 1,
     "total_pipeline_runs_exhaustive": 413,
-    "worked_example": {
+    "icu_gateway_scenario": {
       "scenario": "icu_gateway_critical",
       "plan_a": {
         "selected_action_ids": [

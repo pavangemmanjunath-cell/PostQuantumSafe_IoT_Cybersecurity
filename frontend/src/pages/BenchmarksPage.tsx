@@ -1,4 +1,9 @@
 import { useState } from "react";
+import paperE1 from "../../../benchmarks/results/paper_e1_systems.json";
+import paperE2 from "../../../benchmarks/results/paper_e2_attack_conditions.json";
+import paperE3 from "../../../benchmarks/results/paper_e3_qday_sweep.json";
+import paperE4 from "../../../benchmarks/results/paper_e4_budget_sweep.json";
+import paperE5 from "../../../benchmarks/results/paper_e5_worked_example.json";
 import qiro from "../../../benchmarks/results/qiro_optimality.json";
 import traffic from "../../../benchmarks/results/traffic_rules_eval.json";
 import { Tabs } from "../components/ui";
@@ -15,28 +20,33 @@ type Section = "overview" | "optimizer" | "scalability" | "sensitivity" | "reass
 
 const SECTIONS: { id: Section; label: string }[] = [
   ["overview", "Overview"],
-  ["optimizer", "Optimizer (E3)"],
+  ["optimizer", "Optimizer (E4)"],
   ["scalability", "Scalability vs ILP (E8)"],
   ["sensitivity", "Sensitivity (E7)"],
   ["reassessment", "Reassessment (E9)"],
   ["traffic", "Traffic rules, same split (E6)"],
   ["holdout", "Traffic rules, held-out (E10)"],
-  ["attacks", "Attack simulation (E11)"],
-  ["standards", "Standards map (E12)"],
+  ["attacks", "Attack simulation (E11, supplementary)"],
+  ["standards", "Standards map (E12, supplementary)"],
 ].map(([id, label]) => ({ id: id as Section, label }));
+
+/** paper_check summaries of the paper experiments E1–E5 (benchmarks/paper_experiments.py). */
+const PAPER_CHECKS = [paperE1, paperE2, paperE3, paperE4, paperE5].map((p) => ({ id: p.paper_experiment, ...p.paper_check.summary }));
 
 /** Research Results: every number shown here is read from a committed artifact in benchmarks/results/ or served by the API. */
 export function BenchmarksPage() {
   const [section, setSection] = useState<Section>("overview");
   const qiroResult = qiro.annealing_plus_local_search;
   const benign = traffic.results.find((r) => r.expected === "benign");
+  const paperMatched = PAPER_CHECKS.reduce((n, c) => n + c.matched, 0);
+  const paperStated = PAPER_CHECKS.reduce((n, c) => n + c.stated_values, 0);
 
   return (
     <div className="stack" data-testid="benchmark-page">
       <div className="page-head">
         <div>
           <div className="page-title">Research results</div>
-          <div className="page-sub">Recorded benchmark artifacts with their limitations. Experiment numbers (E1–E12) follow docs/release-3.</div>
+          <div className="page-sub">Recorded benchmark artifacts with their limitations. Experiment numbers E1–E10 follow the journal paper; E11 and E12 are supplementary (not reported in the paper).</div>
         </div>
       </div>
 
@@ -52,17 +62,19 @@ export function BenchmarksPage() {
         <section className="card" data-testid="results-overview-card">
           <div className="card-h"><span className="h">Headline figures</span><span className="pill">artifacts in benchmarks/results/</span></div>
           <div className="kpi-strip">
-            <div className="kpi-card"><div className="label">QIRO optimal solutions (E3)</div><div className="value" data-testid="qiro-optimal-share">{percent(qiroResult.optimal_share)}</div><div className="hint2">{qiro.instances_with_nonzero_optimum} synthetic instances · seed 0 · {qiro.date}</div></div>
-            <div className="kpi-card"><div className="label">Mean optimality gap (E3)</div><div className="value">{qiroResult.mean_gap_pct.toFixed(4)}%</div><div className="hint2">max {qiroResult.max_gap_pct.toFixed(4)}%</div></div>
+            <div className="kpi-card"><div className="label">Paper numbers reproduced (E1–E5)</div><div className="value" data-testid="paper-check">{paperMatched}/{paperStated}</div><div className="hint2">{PAPER_CHECKS.map((c) => `${c.id} ${c.matched}/${c.stated_values}`).join(" · ")}</div></div>
+            <div className="kpi-card"><div className="label">QIRO optimal solutions (E4)</div><div className="value" data-testid="qiro-optimal-share">{percent(qiroResult.optimal_share)}</div><div className="hint2">{qiro.instances_with_nonzero_optimum} synthetic instances · seed 0 · {qiro.date}</div></div>
+            <div className="kpi-card"><div className="label">Mean optimality gap (E4)</div><div className="value">{qiroResult.mean_gap_pct.toFixed(4)}%</div><div className="hint2">max {qiroResult.max_gap_pct.toFixed(4)}%</div></div>
             <div className="kpi-card"><div className="label">Benign false-positive rate (E6)</div><div className="value">{benign ? percent(benign.flag_rate) : "—"}</div><div className="hint2">{benign?.windows ?? 0} windows · recorded {traffic.date} · optimistic</div></div>
-            <div className="kpi-card"><div className="label">Finding types mapped (E12)</div><div className="value">42</div><div className="hint2">pillar-level mapping to IEEE/UL 2933-2024</div></div>
+            <div className="kpi-card"><div className="label">Finding types mapped (E12, supplementary)</div><div className="value">42</div><div className="hint2">pillar-level mapping to IEEE/UL 2933-2024</div></div>
           </div>
           <table className="t mini" data-testid="evidence-index">
             <thead><tr><th>Experiment</th><th>Question</th><th>Artifact</th></tr></thead>
             <tbody>
-              <tr><td>E3</td><td>How close is the planner to the exact optimum on small instances?</td><td className="mono">qiro_optimality.json</td></tr>
+              <tr><td>E1–E5</td><td>Do the numbers the journal paper states for E1–E5 reproduce with the shipped software?</td><td className="mono">paper_e1_systems.json … paper_e5_worked_example.json</td></tr>
+              <tr><td>E4</td><td>How close is the planner to the exact optimum on small instances (solver quality)?</td><td className="mono">qiro_optimality.json</td></tr>
               <tr><td>E6</td><td>How do the traffic rules behave on the CICIoMT2024 test split (same split as tuning)?</td><td className="mono">traffic_rules_eval.json</td></tr>
-              <tr><td>E12</td><td>Which pillar, deduction and public reference does each finding type map to?</td><td className="mono">GET /api/v1/standards-map</td></tr>
+              <tr><td>E12 (supplementary, not reported in the paper)</td><td>Which pillar, deduction and public reference does each finding type map to?</td><td className="mono">GET /api/v1/standards-map</td></tr>
             </tbody>
           </table>
         </section>
@@ -71,7 +83,7 @@ export function BenchmarksPage() {
       {section === "optimizer" && (
         <section className="card" data-testid="qiro-results">
           <div className="card-h">
-            <span className="h">E3 · QIRO optimality vs. exhaustive search</span>
+            <span className="h">E4 · QIRO optimality vs. exhaustive search (solver quality)</span>
             <span className="pill">Seed 0 · {qiro.date} · Python {qiro.python}</span>
           </div>
           <div className="kpi-strip">

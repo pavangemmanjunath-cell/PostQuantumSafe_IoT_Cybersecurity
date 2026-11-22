@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from fastapi.testclient import TestClient
 
+from safeguard_pq.agents import scoring
 from safeguard_pq.agents.scoring import PILLAR_DEDUCT, WEIGHTS
 from safeguard_pq.api.app import create_app
-from safeguard_pq.domain.models import PILLARS
+from safeguard_pq.domain.models import PILLARS, Finding
 from safeguard_pq.knowledge import patterns, standards_map, traffic_rules
 
 CRYPTO_TYPES = {
@@ -54,6 +55,15 @@ def test_deductions_weights_and_pillars_are_consistent() -> None:
     assert len({r.finding_type for r in standards_map.STANDARDS_MAP}) == len(standards_map.STANDARDS_MAP)
     coverage = standards_map.pillar_coverage()
     assert all(coverage[p]["finding_types"] > 0 for p in PILLARS)
+
+
+def test_score_category_is_the_one_the_scoring_code_uses() -> None:
+    for row in standards_map.STANDARDS_MAP:
+        finding = Finding(agent=row.agent, type=row.finding_type, severity=row.severity, detail="")
+        assert row.score_category == scoring.category_of(finding), row.finding_type
+    # Mosca's medium finding is scored under pkc; only the critical lifetime override feeds the lifetime category
+    assert standards_map.BY_TYPE["mosca_hndl_exposure"].score_category == "pkc"
+    assert [r.finding_type for r in standards_map.STANDARDS_MAP if r.score_category == "lifetime"] == ["long_lifetime_classical_crypto"]
 
 
 def test_markdown_table_and_api() -> None:

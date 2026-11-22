@@ -220,6 +220,8 @@ test.describe("TIPPSS SafeGuard-PQ — user journeys", () => {
     await page.goto("/#results");
     await expect(page.getByTestId("benchmark-page")).toBeVisible();
     await expect(page.getByTestId("qiro-optimal-share")).toHaveText("97.6%");
+    await expect(page.getByTestId("paper-check")).toHaveText("215/215"); // every number stated for paper E1-E5
+    await expect(page.getByTestId("results-optimizer")).toHaveText("Optimizer (E4)");
     await expect(page.getByTestId("benchmark-caveat")).toContainText("not a generalization estimate");
     await page.getByTestId("results-traffic").click();
     await expect(page.getByTestId("traffic-results").locator("tbody tr")).toHaveCount(6);
@@ -241,7 +243,7 @@ test.describe("TIPPSS SafeGuard-PQ — user journeys", () => {
     await page.getByTestId("results-reassessment").click();
     await expect(page.getByTestId("reassess-safe-a")).toHaveText("7/10");
     await expect(page.getByTestId("reassessment-table").locator("tbody tr")).toHaveCount(10);
-    await expect(page.getByTestId("worked-example")).toContainText("icu_gateway_critical");
+    await expect(page.getByTestId("icu-gateway-scenario")).toContainText("icu_gateway_critical");
     await page.getByTestId("results-holdout").click();
     await expect(page.getByTestId("holdout-results")).toContainText("cross_source");
     await expect(page.getByTestId("holdout-table").locator("tbody tr")).toHaveCount(5); // shipped, tuned, 3 baselines

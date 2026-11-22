@@ -75,9 +75,10 @@ jobs:
           retention-days: 7
 
   reproduce:
-    # Re-runs every experiment that needs no third-party data (E3, E7, E8, E9, the synthetic dataset, E10 on it,
-    # E11, E12) and fails if any deterministic value differs from the committed artifacts. E6 and E10 P1/P2 need
-    # the CICIoMT2024 files, which are not redistributed, and are reported as NOT RUN.
+    # Re-runs every experiment that needs no third-party data (paper E1-E5, E4 solver quality, E7, E8, E9, the
+    # synthetic dataset, E10 on it, and the supplementary E11 and E12) and fails if any deterministic value differs
+    # from the committed artifacts. E6 and E10 P1/P2 need the CICIoMT2024 files, which are not redistributed, and are
+    # reported as NOT RUN. Experiment numbers follow the journal paper.
     name: Reproduce results (benchmarks/run_all.py --check)
     runs-on: ubuntu-latest
     timeout-minutes: 30

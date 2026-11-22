@@ -2,18 +2,21 @@
 
 Machine-readable results live in [`results/`](results/). Every number reported in the README, in
 [`docs/release-3/README.md`](../docs/release-3/README.md) and in the web application's Research Results tab comes from
-these files. Experiment identifiers E1–E12 are those of the Release 3 evidence document. Figures are generated from
-the same files by `make_figures.py` (optional `benchmark` extra: `pip install -e "backend[benchmark]"`).
+these files. Experiment identifiers E1–E10 are those of the revised journal paper; E11 and E12 are supplementary
+(not reported in the paper). Figures are generated from the same files by `make_figures.py` (optional `benchmark`
+extra: `pip install -e "backend[benchmark]"`).
 
 | Id | Script | Artifact | Question |
 |---|---|---|---|
-| E3 | `qiro_optimality.py` | `qiro_optimality.json` | gap of the planner to the exhaustive optimum, n ≤ 14 |
+| E1–E5 | `paper_experiments.py` | `paper_e1_systems.json`, `paper_e2_attack_conditions.json`, `paper_e3_qday_sweep.json`, `paper_e4_budget_sweep.json`, `paper_e5_worked_example.json` | the paper's E1 (Table II), E2 (attack conditions), E3 (Q-Day sweep), E4 budget sweep and E5 (worked example), each checked against every number the paper states |
+| E4 | `qiro_optimality.py` | `qiro_optimality.json` | solver quality (second part of E4): gap of the planner to the exhaustive optimum, n ≤ 14 |
 | E6 | `traffic_rules_eval.py` | `traffic_rules_eval.json` | window-level rule behaviour on the CICIoMT2024 test split (same split as threshold selection) |
 | E7 | `sensitivity_analysis.py` | `sensitivity_analysis.json` | sensitivity of verdicts, scores and plans to the scoring constants and the lifetime threshold |
 | E8 | `qiro_scalability.py` | `qiro_scalability.json` | planner versus greedy, local search and an ILP reference for n = 20…200 |
 | E9 | `plan_reassessment.py` | `plan_reassessment.json` | summed benefit vs projected vs reassessed score; independent vs shared-root-cause planner |
 | E10 | `traffic_rules_holdout.py` | `traffic_rules_holdout*.json` | rules evaluated on windows not used for threshold selection, with CIs and baselines |
-| E11 | `attack_simulation_eval.py` | `attack_simulation.json` | attacker-versus-defender outcomes on the hospital-ward simulator |
+| E11 | `attack_simulation_eval.py` | `attack_simulation.json` | supplementary (not reported in the paper): attacker-versus-defender outcomes on the hospital-ward simulator |
+| E12 | `../scripts/gen_standards_map_doc.py` | `../docs/release-3/standards_mapping.md` | supplementary (not reported in the paper): finding type → principles → deduction → score category → references |
 | — | `make_synthetic_traffic_dataset.py` | `../datasets/synthetic_holdout/` | synthetic development split for E10 |
 | — | `make_figures.py` | `../docs/release-3/figures/` | result figures |
 | — | `run_all.py` | all of the above | runs every step in order; `--check` compares the regenerated artifacts with the committed ones |
@@ -21,7 +24,30 @@ the same files by `make_figures.py` (optional `benchmark` extra: `pip install -e
 Environment for all recorded artifacts: Python 3.13.5, Windows 11, software version 0.3.0, 2026-11-22 (E6:
 2026-10-17, v0.1.0). Runtimes are single-machine wall-clock values and vary with hardware and load.
 
-## E3. QIRO optimality, n ≤ 14 (`qiro_optimality.py`)
+## E1–E5. Paper experiments (`paper_experiments.py`)
+
+One command reruns the five experiments of the journal paper that have no script of their own, with the shipped
+software (seed 2026, no LLM, default options; the shared-root-cause planner only in E5, as in the paper):
+`python benchmarks/paper_experiments.py` (a few seconds; `--only e1,e5` selects experiments, `--out-dir` the folder,
+`--strict` exits with status 1 if a stated value is not reproduced). Each artifact records the inputs, the method
+with every input assumption, the results and a `paper_check` block that lists each number the paper states with
+`expected`, `reproduced` and `match`.
+
+| Id | Paper content | Inputs | Artifact | Stated values reproduced |
+|---|---|---|---|---|
+| E1 | Table II (every cell) and the principle scores of Section VII-A | the ten built-in scenarios | `paper_e1_systems.json` | 127 / 127 |
+| E2 | six attack conditions on a legacy infusion-pump gateway, before and after the countermeasures | `examples/paper/e2_infusion_pump_conditions.json` | `paper_e2_attack_conditions.json` | 42 / 42 |
+| E3 | HNDL exposure of seven data classes (5–30 years) against z = 4–30 years for y = 2, 5, 8; hybrid ML-KEM | E2 base gateway (classical) and migrated gateway (hybrid) | `paper_e3_qday_sweep.json` | 12 / 12 |
+| E4 | budget sweep 10 000–200 000 USD in steps of 10 000 for the ICU gateway and the legacy system | `icu_gateway_critical`, `legacy_worst_case`, downtime 40 h | `paper_e4_budget_sweep.json` | 9 / 9 |
+| E5 | worked example of Section III: attribution, counterfactual, plan, projection, reassessment, all feasible subsets, shared-root-cause mode | `examples/paper/worked_example_gateway.json` (Listing 1 of the original draft) | `paper_e5_worked_example.json` | 25 / 25 |
+
+Input reconstruction: the original draft names the E2 conditions and the seven E3 data classes but not their
+configurations. They are taken from the v0.1.0 experiment script that produced the draft's numbers, and every E2
+condition equals the effect of the simulator's own attack injection (`Simulation.inject`), which the script
+re-checks on every run; the assumptions are listed in each artifact's `method`. All 215 stated values are reproduced
+with v0.3.0, and the E2–E4 values equal those recorded with v0.1.0.
+
+## E4 (solver quality). QIRO optimality, n ≤ 14 (`qiro_optimality.py`)
 
 | Item | Value |
 |---|---|
@@ -44,7 +70,7 @@ instances; exact solver limited to n ≤ 14.
 | Item | Value |
 |---|---|
 | Reference | HiGHS 1.16.0 MIP via `highspy`, zero MIP gap tolerance (proven optima); cross-checked against the exhaustive solver on 100 instances with n ≤ 14 (100/100 agree) |
-| Dataset | 50 instances per size n ∈ {20, 50, 100, 200}; same finding distribution as E3; budget = τ · Σ cost, downtime = τ · Σ downtime, τ ∈ U{0.25, 0.5, 0.75} |
+| Dataset | 50 instances per size n ∈ {20, 50, 100, 200}; same finding distribution as E4; budget = τ · Σ cost, downtime = τ · Σ downtime, τ ∈ U{0.25, 0.5, 0.75} |
 | Methods | greedy start only; greedy + local search; greedy + annealing; shipped (greedy + annealing + local search) |
 | Command | `python benchmarks/qiro_scalability.py --sizes 20,50,100,200 --instances-per-size 50 --seed 0 --small-check 100` (≈ 100 s) |
 
@@ -171,7 +197,7 @@ attack type, not in raw F1. The two small classes have wide intervals. The synth
 separable by construction and demonstrates the protocol only. Bootstrap intervals treat windows as independent
 although consecutive windows of one capture are correlated.
 
-## E11. Attack simulation on the hospital ward (`attack_simulation_eval.py`)
+## E11. Attack simulation on the hospital ward (`attack_simulation_eval.py`) — supplementary, not reported in the paper
 
 One fresh simulation per (seed, device, attack): baseline assessment → inject → two ticks → assess → apply every
 mitigation in the attack's `blocked_by` → two ticks → assess → re-inject. "Detected" = a new finding from the agent
@@ -199,7 +225,7 @@ UNSAFE devices 5 → 7 over capture / weaken / Q-Day / AI steps; after the catal
 configuration-consistency result, not evidence of real-world protection. The 33 non-exploitable runs are attacks whose
 precondition is absent on PQ-ready devices (e.g. HNDL capture against ML-KEM key exchange).
 
-## E12. Standards traceability
+## E12. Standards traceability — supplementary, not reported in the paper
 
 `GET /api/v1/standards-map` and [`docs/release-3/standards_mapping.md`](../docs/release-3/standards_mapping.md)
 (generated by `scripts/gen_standards_map_doc.py`): 42 finding types → TIPPSS pillars → pillar deduction → PQ-score

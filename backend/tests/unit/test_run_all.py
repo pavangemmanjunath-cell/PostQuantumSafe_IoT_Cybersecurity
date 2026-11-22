@@ -70,7 +70,12 @@ def test_new_and_missing_artifacts(run_all) -> None:
 def test_pipeline_steps_follow_the_options(run_all, tmp_path) -> None:
     steps, skipped = run_all.build_steps(run_all.parse_args(["--skip-slow", "--no-figures", "--no-docx"]))
     names = [s.name for s in steps]
-    assert names[:2] == ["E3 optimizer vs exhaustive optimum", "E7 scoring sensitivity"]
+    # the paper experiments run first; experiment numbers follow the journal paper (E4 = solver quality)
+    assert names[:3] == ["paper E1-E5 (Table II, E2, E3, E4 budget sweep, E5)", "E4 optimizer vs exhaustive optimum",
+                         "E7 scoring sensitivity"]
+    assert steps[0].cmd[1:] == ["benchmarks/paper_experiments.py"]
+    pe = importlib.import_module("paper_experiments")
+    assert steps[0].outputs == tuple(f"benchmarks/results/{name}" for name in pe.ARTIFACTS.values())
     assert not any(n.startswith(("E8", "E6", "E10 P")) for n in names)
     assert not any("figures" in n or "Word" in n for n in names)
     assert any("--skip-slow" in s for s in skipped) and any("--cic-test-dir" in s for s in skipped)

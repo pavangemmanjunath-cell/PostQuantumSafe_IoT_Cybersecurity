@@ -89,10 +89,10 @@ def _hgrid(ax: plt.Axes, axis: str = "y") -> None:
     ax.set_axisbelow(True)
 
 
-# --------------------------------------------------------------------------- E3: optimizer, small n
+# --------------------------------------------------------------------------- E4 (solver quality): optimizer, small n
 
 
-def fig_e3_optimizer() -> None:
+def fig_e4_optimizer() -> None:
     """Local search raises the optimal share and cuts the worst-case gap (two bars per panel)."""
     d = _load("qiro_optimality.json")
     if not d:
@@ -114,7 +114,7 @@ def fig_e3_optimizer() -> None:
             ax.set_yticks(range(0, 101, 25))
         ax.set_ylabel(ylabel)
         ax.set_title(title)
-    _save(fig, "fig_e3_optimizer_small_n")
+    _save(fig, "fig_e4_optimizer_small_n")
 
 
 # --------------------------------------------------------------------------- E6 / E10: traffic rules
@@ -343,7 +343,7 @@ def fig_e11_attacks() -> None:
 
 def main() -> int:
     _style()
-    for f in (fig_e3_optimizer, fig_e6_traffic, fig_e7_sensitivity, fig_e8_scalability, fig_e9_reassessment,
+    for f in (fig_e4_optimizer, fig_e6_traffic, fig_e7_sensitivity, fig_e8_scalability, fig_e9_reassessment,
               fig_e10_traffic_holdout, fig_e11_attacks):
         try:
             f()

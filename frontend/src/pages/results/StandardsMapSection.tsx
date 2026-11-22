@@ -3,7 +3,7 @@ import { api } from "../../api/client";
 import type { StandardsMap } from "../../api/types";
 import { pretty } from "../../components/ui";
 
-/** E12 — finding type → TIPPSS pillar(s) → deduction / score category → public reference (served by the API). */
+/** E12 (supplementary, not reported in the paper) — finding type → TIPPSS pillar(s) → deduction / score category → public reference (served by the API). */
 export function StandardsMapSection() {
   const [map, setMap] = useState<StandardsMap | null>(null);
   const [error, setError] = useState<string | null>(null);

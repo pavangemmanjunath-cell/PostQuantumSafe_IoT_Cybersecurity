@@ -12,6 +12,14 @@ Release 3: validation-evidence release. Release notes: [docs/releases/v0.3.0.md]
 summary: [docs/release-3/README.md](docs/release-3/README.md).
 
 ### Added
+- **Paper experiments E1–E5 scripted.** `benchmarks/paper_experiments.py` (`--only e1,…`, `--out-dir`, `--strict`)
+  reruns Table II, the six attack conditions, the Q-Day sweep, the budget sweep and the worked example of the journal
+  paper with the shipped software and writes `benchmarks/results/paper_e1_systems.json` … `paper_e5_worked_example.json`;
+  each has a `paper_check` block listing every number the paper states with the reproduced value (215 of 215 match).
+  Inputs in `examples/paper/` (Listing 1 gateway; E2 conditions equal to the simulator's attack effects). First step of
+  `run_all.py`, so `--check` and the CI job `reproduce` cover it.
+- **Windows launcher** `start_all.bat` (menu, or `app`, `pipeline`, `pipeline-quick`, `tests`, `docs` as argument);
+  `.gitattributes` keeps batch files CRLF; `scripts/dev.ps1` skips opening the browser when `SAFEGUARD_NO_BROWSER` is set.
 - **Reassessment** of remediation plans at configuration level (`optimizer/reassess.py`), `POST /api/v1/assessments/{id}/reassess`,
   and retention of the original request in the assessment store.
 - **Shared-root-cause planner** (`options.group_shared_root_causes`, default off): findings fixed by one mitigation form one
@@ -35,10 +43,17 @@ summary: [docs/release-3/README.md](docs/release-3/README.md).
   threat model, formulas, deployment feasibility and standards mapping as appendices; seven result figures and two
   schematic drafts as SVG, PDF and PNG; `scripts/gen_standards_map_doc.py`, `scripts/build_release3_docx.py`
   (+ `.cjs`), `scripts/svg_to_pdf.cjs`; optional `benchmark` extra (`highspy`, `matplotlib`).
-- 74 backend tests (222 in total).
+- 88 backend tests (236 in total).
 - "Novelty and scope" section in the README; Zenodo DOIs in `CITATION.cff`, README, release notes and the About page.
 
 ### Changed
+- Experiment numbers follow the journal paper (E1–E10): the 500-instance solver-quality benchmark is E4 (was E3) in the
+  docs, the Research Results tab and `run_all.py`, and its figure is `fig_e4_optimizer_small_n.*` (was `fig_e3_…`);
+  E11 and E12 are marked supplementary (not reported in the paper); `docs/reproducibility.md` has a paper experiment
+  → command → artifact table. The Research Results overview shows the paper check of E1–E5.
+- The ICU gateway scenario is no longer called "the worked example" (the paper's worked example is the Section III
+  gateway): `plan_reassessment.json` key `summary.worked_example` → `summary.icu_gateway_scenario`, Research Results
+  label and docs.
 - The ICU simulation drill describes defences as simulated configuration changes rather than implying real-world protection.
 - Refreshed the seeded 500-instance QIRO benchmark artifact (objective metrics unchanged) and documented its
   machine-dependent runtime.
@@ -54,6 +69,9 @@ summary: [docs/release-3/README.md](docs/release-3/README.md).
 - Version 0.3.0 in `backend/pyproject.toml`, `safeguard_pq.__version__`, `frontend/package.json` and `CITATION.cff`.
 
 ### Fixed
+- The standards map (`knowledge/standards_map.py`, `docs/release-3/standards_mapping.md`) and `docs/release-3/formulas.md`
+  §2 put `mosca_hndl_exposure` in the lifetime category, but the scoring code (`agents/scoring.py: category_of`) scores
+  it under pkc. Map and docs now follow the code (scoring unchanged); a test checks every row against `category_of`.
 - `traffic_rules_holdout.py` wrote the `--train-dir` / `--test-dir` arguments verbatim into its JSON, so an absolute
   path exposed the local folder layout. It now records only a portable label (repository-relative path, folder name,
   or `--train-data-label` / `--data-label`); `traffic_rules_eval.py` records file names only and needed no change.

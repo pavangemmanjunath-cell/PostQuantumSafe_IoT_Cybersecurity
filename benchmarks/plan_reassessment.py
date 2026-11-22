@@ -14,9 +14,10 @@ For every scenario this script
    reassessed score independently;
 4. for scenarios with at most ``--exhaustive-max-n`` candidate actions, enumerates every feasible subset, reassesses
    each one (one pipeline run per subset) and reports the best reassessed outcome the constraints allow, the cheapest
-   subset reaching it, and whether plan A (the paper's worked example for ``icu_gateway_critical``) and plan B attain
-   it. Plan A is checked against subsets of per-finding actions under the shipped cost accounting (every action paid);
-   plan B against subsets of whole root-cause groups under the grouped accounting (each group paid once).
+   subset reaching it, and whether plan A and plan B attain it (summarised separately for the ICU gateway scenario,
+   ``icu_gateway_critical``). Plan A is checked against subsets of per-finding actions under the shipped cost
+   accounting (every action paid); plan B against subsets of whole root-cause groups under the grouped accounting
+   (each group paid once).
 
 Synthetic scenarios; configuration-level reassessment only — network mitigations are reported as unmodelled.
 """
@@ -51,7 +52,7 @@ from safeguard_pq.orchestrator import run_assessment  # noqa: E402
 from safeguard_pq.scenarios import load_scenarios  # noqa: E402
 
 STATUS_RANK = {"SAFE": 0, "AT_RISK": 1, "UNSAFE": 2}
-WORKED_EXAMPLE = "icu_gateway_critical"
+ICU_GATEWAY_SCENARIO = "icu_gateway_critical"  # summarised in summary.icu_gateway_scenario
 
 
 def outcome_key(score: int, status: str, remaining: int) -> tuple[int, int, int]:
@@ -204,8 +205,8 @@ def summarize(systems: list[dict[str, Any]]) -> dict[str, Any]:
             "cheapest_best": sum(e[cheapest_key] for e in ex),
         }
 
-    worked = next((s for s in systems if s["scenario"] == WORKED_EXAMPLE), None)
-    wx = worked["exhaustive"] if worked else None
+    icu = next((s for s in systems if s["scenario"] == ICU_GATEWAY_SCENARIO), None)
+    wx = icu["exhaustive"] if icu else None
     return {
         "systems": len(systems),
         "systems_safe_at_baseline": sum(s["baseline"]["environment_status"] == "SAFE" for s in systems),
@@ -215,14 +216,14 @@ def summarize(systems: list[dict[str, Any]]) -> dict[str, Any]:
             bool((set(s["plan_a"]["unmodelled_mitigations"]) | set(s["plan_b"]["unmodelled_mitigations"])) & NETWORK_MITIGATIONS)
             for s in systems),
         "total_pipeline_runs_exhaustive": sum(s["exhaustive"]["pipeline_runs"] for s in systems if s["exhaustive"]),
-        "worked_example": None if worked is None else {
-            "scenario": WORKED_EXAMPLE,
-            "plan_a": {k: worked["plan_a"][k] for k in ("selected_action_ids", "total_cost_usd", "summed_benefit",
+        "icu_gateway_scenario": None if icu is None else {
+            "scenario": ICU_GATEWAY_SCENARIO,
+            "plan_a": {k: icu["plan_a"][k] for k in ("selected_action_ids", "total_cost_usd", "summed_benefit",
                                                         "projected_pq_score", "reassessed_pq_score", "reassessed_status")},
             "plan_a_is_best_by_reassessment": wx["plan_a_is_best_by_reassessment"] if wx else None,
             "plan_a_is_cheapest_best": wx["plan_a_is_cheapest_best"] if wx else None,
             "cheapest_best_subset_independent": wx["independent_cost_model"]["cheapest_best_subset"] if wx else None,
-            "plan_b": {k: worked["plan_b"][k] for k in ("selected_action_ids", "total_cost_usd", "summed_benefit",
+            "plan_b": {k: icu["plan_b"][k] for k in ("selected_action_ids", "total_cost_usd", "summed_benefit",
                                                         "projected_pq_score", "reassessed_pq_score", "reassessed_status")},
             "plan_b_is_best_by_reassessment": wx["plan_b_is_best_by_reassessment"] if wx else None,
             "plan_b_is_cheapest_best": wx["plan_b_is_cheapest_best"] if wx else None,
@@ -259,9 +260,9 @@ def print_table(result: dict[str, Any]) -> None:
               f"best by reassessment {p['best_by_reassessment']}/{p['exhaustively_checked']}; cheapest best {p['cheapest_best']}")
     print(f"systems with unmodelled network mitigations: {sm['systems_with_unmodelled_network_mitigations']}; "
           f"exhaustive pipeline runs: {sm['total_pipeline_runs_exhaustive']}")
-    if sm["worked_example"]:
-        w = sm["worked_example"]
-        print(f"worked example {w['scenario']}: plan A best by reassessment = {w['plan_a_is_best_by_reassessment']}, "
+    if sm["icu_gateway_scenario"]:
+        w = sm["icu_gateway_scenario"]
+        print(f"ICU gateway scenario {w['scenario']}: plan A best by reassessment = {w['plan_a_is_best_by_reassessment']}, "
               f"cheapest best = {w['plan_a_is_cheapest_best']}; cheapest subset reaching the best outcome: "
               f"{w['cheapest_best_subset_independent']}")
 

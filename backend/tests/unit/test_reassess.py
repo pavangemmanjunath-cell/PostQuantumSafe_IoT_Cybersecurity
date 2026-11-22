@@ -106,7 +106,7 @@ def test_default_planner_output_is_unchanged_by_the_flag() -> None:
         assert json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
         assert a["planner_mode"] == "independent_actions" and a["root_cause_groups"] == []
         assert all("root_cause_group" not in x for x in a["selected_actions"] + a["excluded_actions"])
-    # the worked example keeps the plan recorded before the planner refactor
+    # the ICU gateway scenario keeps the plan recorded before the planner refactor
     q = assess(scenario_request("icu_gateway_critical")).qiro_optimization
     assert [a["id"] for a in q["selected_actions"]] == ["A5", "A8", "A7", "A2", "A6"]
     assert (q["total_cost_usd"], q["total_downtime_hrs"], q["total_risk_reduction"]) == (98_000, 21, 206)
@@ -199,5 +199,5 @@ def test_plan_reassessment_benchmark_script(tmp_path: Path, capsys: pytest.Captu
     flood = by_id["infusion_syn_flood"]
     assert "rate_limiting" in flood["plan_a"]["unmodelled_mitigations"]
     assert data["summary"]["systems_with_unmodelled_network_mitigations"] >= 1
-    assert data["summary"]["worked_example"]["scenario"] == "icu_gateway_critical"
+    assert data["summary"]["icu_gateway_scenario"]["scenario"] == "icu_gateway_critical"
     assert "icu_gateway_critical" in capsys.readouterr().out

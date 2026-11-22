@@ -40,6 +40,9 @@ finding with severity, TIPPSS pillar mapping and redacted evidence.
 A critical `long_lifetime_classical_crypto` finding is raised when `data_lifetime_years ≥ 10`, at least one classical
 public-key finding exists, **and** key establishment is not PQ/hybrid protected. Mosca's inequality is reported
 alongside: data is at risk if `x + y > z` (x = data lifetime, y = migration time, z = years to a CRQC — a user assumption).
+When only Mosca's inequality holds, a medium `mosca_hndl_exposure` finding is raised; it is scored in the `pkc`
+category (the `lifetime` category holds only the critical finding), see
+[release-3/formulas.md](release-3/formulas.md#2-pq-risk-score-and-verdict-agentsscoringpy).
 
 ### TIPPSS pillar scores
 Each pillar starts at 100; every mapped finding deducts critical 25 / high 15 / medium 8 / low 3; floor 0.

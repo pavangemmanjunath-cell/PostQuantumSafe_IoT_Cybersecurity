@@ -42,7 +42,7 @@ interactive what-if analysis.
 
 ## Evidence currently available (Release 3, all artifacts in `benchmarks/results/`)
 
-- **Optimiser quality (E3, E8).** Annealing + local search reaches the exact optimum on 97.6 % of 500 instances with
+- **Optimiser quality (E4, E8).** Annealing + local search reaches the exact optimum on 97.6 % of 500 instances with
   n ≤ 14 (mean gap 0.05 %). Against a HiGHS integer-programming reference the shipped planner stays within a mean
   gap of 0.30 % (n = 20) to 0.055 % (n = 200), max 3.0 % to 0.28 %; the annealing stage adds nothing beyond the greedy
   start for n ≥ 50, and the MIP solver is exact and up to 15× faster at n = 200.
@@ -52,8 +52,8 @@ interactive what-if analysis.
   at L = 5 and two verdicts at L = 20.
 - **Plan validity (E9).** Reassessment reaches SAFE in 7 of 10 scenarios with the shipped plan; the projected score
   differs from the reassessed score by 9.3 points on average (max 26); the shared-root-cause planner reduces this to
-  2.7 and is cheaper in 7 of 9 non-trivial scenarios. The worked example's plan is best by reassessment but not the
-  cheapest plan attaining it. Network mitigations are unmodelled, so one scenario stays UNSAFE.
+  2.7 and is cheaper in 7 of 9 non-trivial scenarios. In the ICU gateway scenario the shipped plan is best by
+  reassessment but not the cheapest plan attaining it. Network mitigations are unmodelled, so one scenario stays UNSAFE.
 - **Traffic rules (E6, E10).** On CICIoMT2024 test windows not used for threshold selection the rules keep F1 ≈ 0.98
   with FPR 0–2.7 %; a packet-size baseline matches that F1 on this flood-dominated split, so the rules' value is the
   low FPR and attack-type attribution rather than raw F1. The CICIoMT2024 train split was not available.

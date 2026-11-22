@@ -38,7 +38,7 @@ const Status = ({ s }: { s: string }) => <span className={`pill status-${s}`}>{s
 export function ReassessmentSection() {
   const systems = reass.systems as unknown as System[];
   const sum = reass.summary;
-  const we = sum.worked_example;
+  const icu = sum.icu_gateway_scenario;
 
   return (
     <div className="stack">
@@ -87,12 +87,12 @@ export function ReassessmentSection() {
         </p>
       </section>
 
-      <section className="card" data-testid="worked-example">
-        <div className="card-h"><span className="h">Worked example · {we.scenario}</span></div>
+      <section className="card" data-testid="icu-gateway-scenario">
+        <div className="card-h"><span className="h">ICU gateway scenario · {icu.scenario}</span></div>
         <div className="kpi-strip">
-          <div className="kpi-card"><div className="label">Plan A (shipped)</div><div className="value">{we.plan_a.reassessed_pq_score} <Status s={we.plan_a.reassessed_status} /></div><div className="hint2">{we.plan_a.selected_action_ids.join(", ")} · {usd(we.plan_a.total_cost_usd)} · ΣB {we.plan_a.summed_benefit} · S_proj {we.plan_a.projected_pq_score}</div></div>
-          <div className="kpi-card"><div className="label">Is plan A best by reassessment?</div><div className="value">{we.plan_a_is_best_by_reassessment ? "yes" : "no"}</div><div className="hint2">cheapest best: {we.plan_a_is_cheapest_best ? "yes" : "no"}</div></div>
-          <div className="kpi-card"><div className="label">Cheapest subset reaching the best S_reass</div><div className="value">{usd(we.cheapest_best_subset_independent.cost_usd)}</div><div className="hint2">{we.cheapest_best_subset_independent.action_ids.join(", ")} → {we.cheapest_best_subset_independent.mitigations.join(", ")}</div></div>
+          <div className="kpi-card"><div className="label">Plan A (shipped)</div><div className="value">{icu.plan_a.reassessed_pq_score} <Status s={icu.plan_a.reassessed_status} /></div><div className="hint2">{icu.plan_a.selected_action_ids.join(", ")} · {usd(icu.plan_a.total_cost_usd)} · ΣB {icu.plan_a.summed_benefit} · S_proj {icu.plan_a.projected_pq_score}</div></div>
+          <div className="kpi-card"><div className="label">Is plan A best by reassessment?</div><div className="value">{icu.plan_a_is_best_by_reassessment ? "yes" : "no"}</div><div className="hint2">cheapest best: {icu.plan_a_is_cheapest_best ? "yes" : "no"}</div></div>
+          <div className="kpi-card"><div className="label">Cheapest subset reaching the best S_reass</div><div className="value">{usd(icu.cheapest_best_subset_independent.cost_usd)}</div><div className="hint2">{icu.cheapest_best_subset_independent.action_ids.join(", ")} → {icu.cheapest_best_subset_independent.mitigations.join(", ")}</div></div>
         </div>
       </section>
     </div>

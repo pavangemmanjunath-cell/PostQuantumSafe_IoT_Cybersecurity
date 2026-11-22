@@ -18,12 +18,18 @@ Each finding raised by the crypto, PQ, identity and secret agents belongs to one
 
 | Category `c` | Weight `w_c` | Findings |
 |---|---|---|
-| pkc | 0.30 | classical key exchange / signature / certificate key, weak hash, weak symmetric cipher, pq_migration_required |
+| pkc | 0.30 | classical key exchange / signature / certificate key, weak hash, weak symmetric cipher, pq_migration_required, mosca_hndl_exposure |
 | tls | 0.20 | deprecated_tls_version |
-| lifetime | 0.20 | long_lifetime_classical_crypto, mosca_hndl_exposure |
+| lifetime | 0.20 | long_lifetime_classical_crypto |
 | identity | 0.15 | missing_certificate, authentication_failed |
 | secrets | 0.10 | every secret pattern |
 | migration | 0.05 | 75 if no PQ key exchange or signature is detected, else 0 |
+
+The category is assigned by `category_of`: `deprecated_tls_version` → tls, `long_lifetime_classical_crypto` →
+lifetime, every other finding of the crypto-inventory and PQ-identification agents → pkc. Mosca's medium finding
+`mosca_hndl_exposure` (section 4) is therefore scored under pkc; only the critical lifetime override feeds the
+lifetime category. Because the Mosca finding is raised only together with a high classical public-key finding
+(`v_pkc` ≥ 75), it never changes `S`; it deducts pillar points (Privacy, Protection).
 
 ```
 v_c = max_{f ∈ F_c} pts(sev_f),   pts = {critical: 100, high: 75, medium: 50, low: 25}
@@ -111,7 +117,7 @@ segmentation) have no configuration-level effect and are reported as *unmodelled
 
 | Experiment | n | Finding type | Severity | Pillars | Budget B | Downtime D |
 |---|---|---|---|---|---|---|
-| E3 (`qiro_optimality.py`) | U{3, …, 14} | uniform over the 42 catalogue templates | U{critical, high, medium, low} | random subset of size U{1, 2, 3} of the 6 pillars | U{20 000, 50 000, 100 000} USD | U{4, 10, 40} h |
+| E4 (`qiro_optimality.py`) | U{3, …, 14} | uniform over the 42 catalogue templates | U{critical, high, medium, low} | random subset of size U{1, 2, 3} of the 6 pillars | U{20 000, 50 000, 100 000} USD | U{4, 10, 40} h |
 | E8 (`qiro_scalability.py`) | fixed ∈ {20, 50, 100, 200} | same | same | same | τ · Σ C_i, τ ∈ U{0.25, 0.5, 0.75} | τ · Σ D_i |
 
 Catalogue ranges (`knowledge/remediation.py`, 42 templates): cost 4 000 – 50 000 USD, downtime 1 – 12 h, complexity
@@ -122,4 +128,4 @@ Assessments of the ten scenarios use the optimizer default seed 2026 (`QIRO_DEFA
 
 Python 3.13.5 on Windows 11; package versions are pinned by `backend/pyproject.toml` (`fastapi`, `pydantic`,
 `reportlab`) and the optional `benchmark` extra (`highspy` for the ILP reference, `matplotlib` for figures). One
-command per experiment is listed in [README.md](README.md#reproduction-commands).
+command per experiment is listed in the [reproducibility guide](../reproducibility.md#paper-experiment--command--artifact).
