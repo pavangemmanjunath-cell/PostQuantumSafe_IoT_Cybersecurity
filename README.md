@@ -57,8 +57,8 @@ are designed to be extended to other IoT and edge domains. It answers three ques
 The system is implemented as **14 cooperating agents** behind a **FastAPI** backend, with a **React + three.js (WebGL)**
 interface that shows each agent working live, a 3D IoT fleet simulator with attack injection, and downloadable PDF reports.
 
-**Intended users:** security researchers, students and engineers exploring PQ-migration planning for medical IoT; reviewers
-who want to reproduce or challenge the approach.
+**Intended users:** security researchers, students and engineers exploring PQ-migration planning for medical IoT; anyone
+who wants to reproduce or challenge the approach.
 
 ## Built on the TIPPSS framework
 
@@ -135,6 +135,24 @@ several risk dimensions (device identity, PHI leakage into AI tools, unsafe auto
 The research question explored here is whether a **transparent, multi-agent pipeline** can (a) identify PQ exposure
 together with these other TIPPSS risks, (b) explain its conclusions, and (c) produce a **constraint-aware** migration plan.
 
+## Novelty and scope
+
+The software contribution is an integrated, explainable workflow, not a new post-quantum cryptographic primitive,
+quantum algorithm, or standards-compliance claim. Its engineering contribution combines:
+
+- Configuration-evidence-based PQ identification and Mosca exposure assessment with identity, privacy, safety, and
+  network findings in one multi-agent pipeline.
+- Finding-level evidence, tool traces, score attribution, and counterfactuals so that assessment outputs can be audited.
+- Budget- and downtime-constrained remediation planning, with an exhaustive-optimum comparison for small instances.
+- A seeded fleet simulator and a reassessment step that checks whether the supplied configuration now satisfies the
+  framework's own rules.
+
+The reassessment is a configuration-consistency check, not independent evidence that a mitigation works against a
+real attacker. The optimizer benchmarks use synthetic instances; the traffic rules were evaluated on the CICIoMT2024
+test split both on the split used for threshold selection and, in Release 3, on windows not used for it (with the
+caveat that a packet-size baseline performs comparably on that flood-dominated split). No comparative evaluation
+against other tools is made. See [docs/novelty.md](docs/novelty.md) and [docs/limitations.md](docs/limitations.md).
+
 ## Key contributions
 
 Only capabilities present in this repository are listed.
@@ -161,7 +179,12 @@ Only capabilities present in this repository are listed.
 ### Reproducibility
 - Seeded optimizer and simulator; deterministic finding/action identifiers.
 - Regression parity tests against outputs recorded from the earlier JavaScript prototype.
-- Benchmark scripts with machine-readable results; 148 backend tests and 10 browser end-to-end tests.
+- Benchmark scripts with machine-readable results; 236 backend tests and 12 browser end-to-end tests.
+- Open the web application's **Research Results** tab (`/#results`) to inspect every recorded experiment (optimizer
+  quality and scalability, scoring sensitivity, plan reassessment, same-split and held-out traffic rules, attack
+  simulation, standards traceability) together with its caveats.
+- Release 3 evidence summary: [docs/release-3/README.md](docs/release-3/README.md) (also as Word); every artifact is
+  regenerated and checked against the committed version by `python benchmarks/run_all.py --check`, locally and in CI.
 
 ## How this work differs
 
@@ -246,8 +269,9 @@ threats to validity: [docs/methodology.md](docs/methodology.md).
 ├── benchmarks/              benchmark scripts and recorded results
 ├── datasets/                dataset documentation and synthetic samples
 ├── docs/                    architecture, methodology, reproducibility, limitations, …
-├── examples/                small runnable examples
-└── scripts/                 one-command dev launchers
+├── examples/                small runnable examples; examples/paper/: inputs of the paper's E2 and E5
+├── scripts/                 one-command dev launchers, document builders
+└── start_all.bat            Windows launcher: web application, pipeline, tests, figures and Word summary
 ```
 
 ## Installation
@@ -269,7 +293,20 @@ cd frontend && npm ci && cd ..
 
 ## Quick start
 
-One command (creates the environments on first run, starts both servers and opens the browser):
+**Windows:** double-click `start_all.bat` in the repository root for a menu, or run it from a command prompt with the
+option as an argument:
+
+| Command | Runs |
+|---|---|
+| `start_all.bat app` | the web application (backend :8000, frontend :5173); Research Results tab at http://127.0.0.1:5173/#results |
+| `start_all.bat pipeline` | every experiment, the figures and the Word summary, then the `--check` against the committed results |
+| `start_all.bat pipeline-quick` | the same without the slow E8 benchmark |
+| `start_all.bat tests` | ruff, pytest, frontend type check and build, Playwright browser tests |
+| `start_all.bat docs` | the figures and the Word summary only |
+
+The launcher creates `backend\.venv` on first use, prints an OK / FAIL line with the exit code for every step and
+pauses at the end only when started without an argument. The `app` option runs `scripts\dev.ps1`, which can also be
+called directly (it creates the environments on first run, starts both servers and opens the browser):
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\dev.ps1      # Windows
@@ -329,26 +366,62 @@ No third-party dataset is redistributed. See [datasets/README.md](datasets/READM
 See [docs/reproducibility.md](docs/reproducibility.md). In short:
 
 ```bash
-cd backend && pytest                                         # 148 tests
-cd frontend && npx playwright install chromium && npx playwright test   # 10 browser E2E tests
-python benchmarks/qiro_optimality.py --instances 500 --seed 0
-python benchmarks/traffic_rules_eval.py --data-dir <CICIoMT2024 test CSV folder>
+python benchmarks/run_all.py --cic-test-dir <CICIoMT2024 test CSV folder> --figures-python <python with matplotlib> --check
+                                                             # every experiment, figure and the Word summary, then a
+                                                             # PASS/CHANGED check against the committed artifacts
+cd backend && pytest                                         # 236 tests
+cd frontend && npx playwright install chromium && npx playwright test   # 12 browser E2E tests
+python benchmarks/paper_experiments.py                                  # paper E1-E5, checked against the paper's numbers
+python benchmarks/qiro_optimality.py --instances 500 --seed 0           # E4 solver quality
+python benchmarks/sensitivity_analysis.py --seed 2026                   # E7
+python benchmarks/qiro_scalability.py --sizes 20,50,100,200 --instances-per-size 50 --seed 0 --small-check 100   # E8
+python benchmarks/plan_reassessment.py --seed 2026                      # E9
+python benchmarks/traffic_rules_holdout.py --protocol temporal_split --test-dir <CICIoMT2024 test CSV folder> --dev-fraction 0.5   # E10
+python benchmarks/attack_simulation_eval.py --template hospital_ward --seeds 7,11,23   # E11 (supplementary)
 ```
+
+Experiment numbers follow the journal paper (E1–E10); E11 and E12 are supplementary (not reported in the paper).
+One command per paper experiment, seeds and expected outputs: [docs/reproducibility.md](docs/reproducibility.md#paper-experiment--command--artifact).
 
 Seeds: optimizer default `QIRO_DEFAULT_SEED=2026` (per-request `seed`), simulator seed per simulation.
 
 ## Benchmarks
 
-Recorded on 2026-10-24, software v0.1.0, Python 3.13.5, Windows 11. Raw results in [benchmarks/results/](benchmarks/results/).
+The Research Results tab in the web application displays these metrics and limitations. Raw results are in
+[benchmarks/results/](benchmarks/results/); reproduction instructions are in
+[docs/reproducibility.md](docs/reproducibility.md); the full tables, figures and interpretation are in
+[benchmarks/README.md](benchmarks/README.md) and [docs/release-3/README.md](docs/release-3/README.md).
 
-**QIRO vs exhaustive optimum** — 500 random synthetic instances (n = 3–14 actions, budgets 20k–100k USD, downtime 4–40 h):
+**Paper experiments E1–E5** (`python benchmarks/paper_experiments.py`, a few seconds): the ten systems of Table II,
+the six attack conditions, the Q-Day sweep, the budget sweep and the worked example of the journal paper, rerun with
+v0.3.0. Each artifact (`benchmarks/results/paper_e1_systems.json` … `paper_e5_worked_example.json`) lists every
+number the paper states with the reproduced value: all 216 match.
+
+**Release 3 experiments (2026-11-22, Python 3.13.5)** — E11 and E12 are supplementary (not reported in the paper)
+
+| Id | Question | Result |
+|---|---|---|
+| E7 | How sensitive are verdicts to the scoring constants? | SAFE/AT_RISK/UNSAFE status never changes under ±20 % perturbations (rank correlation 1.0); the four-level verdict flips in ≤ 4 of 10 scenarios when severity points are scaled; the lifetime threshold changes one status at 5 y and two verdicts at 20 y |
+| E8 | How does the planner compare with an integer-programming solver for n = 20–200? | mean gap to the HiGHS optimum 0.30 % (n = 20) → 0.055 % (n = 200), max ≤ 3.0 %; the annealing stage adds nothing beyond the greedy start for n ≥ 50; the MIP solver is exact and up to 15× faster |
+| E9 | Does the projected effect of a plan match the reassessed configuration? | projected and reassessed scores differ by 9.3 points on average with the shipped planner, 2.7 with the shared-root-cause planner; 7 of 10 systems reach SAFE after reassessment; one stays UNSAFE because network mitigations are unmodelled |
+| E10 | How do the traffic rules perform on windows not used for threshold selection? | F1 0.985 (cross-source) / 0.987 (temporal) with FPR 2.7 % / 0 % on the CICIoMT2024 test split; a packet-size baseline matches this F1 on the flood-dominated split; ARP and MQTT classes have wide intervals |
+| E11 (supplementary) | Do the agents react to simulated attacks, and do catalogue mitigations hold? | 234 of 249 exploitable (attack, device, seed) runs raise a new finding from the expected agent; the 15 misses are passive captures on devices already flagged; every re-injection is blocked by the simulator's model |
+| E12 (supplementary) | Which pillar, deduction and public reference does each finding map to? | 42 finding types mapped (pillar level; IEEE/UL 2933-2024 clause numbers are not public) |
+
+**E4 solver quality: QIRO vs. exhaustive optimum** — rerun 2026-11-22 using Python 3.13.5 on 500 random synthetic instances (n = 3–14
+actions, budgets 20k–100k USD, downtime 4–40 h; instance-generator seed 0):
 
 | Method | Instances solved optimally | Mean gap | p95 gap | Max gap |
 |---|---|---|---|---|
 | Simulated annealing only | 94.8 % | 0.19 % | 0.16 % | 20.16 % |
-| Annealing + local search (shipped) | 97.6 % | 0.05 % | 0.00 % | 6.06 % |
+| Annealing + local search (shipped) | 97.6 % | 0.0532 % | 0.0000 % | 6.0606 % |
 
-**Traffic rules, window level (100 rows)** on the CICIoMT2024 *test* split (user-downloaded; not redistributed):
+The measured mean runtime, including the exact solver, was 8.62 ms per instance in this run. Runtime is machine- and
+load-dependent and is not a performance guarantee. These optimization results measure closeness to the exact optimum
+of the same synthetic objective; they do not establish clinical or security effectiveness.
+
+**Traffic rules, window level (100 rows)** — previously recorded 2026-10-17 on the CICIoMT2024 *test* split
+(user-downloaded; not redistributed):
 
 | File | Windows | Flag rate | Metric |
 |---|---|---|---|
@@ -360,7 +433,9 @@ Recorded on 2026-10-24, software v0.1.0, Python 3.13.5, Windows 11. Raw results 
 | TCP SYN DoS | 985 | 100 % | detection rate |
 
 > These thresholds were chosen by inspecting the same test split, so the numbers are **optimistic** and are not a
-> generalisation estimate; ARP and MQTT have only 17 windows each. An independent train/test evaluation is on the roadmap.
+> generalisation estimate; ARP and MQTT have only 17 windows each. Experiment E10 evaluates the rules on windows not
+> used for threshold selection (cross-source and temporal protocols) with confidence intervals and baselines; the
+> capture-level protocol is implemented and awaits the CICIoMT2024 train split.
 
 ## Tests
 
@@ -384,7 +459,10 @@ not empirically fitted. Full list: [docs/limitations.md](docs/limitations.md).
 
 ## Research paper
 
-Associated publication information will be added when available.
+Associated publication information will be added when available. The Release 3 evidence summary (results, figures,
+limitations) is in [docs/release-3/](docs/release-3/) — `README.md` (Markdown) and
+`SafeGuard-PQ_Release3_Evidence_Summary.docx` (Word) — with the threat model, formulas, deployment feasibility and
+standards mapping as appendices.
 
 ## Software citation
 
@@ -425,6 +503,7 @@ for the workflow and [ROADMAP.md](ROADMAP.md) for open tasks; genuine contributo
 
 | Version | Date | Release notes | DOI |
 |---|---|---|---|
+| v0.3.0 | 2026-11-22 | [docs/releases/v0.3.0.md](docs/releases/v0.3.0.md) | assigned by Zenodo on publication |
 | v0.1.0 | 2026-10-24 | [docs/releases/v0.1.0.md](docs/releases/v0.1.0.md) | [10.5281/zenodo.23618136](https://doi.org/10.5281/zenodo.23618136) |
 | v0.2.0 | 2026-10-24 | same notes as v0.1.0 (re-release that adds the CLI table fix in the notes) | [10.5281/zenodo.23618173](https://doi.org/10.5281/zenodo.23618173) |
 

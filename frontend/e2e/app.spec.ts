@@ -215,4 +215,43 @@ test.describe("TIPPSS SafeGuard-PQ — user journeys", () => {
     await page.getByTestId("tab-about").click();
     await expect(page.getByTestId("research-status")).toContainText("early-stage concept");
   });
+
+  test("Research results show benchmark metrics, limitations and the standards map", async ({ page }) => {
+    await page.goto("/#results");
+    await expect(page.getByTestId("benchmark-page")).toBeVisible();
+    await expect(page.getByTestId("qiro-optimal-share")).toHaveText("97.6%");
+    await expect(page.getByTestId("paper-check")).toHaveText("216/216"); // every number stated for paper E1-E5
+    await expect(page.getByTestId("results-optimizer")).toHaveText("Optimizer (E4)");
+    await expect(page.getByTestId("benchmark-caveat")).toContainText("not a generalization estimate");
+    await page.getByTestId("results-traffic").click();
+    await expect(page.getByTestId("traffic-results").locator("tbody tr")).toHaveCount(6);
+    await page.getByTestId("results-standards").click();
+    await expect(page.getByTestId("standards-note")).toContainText("not public");
+    await expect(page.getByTestId("standards-table").locator("tbody tr")).toHaveCount(42);
+    await page.getByTestId("standards-agent-filter").selectOption("traffic_anomaly");
+    await expect(page.getByTestId("standards-table").locator("tbody tr")).toHaveCount(5);
+  });
+
+  test("Research results: Release 3 experiments (scalability, sensitivity, reassessment, held-out traffic, attacks)", async ({ page }) => {
+    await page.goto("/#results");
+    await page.getByTestId("results-scalability").click();
+    await expect(page.getByTestId("ilp-crosscheck")).toHaveText("100/100");
+    await expect(page.getByTestId("scalability-table").locator("tbody tr")).toHaveCount(20); // 4 sizes × (4 methods + ILP)
+    await page.getByTestId("results-sensitivity").click();
+    await expect(page.getByTestId("sensitivity-max-status")).toHaveText("1/10");
+    await expect(page.getByTestId("lifetime-sweep").locator("tbody tr")).toHaveCount(10);
+    await page.getByTestId("results-reassessment").click();
+    await expect(page.getByTestId("reassess-safe-a")).toHaveText("7/10");
+    await expect(page.getByTestId("reassessment-table").locator("tbody tr")).toHaveCount(10);
+    await expect(page.getByTestId("icu-gateway-scenario")).toContainText("icu_gateway_critical");
+    await page.getByTestId("results-holdout").click();
+    await expect(page.getByTestId("holdout-results")).toContainText("cross_source");
+    await expect(page.getByTestId("holdout-table").locator("tbody tr")).toHaveCount(5); // shipped, tuned, 3 baselines
+    await page.getByTestId("holdout-protocol").selectOption("p2");
+    await expect(page.getByTestId("holdout-results")).toContainText("temporal_split");
+    await page.getByTestId("results-attacks").click();
+    await expect(page.getByTestId("attack-detected")).toHaveText("234/249");
+    await expect(page.getByTestId("attack-table").locator("tbody tr")).toHaveCount(14);
+    await expect(page.getByTestId("kill-chain").locator("tbody tr")).toHaveCount(8);
+  });
 });

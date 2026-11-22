@@ -138,24 +138,26 @@ class PQIdentificationAgent(Agent):
 
         lifetime = tls.data_lifetime_years if tls else None
         has_classical = bool(classical)
+        a = ctx.request.assumptions
+        threshold = a.lifetime_threshold_years  # the "ten-year rule"; default 10, user-adjustable
         mosca = None
         if tls and lifetime:
-            a = ctx.request.assumptions
             mosca = await rec.tool("pqc.mosca_inequality", data_lifetime_years=lifetime,
                                    migration_years=a.migration_years, years_to_crqc=a.years_to_crqc)
         # Correction vs v0: harvest-now-decrypt-later concerns confidentiality, so it applies only when the
         # key exchange is not PQ/hybrid protected (classical signatures cannot be "harvested" retroactively).
         kex_pq_safe = bool(tls and pq.is_pq_safe(tls.key_exchange))
-        if tls and lifetime and lifetime >= 10 and has_classical and not kex_pq_safe:
+        if tls and lifetime and lifetime >= threshold and has_classical and not kex_pq_safe:
             rec.finding(
                 severity="critical", type="long_lifetime_classical_crypto",
                 detail=f"{fmt_num(lifetime)}-year lifetime + classical crypto = severe harvest-now-decrypt-later exposure",
                 tippss_mapping=["Privacy", "Protection", "Security"],
-                evidence=[Evidence(source="tls_config.data_lifetime_years", rule="lifetime ≥ 10 years with classical public-key crypto",
+                evidence=[Evidence(source="tls_config.data_lifetime_years",
+                                   rule=f"lifetime ≥ {fmt_num(threshold)} years with classical public-key crypto",
                                    observed=fmt_num(lifetime), reference="Mosca's inequality; NIST IR 8547 ipd")],
             )
 
-        # Mosca what-if: below the 10-year rule but at risk under the user's Q-Day assumptions.
+        # Mosca what-if: below the lifetime threshold but at risk under the user's Q-Day assumptions.
         elif tls and mosca and mosca["at_risk"] and has_classical and not kex_pq_safe:
             rec.finding(
                 severity="medium", type="mosca_hndl_exposure",

@@ -1,0 +1,17 @@
+{
+  "system_id": "ICU-PUMP-GW",
+  "tls_config": {
+    "tls_version": "TLS1.2",
+    "key_exchange": "ECDHE-P256",
+    "cert_signature_algo": "ECDSA-P256",
+    "data_lifetime_years": 25
+  },
+  "assumptions": {
+    "migration_years": 5,
+    "years_to_crqc": 10
+  },
+  "constraints": {
+    "budget_usd": 60000,
+    "max_downtime_hrs": 12
+  }
+}

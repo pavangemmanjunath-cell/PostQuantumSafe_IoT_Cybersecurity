@@ -1,0 +1,1215 @@
+{
+  "benchmark": "scoring_sensitivity",
+  "software_version": "0.3.0",
+  "date": "2026-11-22",
+  "python": "3.13.5",
+  "assessment_seed": 2026,
+  "scenarios": [
+    "icu_gateway_critical",
+    "nextgen_pq_safe",
+    "ehr_tls13_classical",
+    "clinical_ai_phi",
+    "secret_exposure",
+    "legacy_worst_case",
+    "tight_budget_qiro",
+    "pq_downgrade_prompt",
+    "hybrid_transition",
+    "infusion_syn_flood"
+  ],
+  "defaults": {
+    "weights": {
+      "pkc": 0.3,
+      "tls": 0.2,
+      "lifetime": 0.2,
+      "identity": 0.15,
+      "secrets": 0.1,
+      "migration": 0.05
+    },
+    "points": {
+      "critical": 100,
+      "high": 75,
+      "medium": 50,
+      "low": 25
+    },
+    "pillar_deduct": {
+      "critical": 25,
+      "high": 15,
+      "medium": 8,
+      "low": 3,
+      "info": 0
+    },
+    "lifetime_threshold_years": 10,
+    "optimizer_pillar_weights": {
+      "Trust": 1.0,
+      "Identity": 1.0,
+      "Privacy": 1.2,
+      "Protection": 1.0,
+      "Safety": 1.4,
+      "Security": 1.0
+    }
+  },
+  "baseline": [
+    {
+      "scenario": "icu_gateway_critical",
+      "pq_risk_score": 61,
+      "verdict": "Not Post-Quantum Safe",
+      "environment_status": "UNSAFE",
+      "findings": 8,
+      "selected_action_finding_ids": [
+        "F5",
+        "F8",
+        "F7",
+        "F2",
+        "F6"
+      ],
+      "pillar_scores": {
+        "Trust": 75,
+        "Identity": 45,
+        "Privacy": 75,
+        "Protection": 15,
+        "Safety": 50,
+        "Security": 0
+      },
+      "weakest_pillar": "Security"
+    },
+    {
+      "scenario": "nextgen_pq_safe",
+      "pq_risk_score": 0,
+      "verdict": "Safe",
+      "environment_status": "SAFE",
+      "findings": 0,
+      "selected_action_finding_ids": [],
+      "pillar_scores": {
+        "Trust": 100,
+        "Identity": 100,
+        "Privacy": 100,
+        "Protection": 100,
+        "Safety": 100,
+        "Security": 100
+      },
+      "weakest_pillar": "Trust"
+    },
+    {
+      "scenario": "ehr_tls13_classical",
+      "pq_risk_score": 26,
+      "verdict": "Partially Safe",
+      "environment_status": "AT_RISK",
+      "findings": 5,
+      "selected_action_finding_ids": [
+        "F2",
+        "F1",
+        "F4"
+      ],
+      "pillar_scores": {
+        "Trust": 100,
+        "Identity": 85,
+        "Privacy": 92,
+        "Protection": 32,
+        "Safety": 100,
+        "Security": 40
+      },
+      "weakest_pillar": "Protection"
+    },
+    {
+      "scenario": "clinical_ai_phi",
+      "pq_risk_score": 0,
+      "verdict": "Safe",
+      "environment_status": "UNSAFE",
+      "findings": 4,
+      "selected_action_finding_ids": [
+        "F4",
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "pillar_scores": {
+        "Trust": 30,
+        "Identity": 100,
+        "Privacy": 55,
+        "Protection": 55,
+        "Safety": 75,
+        "Security": 75
+      },
+      "weakest_pillar": "Trust"
+    },
+    {
+      "scenario": "secret_exposure",
+      "pq_risk_score": 10,
+      "verdict": "Safe",
+      "environment_status": "UNSAFE",
+      "findings": 2,
+      "selected_action_finding_ids": [
+        "F1",
+        "F2"
+      ],
+      "pillar_scores": {
+        "Trust": 100,
+        "Identity": 100,
+        "Privacy": 100,
+        "Protection": 50,
+        "Safety": 100,
+        "Security": 50
+      },
+      "weakest_pillar": "Protection"
+    },
+    {
+      "scenario": "legacy_worst_case",
+      "pq_risk_score": 89,
+      "verdict": "Critical Quantum Risk",
+      "environment_status": "UNSAFE",
+      "findings": 9,
+      "selected_action_finding_ids": [
+        "F1",
+        "F4",
+        "F9",
+        "F3",
+        "F8"
+      ],
+      "pillar_scores": {
+        "Trust": 100,
+        "Identity": 45,
+        "Privacy": 75,
+        "Protection": 0,
+        "Safety": 75,
+        "Security": 0
+      },
+      "weakest_pillar": "Protection"
+    },
+    {
+      "scenario": "tight_budget_qiro",
+      "pq_risk_score": 61,
+      "verdict": "Not Post-Quantum Safe",
+      "environment_status": "UNSAFE",
+      "findings": 8,
+      "selected_action_finding_ids": [
+        "F8",
+        "F7"
+      ],
+      "pillar_scores": {
+        "Trust": 75,
+        "Identity": 45,
+        "Privacy": 75,
+        "Protection": 15,
+        "Safety": 50,
+        "Security": 0
+      },
+      "weakest_pillar": "Security"
+    },
+    {
+      "scenario": "pq_downgrade_prompt",
+      "pq_risk_score": 0,
+      "verdict": "Safe",
+      "environment_status": "UNSAFE",
+      "findings": 2,
+      "selected_action_finding_ids": [
+        "F1",
+        "F2"
+      ],
+      "pillar_scores": {
+        "Trust": 60,
+        "Identity": 100,
+        "Privacy": 100,
+        "Protection": 75,
+        "Safety": 85,
+        "Security": 60
+      },
+      "weakest_pillar": "Trust"
+    },
+    {
+      "scenario": "hybrid_transition",
+      "pq_risk_score": 23,
+      "verdict": "Safe",
+      "environment_status": "AT_RISK",
+      "findings": 2,
+      "selected_action_finding_ids": [
+        "F1",
+        "F2"
+      ],
+      "pillar_scores": {
+        "Trust": 100,
+        "Identity": 85,
+        "Privacy": 100,
+        "Protection": 70,
+        "Safety": 100,
+        "Security": 70
+      },
+      "weakest_pillar": "Protection"
+    },
+    {
+      "scenario": "infusion_syn_flood",
+      "pq_risk_score": 46,
+      "verdict": "Partially Safe",
+      "environment_status": "UNSAFE",
+      "findings": 6,
+      "selected_action_finding_ids": [
+        "F5",
+        "F6",
+        "F2"
+      ],
+      "pillar_scores": {
+        "Trust": 100,
+        "Identity": 85,
+        "Privacy": 75,
+        "Protection": 15,
+        "Safety": 75,
+        "Security": 0
+      },
+      "weakest_pillar": "Security"
+    }
+  ],
+  "designs": {
+    "S1_category_weights": [
+      {
+        "config": "pkc x0.8",
+        "category": "pkc",
+        "factor": 0.8,
+        "weights": {
+          "pkc": 0.2553,
+          "tls": 0.2128,
+          "lifetime": 0.2128,
+          "identity": 0.1596,
+          "secrets": 0.1064,
+          "migration": 0.0532
+        },
+        "metrics": {
+          "verdict_change_share": 0.1,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 1.3,
+          "max_abs_delta_score": 4,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [
+            {
+              "scenario": "ehr_tls13_classical",
+              "from": "Partially Safe",
+              "to": "Safe"
+            }
+          ],
+          "status_changed": []
+        }
+      },
+      {
+        "config": "pkc x1.2",
+        "category": "pkc",
+        "factor": 1.2,
+        "weights": {
+          "pkc": 0.3396,
+          "tls": 0.1887,
+          "lifetime": 0.1887,
+          "identity": 0.1415,
+          "secrets": 0.0943,
+          "migration": 0.0472
+        },
+        "metrics": {
+          "verdict_change_share": 0.0,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 1.0,
+          "max_abs_delta_score": 3,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [],
+          "status_changed": []
+        }
+      },
+      {
+        "config": "tls x0.8",
+        "category": "tls",
+        "factor": 0.8,
+        "weights": {
+          "pkc": 0.3125,
+          "tls": 0.1667,
+          "lifetime": 0.2083,
+          "identity": 0.1562,
+          "secrets": 0.1042,
+          "migration": 0.0521
+        },
+        "metrics": {
+          "verdict_change_share": 0.0,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 1.0,
+          "max_abs_delta_score": 3,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [],
+          "status_changed": []
+        }
+      },
+      {
+        "config": "tls x1.2",
+        "category": "tls",
+        "factor": 1.2,
+        "weights": {
+          "pkc": 0.2885,
+          "tls": 0.2308,
+          "lifetime": 0.1923,
+          "identity": 0.1442,
+          "secrets": 0.0962,
+          "migration": 0.0481
+        },
+        "metrics": {
+          "verdict_change_share": 0.1,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 0.8,
+          "max_abs_delta_score": 2,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [
+            {
+              "scenario": "ehr_tls13_classical",
+              "from": "Partially Safe",
+              "to": "Safe"
+            }
+          ],
+          "status_changed": []
+        }
+      },
+      {
+        "config": "lifetime x0.8",
+        "category": "lifetime",
+        "factor": 0.8,
+        "weights": {
+          "pkc": 0.3125,
+          "tls": 0.2083,
+          "lifetime": 0.1667,
+          "identity": 0.1562,
+          "secrets": 0.1042,
+          "migration": 0.0521
+        },
+        "metrics": {
+          "verdict_change_share": 0.0,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 0.6,
+          "max_abs_delta_score": 2,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [],
+          "status_changed": []
+        }
+      },
+      {
+        "config": "lifetime x1.2",
+        "category": "lifetime",
+        "factor": 1.2,
+        "weights": {
+          "pkc": 0.2885,
+          "tls": 0.1923,
+          "lifetime": 0.2308,
+          "identity": 0.1442,
+          "secrets": 0.0962,
+          "migration": 0.0481
+        },
+        "metrics": {
+          "verdict_change_share": 0.1,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 0.8,
+          "max_abs_delta_score": 2,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [
+            {
+              "scenario": "ehr_tls13_classical",
+              "from": "Partially Safe",
+              "to": "Safe"
+            }
+          ],
+          "status_changed": []
+        }
+      },
+      {
+        "config": "identity x0.8",
+        "category": "identity",
+        "factor": 0.8,
+        "weights": {
+          "pkc": 0.3093,
+          "tls": 0.2062,
+          "lifetime": 0.2062,
+          "identity": 0.1237,
+          "secrets": 0.1031,
+          "migration": 0.0515
+        },
+        "metrics": {
+          "verdict_change_share": 0.0,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 0.6,
+          "max_abs_delta_score": 2,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [],
+          "status_changed": []
+        }
+      },
+      {
+        "config": "identity x1.2",
+        "category": "identity",
+        "factor": 1.2,
+        "weights": {
+          "pkc": 0.2913,
+          "tls": 0.1942,
+          "lifetime": 0.1942,
+          "identity": 0.1748,
+          "secrets": 0.0971,
+          "migration": 0.0485
+        },
+        "metrics": {
+          "verdict_change_share": 0.1,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 0.5,
+          "max_abs_delta_score": 1,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [
+            {
+              "scenario": "ehr_tls13_classical",
+              "from": "Partially Safe",
+              "to": "Safe"
+            }
+          ],
+          "status_changed": []
+        }
+      },
+      {
+        "config": "secrets x0.8",
+        "category": "secrets",
+        "factor": 0.8,
+        "weights": {
+          "pkc": 0.3061,
+          "tls": 0.2041,
+          "lifetime": 0.2041,
+          "identity": 0.1531,
+          "secrets": 0.0816,
+          "migration": 0.051
+        },
+        "metrics": {
+          "verdict_change_share": 0.0,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 1.0,
+          "max_abs_delta_score": 2,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [],
+          "status_changed": []
+        }
+      },
+      {
+        "config": "secrets x1.2",
+        "category": "secrets",
+        "factor": 1.2,
+        "weights": {
+          "pkc": 0.2941,
+          "tls": 0.1961,
+          "lifetime": 0.1961,
+          "identity": 0.1471,
+          "secrets": 0.1176,
+          "migration": 0.049
+        },
+        "metrics": {
+          "verdict_change_share": 0.0,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 0.8,
+          "max_abs_delta_score": 2,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [],
+          "status_changed": []
+        }
+      },
+      {
+        "config": "migration x0.8",
+        "category": "migration",
+        "factor": 0.8,
+        "weights": {
+          "pkc": 0.303,
+          "tls": 0.202,
+          "lifetime": 0.202,
+          "identity": 0.1515,
+          "secrets": 0.101,
+          "migration": 0.0404
+        },
+        "metrics": {
+          "verdict_change_share": 0.0,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 0.0,
+          "max_abs_delta_score": 0,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [],
+          "status_changed": []
+        }
+      },
+      {
+        "config": "migration x1.2",
+        "category": "migration",
+        "factor": 1.2,
+        "weights": {
+          "pkc": 0.297,
+          "tls": 0.198,
+          "lifetime": 0.198,
+          "identity": 0.1485,
+          "secrets": 0.099,
+          "migration": 0.0594
+        },
+        "metrics": {
+          "verdict_change_share": 0.0,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 0.3,
+          "max_abs_delta_score": 1,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [],
+          "status_changed": []
+        }
+      }
+    ],
+    "S2_severity_points": [
+      {
+        "config": "points x0.8",
+        "factor": 0.8,
+        "points": {
+          "critical": 80.0,
+          "high": 60.0,
+          "medium": 40.0,
+          "low": 20.0
+        },
+        "metrics": {
+          "verdict_change_share": 0.4,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 5.8,
+          "max_abs_delta_score": 17,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [
+            {
+              "scenario": "icu_gateway_critical",
+              "from": "Not Post-Quantum Safe",
+              "to": "Partially Safe"
+            },
+            {
+              "scenario": "ehr_tls13_classical",
+              "from": "Partially Safe",
+              "to": "Safe"
+            },
+            {
+              "scenario": "legacy_worst_case",
+              "from": "Critical Quantum Risk",
+              "to": "Not Post-Quantum Safe"
+            },
+            {
+              "scenario": "tight_budget_qiro",
+              "from": "Not Post-Quantum Safe",
+              "to": "Partially Safe"
+            }
+          ],
+          "status_changed": []
+        }
+      },
+      {
+        "config": "points x1.2",
+        "factor": 1.2,
+        "points": {
+          "critical": 120.0,
+          "high": 90.0,
+          "medium": 60.0,
+          "low": 30.0
+        },
+        "metrics": {
+          "verdict_change_share": 0.2,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 6.1,
+          "max_abs_delta_score": 17,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [
+            {
+              "scenario": "hybrid_transition",
+              "from": "Safe",
+              "to": "Partially Safe"
+            },
+            {
+              "scenario": "infusion_syn_flood",
+              "from": "Partially Safe",
+              "to": "Not Post-Quantum Safe"
+            }
+          ],
+          "status_changed": []
+        }
+      }
+    ],
+    "S3_pillar_deductions": [
+      {
+        "config": "deductions x0.8",
+        "factor": 0.8,
+        "pillar_deduct": {
+          "critical": 20.0,
+          "high": 12.0,
+          "medium": 6.4,
+          "low": 2.4,
+          "info": 0.0
+        },
+        "metrics": {
+          "verdict_change_share": 0.0,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 0.0,
+          "max_abs_delta_score": 0,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [],
+          "status_changed": []
+        },
+        "pillar_metrics": {
+          "mean_abs_delta_pillar_score": 4.8367,
+          "max_abs_delta_pillar_score": 17.0,
+          "weakest_pillar_change_share": 0.0,
+          "strict_weakest_pillar_change_share": 0.0,
+          "weakest_pillar_changed": []
+        }
+      },
+      {
+        "config": "deductions x1.2",
+        "factor": 1.2,
+        "pillar_deduct": {
+          "critical": 30.0,
+          "high": 18.0,
+          "medium": 9.6,
+          "low": 3.6,
+          "info": 0.0
+        },
+        "metrics": {
+          "verdict_change_share": 0.0,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 0.0,
+          "max_abs_delta_score": 0,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": null,
+          "verdict_changed": [],
+          "status_changed": []
+        },
+        "pillar_metrics": {
+          "mean_abs_delta_pillar_score": 4.5367,
+          "max_abs_delta_pillar_score": 15,
+          "weakest_pillar_change_share": 0.3,
+          "strict_weakest_pillar_change_share": 0.0,
+          "weakest_pillar_changed": [
+            {
+              "scenario": "icu_gateway_critical",
+              "from": "Security",
+              "to": "Protection",
+              "from_score_after": 0,
+              "to_score_after": 0,
+              "tie_break_only": true
+            },
+            {
+              "scenario": "tight_budget_qiro",
+              "from": "Security",
+              "to": "Protection",
+              "from_score_after": 0,
+              "to_score_after": 0,
+              "tie_break_only": true
+            },
+            {
+              "scenario": "infusion_syn_flood",
+              "from": "Security",
+              "to": "Protection",
+              "from_score_after": 0,
+              "to_score_after": 0,
+              "tie_break_only": true
+            }
+          ]
+        }
+      }
+    ],
+    "S4_lifetime_threshold": {
+      "thresholds_years": [
+        5,
+        10,
+        15,
+        20
+      ],
+      "configs": [
+        {
+          "config": "L=5",
+          "lifetime_threshold_years": 5,
+          "identical_to_baseline": false,
+          "metrics": {
+            "verdict_change_share": 0.0,
+            "status_change_share": 0.1,
+            "mean_abs_delta_score": 2.0,
+            "max_abs_delta_score": 20,
+            "spearman_rank_correlation": 0.9969,
+            "mean_plan_jaccard": 0.95,
+            "verdict_changed": [],
+            "status_changed": [
+              {
+                "scenario": "ehr_tls13_classical",
+                "from": "AT_RISK",
+                "to": "UNSAFE"
+              }
+            ]
+          }
+        },
+        {
+          "config": "L=10",
+          "lifetime_threshold_years": 10,
+          "identical_to_baseline": true,
+          "metrics": {
+            "verdict_change_share": 0.0,
+            "status_change_share": 0.0,
+            "mean_abs_delta_score": 0.0,
+            "max_abs_delta_score": 0,
+            "spearman_rank_correlation": 1.0,
+            "mean_plan_jaccard": 1.0,
+            "verdict_changed": [],
+            "status_changed": []
+          }
+        },
+        {
+          "config": "L=15",
+          "lifetime_threshold_years": 15,
+          "identical_to_baseline": true,
+          "metrics": {
+            "verdict_change_share": 0.0,
+            "status_change_share": 0.0,
+            "mean_abs_delta_score": 0.0,
+            "max_abs_delta_score": 0,
+            "spearman_rank_correlation": 1.0,
+            "mean_plan_jaccard": 1.0,
+            "verdict_changed": [],
+            "status_changed": []
+          }
+        },
+        {
+          "config": "L=20",
+          "lifetime_threshold_years": 20,
+          "identical_to_baseline": false,
+          "metrics": {
+            "verdict_change_share": 0.2,
+            "status_change_share": 0.0,
+            "mean_abs_delta_score": 6.0,
+            "max_abs_delta_score": 20,
+            "spearman_rank_correlation": 0.9969,
+            "mean_plan_jaccard": 0.8829,
+            "verdict_changed": [
+              {
+                "scenario": "icu_gateway_critical",
+                "from": "Not Post-Quantum Safe",
+                "to": "Partially Safe"
+              },
+              {
+                "scenario": "tight_budget_qiro",
+                "from": "Not Post-Quantum Safe",
+                "to": "Partially Safe"
+              }
+            ],
+            "status_changed": []
+          }
+        }
+      ],
+      "per_scenario": [
+        {
+          "scenario": "icu_gateway_critical",
+          "data_lifetime_years": 15,
+          "by_threshold": {
+            "5": {
+              "pq_risk_score": 61,
+              "verdict": "Not Post-Quantum Safe",
+              "environment_status": "UNSAFE",
+              "findings": 8,
+              "long_lifetime_finding": true
+            },
+            "10": {
+              "pq_risk_score": 61,
+              "verdict": "Not Post-Quantum Safe",
+              "environment_status": "UNSAFE",
+              "findings": 8,
+              "long_lifetime_finding": true
+            },
+            "15": {
+              "pq_risk_score": 61,
+              "verdict": "Not Post-Quantum Safe",
+              "environment_status": "UNSAFE",
+              "findings": 8,
+              "long_lifetime_finding": true
+            },
+            "20": {
+              "pq_risk_score": 41,
+              "verdict": "Partially Safe",
+              "environment_status": "UNSAFE",
+              "findings": 8,
+              "long_lifetime_finding": false
+            }
+          }
+        },
+        {
+          "scenario": "nextgen_pq_safe",
+          "data_lifetime_years": 30,
+          "by_threshold": {
+            "5": {
+              "pq_risk_score": 0,
+              "verdict": "Safe",
+              "environment_status": "SAFE",
+              "findings": 0,
+              "long_lifetime_finding": false
+            },
+            "10": {
+              "pq_risk_score": 0,
+              "verdict": "Safe",
+              "environment_status": "SAFE",
+              "findings": 0,
+              "long_lifetime_finding": false
+            },
+            "15": {
+              "pq_risk_score": 0,
+              "verdict": "Safe",
+              "environment_status": "SAFE",
+              "findings": 0,
+              "long_lifetime_finding": false
+            },
+            "20": {
+              "pq_risk_score": 0,
+              "verdict": "Safe",
+              "environment_status": "SAFE",
+              "findings": 0,
+              "long_lifetime_finding": false
+            }
+          }
+        },
+        {
+          "scenario": "ehr_tls13_classical",
+          "data_lifetime_years": 8,
+          "by_threshold": {
+            "5": {
+              "pq_risk_score": 46,
+              "verdict": "Partially Safe",
+              "environment_status": "UNSAFE",
+              "findings": 5,
+              "long_lifetime_finding": true
+            },
+            "10": {
+              "pq_risk_score": 26,
+              "verdict": "Partially Safe",
+              "environment_status": "AT_RISK",
+              "findings": 5,
+              "long_lifetime_finding": false
+            },
+            "15": {
+              "pq_risk_score": 26,
+              "verdict": "Partially Safe",
+              "environment_status": "AT_RISK",
+              "findings": 5,
+              "long_lifetime_finding": false
+            },
+            "20": {
+              "pq_risk_score": 26,
+              "verdict": "Partially Safe",
+              "environment_status": "AT_RISK",
+              "findings": 5,
+              "long_lifetime_finding": false
+            }
+          }
+        },
+        {
+          "scenario": "clinical_ai_phi",
+          "data_lifetime_years": 5,
+          "by_threshold": {
+            "5": {
+              "pq_risk_score": 0,
+              "verdict": "Safe",
+              "environment_status": "UNSAFE",
+              "findings": 4,
+              "long_lifetime_finding": false
+            },
+            "10": {
+              "pq_risk_score": 0,
+              "verdict": "Safe",
+              "environment_status": "UNSAFE",
+              "findings": 4,
+              "long_lifetime_finding": false
+            },
+            "15": {
+              "pq_risk_score": 0,
+              "verdict": "Safe",
+              "environment_status": "UNSAFE",
+              "findings": 4,
+              "long_lifetime_finding": false
+            },
+            "20": {
+              "pq_risk_score": 0,
+              "verdict": "Safe",
+              "environment_status": "UNSAFE",
+              "findings": 4,
+              "long_lifetime_finding": false
+            }
+          }
+        },
+        {
+          "scenario": "secret_exposure",
+          "data_lifetime_years": 5,
+          "by_threshold": {
+            "5": {
+              "pq_risk_score": 10,
+              "verdict": "Safe",
+              "environment_status": "UNSAFE",
+              "findings": 2,
+              "long_lifetime_finding": false
+            },
+            "10": {
+              "pq_risk_score": 10,
+              "verdict": "Safe",
+              "environment_status": "UNSAFE",
+              "findings": 2,
+              "long_lifetime_finding": false
+            },
+            "15": {
+              "pq_risk_score": 10,
+              "verdict": "Safe",
+              "environment_status": "UNSAFE",
+              "findings": 2,
+              "long_lifetime_finding": false
+            },
+            "20": {
+              "pq_risk_score": 10,
+              "verdict": "Safe",
+              "environment_status": "UNSAFE",
+              "findings": 2,
+              "long_lifetime_finding": false
+            }
+          }
+        },
+        {
+          "scenario": "legacy_worst_case",
+          "data_lifetime_years": 20,
+          "by_threshold": {
+            "5": {
+              "pq_risk_score": 89,
+              "verdict": "Critical Quantum Risk",
+              "environment_status": "UNSAFE",
+              "findings": 9,
+              "long_lifetime_finding": true
+            },
+            "10": {
+              "pq_risk_score": 89,
+              "verdict": "Critical Quantum Risk",
+              "environment_status": "UNSAFE",
+              "findings": 9,
+              "long_lifetime_finding": true
+            },
+            "15": {
+              "pq_risk_score": 89,
+              "verdict": "Critical Quantum Risk",
+              "environment_status": "UNSAFE",
+              "findings": 9,
+              "long_lifetime_finding": true
+            },
+            "20": {
+              "pq_risk_score": 89,
+              "verdict": "Critical Quantum Risk",
+              "environment_status": "UNSAFE",
+              "findings": 9,
+              "long_lifetime_finding": true
+            }
+          }
+        },
+        {
+          "scenario": "tight_budget_qiro",
+          "data_lifetime_years": 15,
+          "by_threshold": {
+            "5": {
+              "pq_risk_score": 61,
+              "verdict": "Not Post-Quantum Safe",
+              "environment_status": "UNSAFE",
+              "findings": 8,
+              "long_lifetime_finding": true
+            },
+            "10": {
+              "pq_risk_score": 61,
+              "verdict": "Not Post-Quantum Safe",
+              "environment_status": "UNSAFE",
+              "findings": 8,
+              "long_lifetime_finding": true
+            },
+            "15": {
+              "pq_risk_score": 61,
+              "verdict": "Not Post-Quantum Safe",
+              "environment_status": "UNSAFE",
+              "findings": 8,
+              "long_lifetime_finding": true
+            },
+            "20": {
+              "pq_risk_score": 41,
+              "verdict": "Partially Safe",
+              "environment_status": "UNSAFE",
+              "findings": 8,
+              "long_lifetime_finding": false
+            }
+          }
+        },
+        {
+          "scenario": "pq_downgrade_prompt",
+          "data_lifetime_years": 25,
+          "by_threshold": {
+            "5": {
+              "pq_risk_score": 0,
+              "verdict": "Safe",
+              "environment_status": "UNSAFE",
+              "findings": 2,
+              "long_lifetime_finding": false
+            },
+            "10": {
+              "pq_risk_score": 0,
+              "verdict": "Safe",
+              "environment_status": "UNSAFE",
+              "findings": 2,
+              "long_lifetime_finding": false
+            },
+            "15": {
+              "pq_risk_score": 0,
+              "verdict": "Safe",
+              "environment_status": "UNSAFE",
+              "findings": 2,
+              "long_lifetime_finding": false
+            },
+            "20": {
+              "pq_risk_score": 0,
+              "verdict": "Safe",
+              "environment_status": "UNSAFE",
+              "findings": 2,
+              "long_lifetime_finding": false
+            }
+          }
+        },
+        {
+          "scenario": "hybrid_transition",
+          "data_lifetime_years": 30,
+          "by_threshold": {
+            "5": {
+              "pq_risk_score": 23,
+              "verdict": "Safe",
+              "environment_status": "AT_RISK",
+              "findings": 2,
+              "long_lifetime_finding": false
+            },
+            "10": {
+              "pq_risk_score": 23,
+              "verdict": "Safe",
+              "environment_status": "AT_RISK",
+              "findings": 2,
+              "long_lifetime_finding": false
+            },
+            "15": {
+              "pq_risk_score": 23,
+              "verdict": "Safe",
+              "environment_status": "AT_RISK",
+              "findings": 2,
+              "long_lifetime_finding": false
+            },
+            "20": {
+              "pq_risk_score": 23,
+              "verdict": "Safe",
+              "environment_status": "AT_RISK",
+              "findings": 2,
+              "long_lifetime_finding": false
+            }
+          }
+        },
+        {
+          "scenario": "infusion_syn_flood",
+          "data_lifetime_years": 15,
+          "by_threshold": {
+            "5": {
+              "pq_risk_score": 46,
+              "verdict": "Partially Safe",
+              "environment_status": "UNSAFE",
+              "findings": 6,
+              "long_lifetime_finding": true
+            },
+            "10": {
+              "pq_risk_score": 46,
+              "verdict": "Partially Safe",
+              "environment_status": "UNSAFE",
+              "findings": 6,
+              "long_lifetime_finding": true
+            },
+            "15": {
+              "pq_risk_score": 46,
+              "verdict": "Partially Safe",
+              "environment_status": "UNSAFE",
+              "findings": 6,
+              "long_lifetime_finding": true
+            },
+            "20": {
+              "pq_risk_score": 26,
+              "verdict": "Partially Safe",
+              "environment_status": "UNSAFE",
+              "findings": 6,
+              "long_lifetime_finding": false
+            }
+          }
+        }
+      ]
+    },
+    "S5_optimizer_pillar_weights": [
+      {
+        "config": "pillar weights x0.8",
+        "factor": 0.8,
+        "pillar_weights": {
+          "Trust": 0.8,
+          "Identity": 0.8,
+          "Privacy": 0.96,
+          "Protection": 0.8,
+          "Safety": 1.12,
+          "Security": 0.8
+        },
+        "metrics": {
+          "verdict_change_share": 0.0,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 0.0,
+          "max_abs_delta_score": 0,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": 1.0,
+          "verdict_changed": [],
+          "status_changed": []
+        },
+        "plans_changed": []
+      },
+      {
+        "config": "pillar weights x1.2",
+        "factor": 1.2,
+        "pillar_weights": {
+          "Trust": 1.2,
+          "Identity": 1.2,
+          "Privacy": 1.44,
+          "Protection": 1.2,
+          "Safety": 1.68,
+          "Security": 1.2
+        },
+        "metrics": {
+          "verdict_change_share": 0.0,
+          "status_change_share": 0.0,
+          "mean_abs_delta_score": 0.0,
+          "max_abs_delta_score": 0,
+          "spearman_rank_correlation": 1.0,
+          "mean_plan_jaccard": 1.0,
+          "verdict_changed": [],
+          "status_changed": []
+        },
+        "plans_changed": []
+      }
+    ]
+  },
+  "method": {
+    "scenarios": "The ten built-in synthetic scenarios (safeguard_pq/data/scenarios.json), each run once through the full pipeline (llm_report=False, fixed seed) to obtain the baseline findings, PQ score, verdict, environment status, pillar scores and QIRO plan.",
+    "S1_category_weights": "One-at-a-time: each of the six category weights is scaled by 0.8 and 1.2 and all six are renormalised to sum to 1; the score is recomputed from the baseline findings.",
+    "S2_severity_points": "All severity points (critical 100, high 75, medium 50, low 25) scaled by 0.8 and 1.2 at once; the fixed 75-point 'no PQ algorithm in use' posture value is not a severity and is not scaled.",
+    "S3_pillar_deductions": "All per-severity pillar deductions scaled by 0.8 and 1.2 at once; pillar scores recomputed from the baseline findings. Deductions do not enter the PQ score, so the score metrics are reported only as a check.",
+    "S4_lifetime_threshold": "The data-lifetime threshold of the critical long_lifetime_classical_crypto rule (default 10 years) set to 5, 10, 15 and 20 years via assumptions.lifetime_threshold_years and the full pipeline re-run, so findings, score, status and plan can all change.",
+    "S5_optimizer_pillar_weights": "QIRO's TIPPSS pillar weights scaled by 0.8 and 1.2 at once (module constant patched for the run and restored); the optimizer re-run on the baseline findings with the scenario's budget / downtime constraints and the same seed.",
+    "metrics": {
+      "verdict_change_share": "share of the ten scenarios whose 4-level PQ verdict differs from baseline",
+      "status_change_share": "share whose SAFE / AT_RISK / UNSAFE environment status differs from baseline",
+      "mean_abs_delta_score, max_abs_delta_score": "mean and maximum |perturbed - baseline| PQ risk score (0-100 integer scale)",
+      "spearman_rank_correlation": "Spearman rank correlation (average ranks for ties) between the baseline and perturbed PQ-score rankings of the ten scenarios; null when undefined",
+      "mean_plan_jaccard": "mean Jaccard similarity of the selected-action sets, matched by finding; only where plans were recomputed (S4, S5), else null. Findings are renumbered when the finding set changes (S4), so actions are matched by a stable finding signature (agent, type, device / detected value) rather than by the F-number.",
+      "pillar_metrics (S3)": "mean and max |perturbed - baseline| pillar score over 6 pillars x 10 scenarios; the share of scenarios whose reported weakest pillar changes (argmin, ties broken in TIPPSS order) and the share where that change is strict (the baseline weakest pillar is no longer at the minimum). Under uniform scaling, non-strict changes arise only from the 0 floor creating ties."
+    }
+  },
+  "caveat": "Ten synthetic hand-written scenarios; weights are design choices, not calibrated on incident data."
+}

@@ -1,0 +1,2120 @@
+{
+  "benchmark": "traffic_rules_holdout",
+  "software_version": "0.3.0",
+  "date": "2026-11-22",
+  "python": "3.13.5",
+  "protocol": "cross_source",
+  "data_source": "CICIoMT2024 test split (user-downloaded, not redistributed)",
+  "development_source": "synthetic_simulator",
+  "evaluation_source": "CICIoMT2024 test split (user-downloaded, not redistributed)",
+  "train_dir": "datasets/synthetic_holdout/train",
+  "test_dir": "<CICIoMT2024 test CSV folder, user-supplied; not redistributed>",
+  "dev_fraction": null,
+  "window_rows": 100,
+  "max_windows_per_file": 2000,
+  "train_manifest": [
+    {
+      "file": "arp_spoofing.csv",
+      "class": "arp_spoofing",
+      "label": "attack",
+      "windows": 20,
+      "cap_reached": false,
+      "window_range": [
+        0,
+        19
+      ]
+    },
+    {
+      "file": "benign.csv",
+      "class": "benign",
+      "label": "benign",
+      "windows": 20,
+      "cap_reached": false,
+      "window_range": [
+        0,
+        19
+      ]
+    },
+    {
+      "file": "ddos_volumetric.csv",
+      "class": "ddos_volumetric",
+      "label": "attack",
+      "windows": 20,
+      "cap_reached": false,
+      "window_range": [
+        0,
+        19
+      ]
+    },
+    {
+      "file": "mqtt_malformed.csv",
+      "class": "mqtt_malformed",
+      "label": "attack",
+      "windows": 20,
+      "cap_reached": false,
+      "window_range": [
+        0,
+        19
+      ]
+    },
+    {
+      "file": "port_scan.csv",
+      "class": "port_scan",
+      "label": "attack",
+      "windows": 20,
+      "cap_reached": false,
+      "window_range": [
+        0,
+        19
+      ]
+    },
+    {
+      "file": "syn_flood.csv",
+      "class": "syn_flood",
+      "label": "attack",
+      "windows": 20,
+      "cap_reached": false,
+      "window_range": [
+        0,
+        19
+      ]
+    }
+  ],
+  "test_manifest": [
+    {
+      "file": "ARP_Spoofing_test.pcap.csv",
+      "class": "arp_spoofing",
+      "label": "attack",
+      "windows": 17,
+      "cap_reached": false,
+      "window_range": [
+        0,
+        16
+      ]
+    },
+    {
+      "file": "Benign_test.pcap.csv",
+      "class": "benign",
+      "label": "benign",
+      "windows": 376,
+      "cap_reached": false,
+      "window_range": [
+        0,
+        375
+      ]
+    },
+    {
+      "file": "MQTT-Malformed_Data_test.pcap.csv",
+      "class": "mqtt_malformed",
+      "label": "attack",
+      "windows": 17,
+      "cap_reached": false,
+      "window_range": [
+        0,
+        16
+      ]
+    },
+    {
+      "file": "Recon-Port_Scan_test.pcap.csv",
+      "class": "port_scan",
+      "label": "attack",
+      "windows": 226,
+      "cap_reached": false,
+      "window_range": [
+        0,
+        225
+      ]
+    },
+    {
+      "file": "TCP_IP-DDoS-TCP_test.pcap.csv",
+      "class": "ddos_volumetric",
+      "label": "attack",
+      "windows": 1825,
+      "cap_reached": false,
+      "window_range": [
+        0,
+        1824
+      ]
+    },
+    {
+      "file": "TCP_IP-DoS-SYN_test.pcap.csv",
+      "class": "syn_flood",
+      "label": "attack",
+      "windows": 985,
+      "cap_reached": false,
+      "window_range": [
+        0,
+        984
+      ]
+    }
+  ],
+  "train_windows": {
+    "total": 120,
+    "attack": 100,
+    "benign": 20,
+    "files": 6,
+    "per_class": {
+      "arp_spoofing": 20,
+      "benign": 20,
+      "ddos_volumetric": 20,
+      "mqtt_malformed": 20,
+      "port_scan": 20,
+      "syn_flood": 20
+    }
+  },
+  "test_windows": {
+    "total": 3446,
+    "attack": 3070,
+    "benign": 376,
+    "files": 6,
+    "per_class": {
+      "arp_spoofing": 17,
+      "benign": 376,
+      "ddos_volumetric": 1825,
+      "mqtt_malformed": 17,
+      "port_scan": 226,
+      "syn_flood": 985
+    }
+  },
+  "tuning": {
+    "objective": "per rule: maximise F1 of the rule for its target attack class(es) vs. benign on the development windows; every threshold multiplied by a factor from FACTORS (rule structure and comparison operators unchanged); ties -> smallest sum |ln factor| (closest to shipped), then lexicographic",
+    "factors": [
+      0.5,
+      0.75,
+      1.0,
+      1.25,
+      1.5
+    ],
+    "targets": {
+      "volumetric_flood_pattern": [
+        "ddos_volumetric"
+      ],
+      "syn_flood_pattern": [
+        "syn_flood"
+      ],
+      "port_scan_pattern": [
+        "port_scan"
+      ],
+      "protocol_flag_anomaly": [
+        "mqtt_malformed"
+      ],
+      "protocol_mix_anomaly": [
+        "arp_spoofing"
+      ]
+    },
+    "rules": {
+      "volumetric_flood_pattern": {
+        "target_classes": [
+          "ddos_volumetric"
+        ],
+        "conditions": [
+          [
+            "tcp_ratio",
+            ">="
+          ],
+          [
+            "ack_ratio",
+            "<="
+          ],
+          [
+            "tot_size_mean",
+            "<="
+          ],
+          [
+            "header_length_mean",
+            "<="
+          ]
+        ],
+        "shipped": [
+          0.99,
+          0.01,
+          60.0,
+          1000.0
+        ],
+        "dev_target_windows": 20,
+        "dev_benign_windows": 20,
+        "tuned": [
+          0.99,
+          0.01,
+          60.0,
+          1000.0
+        ],
+        "factors": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dev_f1_tuned": 1.0,
+        "dev_tp_fp_fn_tuned": [
+          20,
+          0,
+          0
+        ],
+        "status": "tuned",
+        "dev_f1_shipped": 1.0,
+        "dev_tp_fp_fn_shipped": [
+          20,
+          0,
+          0
+        ],
+        "grid_points": 625,
+        "tied_at_max_f1": 225,
+        "changed": false
+      },
+      "syn_flood_pattern": {
+        "target_classes": [
+          "syn_flood"
+        ],
+        "conditions": [
+          [
+            "syn_ratio",
+            ">="
+          ],
+          [
+            "tot_size_mean",
+            "<="
+          ]
+        ],
+        "shipped": [
+          0.6,
+          80.0
+        ],
+        "dev_target_windows": 20,
+        "dev_benign_windows": 20,
+        "tuned": [
+          0.6,
+          80.0
+        ],
+        "factors": [
+          1.0,
+          1.0
+        ],
+        "dev_f1_tuned": 1.0,
+        "dev_tp_fp_fn_tuned": [
+          20,
+          0,
+          0
+        ],
+        "status": "tuned",
+        "dev_f1_shipped": 1.0,
+        "dev_tp_fp_fn_shipped": [
+          20,
+          0,
+          0
+        ],
+        "grid_points": 25,
+        "tied_at_max_f1": 16,
+        "changed": false
+      },
+      "port_scan_pattern": {
+        "target_classes": [
+          "port_scan"
+        ],
+        "conditions": [
+          [
+            "syn_ratio",
+            ">="
+          ],
+          [
+            "syn_ratio",
+            "<"
+          ],
+          [
+            "rst_ratio",
+            ">="
+          ],
+          [
+            "tot_size_mean",
+            "<="
+          ]
+        ],
+        "shipped": [
+          0.15,
+          0.6,
+          0.1,
+          250.0
+        ],
+        "dev_target_windows": 20,
+        "dev_benign_windows": 20,
+        "tuned": [
+          0.15,
+          0.6,
+          0.1,
+          250.0
+        ],
+        "factors": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dev_f1_tuned": 1.0,
+        "dev_tp_fp_fn_tuned": [
+          20,
+          0,
+          0
+        ],
+        "status": "tuned",
+        "dev_f1_shipped": 1.0,
+        "dev_tp_fp_fn_shipped": [
+          20,
+          0,
+          0
+        ],
+        "grid_points": 625,
+        "tied_at_max_f1": 375,
+        "changed": false
+      },
+      "protocol_flag_anomaly": {
+        "target_classes": [
+          "mqtt_malformed"
+        ],
+        "conditions": [
+          [
+            "control_flag_ratio",
+            ">="
+          ],
+          [
+            "tcp_ratio",
+            ">="
+          ],
+          [
+            "syn_ratio",
+            "<"
+          ]
+        ],
+        "shipped": [
+          0.03,
+          0.8,
+          0.15
+        ],
+        "dev_target_windows": 20,
+        "dev_benign_windows": 20,
+        "tuned": [
+          0.03,
+          0.8,
+          0.15
+        ],
+        "factors": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dev_f1_tuned": 1.0,
+        "dev_tp_fp_fn_tuned": [
+          20,
+          0,
+          0
+        ],
+        "status": "tuned",
+        "dev_f1_shipped": 1.0,
+        "dev_tp_fp_fn_shipped": [
+          20,
+          0,
+          0
+        ],
+        "grid_points": 125,
+        "tied_at_max_f1": 60,
+        "changed": false
+      },
+      "protocol_mix_anomaly": {
+        "target_classes": [
+          "arp_spoofing"
+        ],
+        "conditions": [
+          [
+            "udp_ratio",
+            ">="
+          ],
+          [
+            "tot_size_mean",
+            ">="
+          ],
+          [
+            "tot_size_mean",
+            "<="
+          ],
+          [
+            "ack_ratio",
+            "<="
+          ]
+        ],
+        "shipped": [
+          0.3,
+          200.0,
+          1000.0,
+          0.6
+        ],
+        "dev_target_windows": 20,
+        "dev_benign_windows": 20,
+        "tuned": [
+          0.3,
+          200.0,
+          1000.0,
+          0.6
+        ],
+        "factors": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "dev_f1_tuned": 1.0,
+        "dev_tp_fp_fn_tuned": [
+          20,
+          0,
+          0
+        ],
+        "status": "tuned",
+        "dev_f1_shipped": 1.0,
+        "dev_tp_fp_fn_shipped": [
+          20,
+          0,
+          0
+        ],
+        "grid_points": 625,
+        "tied_at_max_f1": 625,
+        "changed": false
+      }
+    },
+    "train_fit": {
+      "shipped_thresholds": {
+        "windows": 120,
+        "confusion": {
+          "tp": 100,
+          "fp": 0,
+          "tn": 20,
+          "fn": 0
+        },
+        "metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "fpr": 0.0
+        },
+        "per_class": {
+          "arp_spoofing": {
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "protocol_mix_anomaly": 20
+            },
+            "target_rule": "protocol_mix_anomaly",
+            "target_rule_hits": 20,
+            "target_rule_rate": 1.0,
+            "target_rule_wilson95": [
+              0.8389,
+              1.0
+            ]
+          },
+          "benign": {
+            "label": "benign",
+            "windows": 20,
+            "flagged": 0,
+            "rate": 0.0,
+            "rate_meaning": "false_positive_rate",
+            "wilson95": [
+              0.0,
+              0.1611
+            ],
+            "rule_hits": {}
+          },
+          "ddos_volumetric": {
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "volumetric_flood_pattern": 20
+            },
+            "target_rule": "volumetric_flood_pattern",
+            "target_rule_hits": 20,
+            "target_rule_rate": 1.0,
+            "target_rule_wilson95": [
+              0.8389,
+              1.0
+            ]
+          },
+          "mqtt_malformed": {
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "protocol_flag_anomaly": 20
+            },
+            "target_rule": "protocol_flag_anomaly",
+            "target_rule_hits": 20,
+            "target_rule_rate": 1.0,
+            "target_rule_wilson95": [
+              0.8389,
+              1.0
+            ]
+          },
+          "port_scan": {
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "port_scan_pattern": 20
+            },
+            "target_rule": "port_scan_pattern",
+            "target_rule_hits": 20,
+            "target_rule_rate": 1.0,
+            "target_rule_wilson95": [
+              0.8389,
+              1.0
+            ]
+          },
+          "syn_flood": {
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "syn_flood_pattern": 20
+            },
+            "target_rule": "syn_flood_pattern",
+            "target_rule_hits": 20,
+            "target_rule_rate": 1.0,
+            "target_rule_wilson95": [
+              0.8389,
+              1.0
+            ]
+          }
+        },
+        "per_file": [
+          {
+            "file": "arp_spoofing.csv",
+            "class": "arp_spoofing",
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "protocol_mix_anomaly": 20
+            }
+          },
+          {
+            "file": "benign.csv",
+            "class": "benign",
+            "label": "benign",
+            "windows": 20,
+            "flagged": 0,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.1611
+            ],
+            "rule_hits": {}
+          },
+          {
+            "file": "ddos_volumetric.csv",
+            "class": "ddos_volumetric",
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "volumetric_flood_pattern": 20
+            }
+          },
+          {
+            "file": "mqtt_malformed.csv",
+            "class": "mqtt_malformed",
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "protocol_flag_anomaly": 20
+            }
+          },
+          {
+            "file": "port_scan.csv",
+            "class": "port_scan",
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "port_scan_pattern": 20
+            }
+          },
+          {
+            "file": "syn_flood.csv",
+            "class": "syn_flood",
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "syn_flood_pattern": 20
+            }
+          }
+        ]
+      },
+      "tuned_thresholds": {
+        "windows": 120,
+        "confusion": {
+          "tp": 100,
+          "fp": 0,
+          "tn": 20,
+          "fn": 0
+        },
+        "metrics": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "fpr": 0.0
+        },
+        "per_class": {
+          "arp_spoofing": {
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "protocol_mix_anomaly": 20
+            },
+            "target_rule": "protocol_mix_anomaly",
+            "target_rule_hits": 20,
+            "target_rule_rate": 1.0,
+            "target_rule_wilson95": [
+              0.8389,
+              1.0
+            ]
+          },
+          "benign": {
+            "label": "benign",
+            "windows": 20,
+            "flagged": 0,
+            "rate": 0.0,
+            "rate_meaning": "false_positive_rate",
+            "wilson95": [
+              0.0,
+              0.1611
+            ],
+            "rule_hits": {}
+          },
+          "ddos_volumetric": {
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "volumetric_flood_pattern": 20
+            },
+            "target_rule": "volumetric_flood_pattern",
+            "target_rule_hits": 20,
+            "target_rule_rate": 1.0,
+            "target_rule_wilson95": [
+              0.8389,
+              1.0
+            ]
+          },
+          "mqtt_malformed": {
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "protocol_flag_anomaly": 20
+            },
+            "target_rule": "protocol_flag_anomaly",
+            "target_rule_hits": 20,
+            "target_rule_rate": 1.0,
+            "target_rule_wilson95": [
+              0.8389,
+              1.0
+            ]
+          },
+          "port_scan": {
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "port_scan_pattern": 20
+            },
+            "target_rule": "port_scan_pattern",
+            "target_rule_hits": 20,
+            "target_rule_rate": 1.0,
+            "target_rule_wilson95": [
+              0.8389,
+              1.0
+            ]
+          },
+          "syn_flood": {
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "syn_flood_pattern": 20
+            },
+            "target_rule": "syn_flood_pattern",
+            "target_rule_hits": 20,
+            "target_rule_rate": 1.0,
+            "target_rule_wilson95": [
+              0.8389,
+              1.0
+            ]
+          }
+        },
+        "per_file": [
+          {
+            "file": "arp_spoofing.csv",
+            "class": "arp_spoofing",
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "protocol_mix_anomaly": 20
+            }
+          },
+          {
+            "file": "benign.csv",
+            "class": "benign",
+            "label": "benign",
+            "windows": 20,
+            "flagged": 0,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.1611
+            ],
+            "rule_hits": {}
+          },
+          {
+            "file": "ddos_volumetric.csv",
+            "class": "ddos_volumetric",
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "volumetric_flood_pattern": 20
+            }
+          },
+          {
+            "file": "mqtt_malformed.csv",
+            "class": "mqtt_malformed",
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "protocol_flag_anomaly": 20
+            }
+          },
+          {
+            "file": "port_scan.csv",
+            "class": "port_scan",
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "port_scan_pattern": 20
+            }
+          },
+          {
+            "file": "syn_flood.csv",
+            "class": "syn_flood",
+            "label": "attack",
+            "windows": 20,
+            "flagged": 20,
+            "rate": 1.0,
+            "wilson95": [
+              0.8389,
+              1.0
+            ],
+            "rule_hits": {
+              "syn_flood_pattern": 20
+            }
+          }
+        ]
+      }
+    }
+  },
+  "results": {
+    "shipped_thresholds": {
+      "thresholds": {
+        "volumetric_flood_pattern": [
+          0.99,
+          0.01,
+          60.0,
+          1000.0
+        ],
+        "syn_flood_pattern": [
+          0.6,
+          80.0
+        ],
+        "port_scan_pattern": [
+          0.15,
+          0.6,
+          0.1,
+          250.0
+        ],
+        "protocol_flag_anomaly": [
+          0.03,
+          0.8,
+          0.15
+        ],
+        "protocol_mix_anomaly": [
+          0.3,
+          200.0,
+          1000.0,
+          0.6
+        ]
+      },
+      "windows": 3446,
+      "confusion": {
+        "tp": 2986,
+        "fp": 10,
+        "tn": 366,
+        "fn": 84
+      },
+      "metrics": {
+        "precision": 0.9967,
+        "recall": 0.9726,
+        "f1": 0.9845,
+        "fpr": 0.0266
+      },
+      "bootstrap": {
+        "ci95": {
+          "precision": [
+            0.9946,
+            0.9987
+          ],
+          "recall": [
+            0.9672,
+            0.9781
+          ],
+          "f1": [
+            0.9816,
+            0.9874
+          ],
+          "fpr": [
+            0.0108,
+            0.0437
+          ]
+        },
+        "resamples": 1000,
+        "seed": 0,
+        "valid_resamples": {
+          "precision": 1000,
+          "recall": 1000,
+          "f1": 1000,
+          "fpr": 1000
+        }
+      },
+      "per_class": {
+        "arp_spoofing": {
+          "label": "attack",
+          "windows": 17,
+          "flagged": 15,
+          "rate": 0.8824,
+          "rate_meaning": "detection_rate",
+          "wilson95": [
+            0.6566,
+            0.9671
+          ],
+          "rule_hits": {
+            "protocol_mix_anomaly": 15
+          },
+          "target_rule": "protocol_mix_anomaly",
+          "target_rule_hits": 15,
+          "target_rule_rate": 0.8824,
+          "target_rule_wilson95": [
+            0.6566,
+            0.9671
+          ]
+        },
+        "benign": {
+          "label": "benign",
+          "windows": 376,
+          "flagged": 10,
+          "rate": 0.0266,
+          "rate_meaning": "false_positive_rate",
+          "wilson95": [
+            0.0145,
+            0.0483
+          ],
+          "rule_hits": {
+            "protocol_flag_anomaly": 7,
+            "protocol_mix_anomaly": 3
+          }
+        },
+        "ddos_volumetric": {
+          "label": "attack",
+          "windows": 1825,
+          "flagged": 1750,
+          "rate": 0.9589,
+          "rate_meaning": "detection_rate",
+          "wilson95": [
+            0.9488,
+            0.9671
+          ],
+          "rule_hits": {
+            "volumetric_flood_pattern": 1750
+          },
+          "target_rule": "volumetric_flood_pattern",
+          "target_rule_hits": 1750,
+          "target_rule_rate": 0.9589,
+          "target_rule_wilson95": [
+            0.9488,
+            0.9671
+          ]
+        },
+        "mqtt_malformed": {
+          "label": "attack",
+          "windows": 17,
+          "flagged": 13,
+          "rate": 0.7647,
+          "rate_meaning": "detection_rate",
+          "wilson95": [
+            0.5274,
+            0.9044
+          ],
+          "rule_hits": {
+            "protocol_flag_anomaly": 13
+          },
+          "target_rule": "protocol_flag_anomaly",
+          "target_rule_hits": 13,
+          "target_rule_rate": 0.7647,
+          "target_rule_wilson95": [
+            0.5274,
+            0.9044
+          ]
+        },
+        "port_scan": {
+          "label": "attack",
+          "windows": 226,
+          "flagged": 223,
+          "rate": 0.9867,
+          "rate_meaning": "detection_rate",
+          "wilson95": [
+            0.9617,
+            0.9955
+          ],
+          "rule_hits": {
+            "port_scan_pattern": 191,
+            "syn_flood_pattern": 21,
+            "protocol_mix_anomaly": 13,
+            "protocol_flag_anomaly": 3,
+            "volumetric_flood_pattern": 1
+          },
+          "target_rule": "port_scan_pattern",
+          "target_rule_hits": 191,
+          "target_rule_rate": 0.8451,
+          "target_rule_wilson95": [
+            0.7922,
+            0.8865
+          ]
+        },
+        "syn_flood": {
+          "label": "attack",
+          "windows": 985,
+          "flagged": 985,
+          "rate": 1.0,
+          "rate_meaning": "detection_rate",
+          "wilson95": [
+            0.9961,
+            1.0
+          ],
+          "rule_hits": {
+            "syn_flood_pattern": 984,
+            "volumetric_flood_pattern": 4,
+            "port_scan_pattern": 1
+          },
+          "target_rule": "syn_flood_pattern",
+          "target_rule_hits": 984,
+          "target_rule_rate": 0.999,
+          "target_rule_wilson95": [
+            0.9943,
+            0.9998
+          ]
+        }
+      },
+      "per_file": [
+        {
+          "file": "ARP_Spoofing_test.pcap.csv",
+          "class": "arp_spoofing",
+          "label": "attack",
+          "windows": 17,
+          "flagged": 15,
+          "rate": 0.8824,
+          "wilson95": [
+            0.6566,
+            0.9671
+          ],
+          "rule_hits": {
+            "protocol_mix_anomaly": 15
+          }
+        },
+        {
+          "file": "Benign_test.pcap.csv",
+          "class": "benign",
+          "label": "benign",
+          "windows": 376,
+          "flagged": 10,
+          "rate": 0.0266,
+          "wilson95": [
+            0.0145,
+            0.0483
+          ],
+          "rule_hits": {
+            "protocol_flag_anomaly": 7,
+            "protocol_mix_anomaly": 3
+          }
+        },
+        {
+          "file": "MQTT-Malformed_Data_test.pcap.csv",
+          "class": "mqtt_malformed",
+          "label": "attack",
+          "windows": 17,
+          "flagged": 13,
+          "rate": 0.7647,
+          "wilson95": [
+            0.5274,
+            0.9044
+          ],
+          "rule_hits": {
+            "protocol_flag_anomaly": 13
+          }
+        },
+        {
+          "file": "Recon-Port_Scan_test.pcap.csv",
+          "class": "port_scan",
+          "label": "attack",
+          "windows": 226,
+          "flagged": 223,
+          "rate": 0.9867,
+          "wilson95": [
+            0.9617,
+            0.9955
+          ],
+          "rule_hits": {
+            "port_scan_pattern": 191,
+            "syn_flood_pattern": 21,
+            "protocol_mix_anomaly": 13,
+            "protocol_flag_anomaly": 3,
+            "volumetric_flood_pattern": 1
+          }
+        },
+        {
+          "file": "TCP_IP-DDoS-TCP_test.pcap.csv",
+          "class": "ddos_volumetric",
+          "label": "attack",
+          "windows": 1825,
+          "flagged": 1750,
+          "rate": 0.9589,
+          "wilson95": [
+            0.9488,
+            0.9671
+          ],
+          "rule_hits": {
+            "volumetric_flood_pattern": 1750
+          }
+        },
+        {
+          "file": "TCP_IP-DoS-SYN_test.pcap.csv",
+          "class": "syn_flood",
+          "label": "attack",
+          "windows": 985,
+          "flagged": 985,
+          "rate": 1.0,
+          "wilson95": [
+            0.9961,
+            1.0
+          ],
+          "rule_hits": {
+            "syn_flood_pattern": 984,
+            "volumetric_flood_pattern": 4,
+            "port_scan_pattern": 1
+          }
+        }
+      ]
+    },
+    "tuned_thresholds": {
+      "thresholds": {
+        "volumetric_flood_pattern": [
+          0.99,
+          0.01,
+          60.0,
+          1000.0
+        ],
+        "syn_flood_pattern": [
+          0.6,
+          80.0
+        ],
+        "port_scan_pattern": [
+          0.15,
+          0.6,
+          0.1,
+          250.0
+        ],
+        "protocol_flag_anomaly": [
+          0.03,
+          0.8,
+          0.15
+        ],
+        "protocol_mix_anomaly": [
+          0.3,
+          200.0,
+          1000.0,
+          0.6
+        ]
+      },
+      "windows": 3446,
+      "confusion": {
+        "tp": 2986,
+        "fp": 10,
+        "tn": 366,
+        "fn": 84
+      },
+      "metrics": {
+        "precision": 0.9967,
+        "recall": 0.9726,
+        "f1": 0.9845,
+        "fpr": 0.0266
+      },
+      "bootstrap": {
+        "ci95": {
+          "precision": [
+            0.9946,
+            0.9987
+          ],
+          "recall": [
+            0.9672,
+            0.9781
+          ],
+          "f1": [
+            0.9816,
+            0.9874
+          ],
+          "fpr": [
+            0.0108,
+            0.0437
+          ]
+        },
+        "resamples": 1000,
+        "seed": 0,
+        "valid_resamples": {
+          "precision": 1000,
+          "recall": 1000,
+          "f1": 1000,
+          "fpr": 1000
+        }
+      },
+      "per_class": {
+        "arp_spoofing": {
+          "label": "attack",
+          "windows": 17,
+          "flagged": 15,
+          "rate": 0.8824,
+          "rate_meaning": "detection_rate",
+          "wilson95": [
+            0.6566,
+            0.9671
+          ],
+          "rule_hits": {
+            "protocol_mix_anomaly": 15
+          },
+          "target_rule": "protocol_mix_anomaly",
+          "target_rule_hits": 15,
+          "target_rule_rate": 0.8824,
+          "target_rule_wilson95": [
+            0.6566,
+            0.9671
+          ]
+        },
+        "benign": {
+          "label": "benign",
+          "windows": 376,
+          "flagged": 10,
+          "rate": 0.0266,
+          "rate_meaning": "false_positive_rate",
+          "wilson95": [
+            0.0145,
+            0.0483
+          ],
+          "rule_hits": {
+            "protocol_flag_anomaly": 7,
+            "protocol_mix_anomaly": 3
+          }
+        },
+        "ddos_volumetric": {
+          "label": "attack",
+          "windows": 1825,
+          "flagged": 1750,
+          "rate": 0.9589,
+          "rate_meaning": "detection_rate",
+          "wilson95": [
+            0.9488,
+            0.9671
+          ],
+          "rule_hits": {
+            "volumetric_flood_pattern": 1750
+          },
+          "target_rule": "volumetric_flood_pattern",
+          "target_rule_hits": 1750,
+          "target_rule_rate": 0.9589,
+          "target_rule_wilson95": [
+            0.9488,
+            0.9671
+          ]
+        },
+        "mqtt_malformed": {
+          "label": "attack",
+          "windows": 17,
+          "flagged": 13,
+          "rate": 0.7647,
+          "rate_meaning": "detection_rate",
+          "wilson95": [
+            0.5274,
+            0.9044
+          ],
+          "rule_hits": {
+            "protocol_flag_anomaly": 13
+          },
+          "target_rule": "protocol_flag_anomaly",
+          "target_rule_hits": 13,
+          "target_rule_rate": 0.7647,
+          "target_rule_wilson95": [
+            0.5274,
+            0.9044
+          ]
+        },
+        "port_scan": {
+          "label": "attack",
+          "windows": 226,
+          "flagged": 223,
+          "rate": 0.9867,
+          "rate_meaning": "detection_rate",
+          "wilson95": [
+            0.9617,
+            0.9955
+          ],
+          "rule_hits": {
+            "port_scan_pattern": 191,
+            "syn_flood_pattern": 21,
+            "protocol_mix_anomaly": 13,
+            "protocol_flag_anomaly": 3,
+            "volumetric_flood_pattern": 1
+          },
+          "target_rule": "port_scan_pattern",
+          "target_rule_hits": 191,
+          "target_rule_rate": 0.8451,
+          "target_rule_wilson95": [
+            0.7922,
+            0.8865
+          ]
+        },
+        "syn_flood": {
+          "label": "attack",
+          "windows": 985,
+          "flagged": 985,
+          "rate": 1.0,
+          "rate_meaning": "detection_rate",
+          "wilson95": [
+            0.9961,
+            1.0
+          ],
+          "rule_hits": {
+            "syn_flood_pattern": 984,
+            "volumetric_flood_pattern": 4,
+            "port_scan_pattern": 1
+          },
+          "target_rule": "syn_flood_pattern",
+          "target_rule_hits": 984,
+          "target_rule_rate": 0.999,
+          "target_rule_wilson95": [
+            0.9943,
+            0.9998
+          ]
+        }
+      },
+      "per_file": [
+        {
+          "file": "ARP_Spoofing_test.pcap.csv",
+          "class": "arp_spoofing",
+          "label": "attack",
+          "windows": 17,
+          "flagged": 15,
+          "rate": 0.8824,
+          "wilson95": [
+            0.6566,
+            0.9671
+          ],
+          "rule_hits": {
+            "protocol_mix_anomaly": 15
+          }
+        },
+        {
+          "file": "Benign_test.pcap.csv",
+          "class": "benign",
+          "label": "benign",
+          "windows": 376,
+          "flagged": 10,
+          "rate": 0.0266,
+          "wilson95": [
+            0.0145,
+            0.0483
+          ],
+          "rule_hits": {
+            "protocol_flag_anomaly": 7,
+            "protocol_mix_anomaly": 3
+          }
+        },
+        {
+          "file": "MQTT-Malformed_Data_test.pcap.csv",
+          "class": "mqtt_malformed",
+          "label": "attack",
+          "windows": 17,
+          "flagged": 13,
+          "rate": 0.7647,
+          "wilson95": [
+            0.5274,
+            0.9044
+          ],
+          "rule_hits": {
+            "protocol_flag_anomaly": 13
+          }
+        },
+        {
+          "file": "Recon-Port_Scan_test.pcap.csv",
+          "class": "port_scan",
+          "label": "attack",
+          "windows": 226,
+          "flagged": 223,
+          "rate": 0.9867,
+          "wilson95": [
+            0.9617,
+            0.9955
+          ],
+          "rule_hits": {
+            "port_scan_pattern": 191,
+            "syn_flood_pattern": 21,
+            "protocol_mix_anomaly": 13,
+            "protocol_flag_anomaly": 3,
+            "volumetric_flood_pattern": 1
+          }
+        },
+        {
+          "file": "TCP_IP-DDoS-TCP_test.pcap.csv",
+          "class": "ddos_volumetric",
+          "label": "attack",
+          "windows": 1825,
+          "flagged": 1750,
+          "rate": 0.9589,
+          "wilson95": [
+            0.9488,
+            0.9671
+          ],
+          "rule_hits": {
+            "volumetric_flood_pattern": 1750
+          }
+        },
+        {
+          "file": "TCP_IP-DoS-SYN_test.pcap.csv",
+          "class": "syn_flood",
+          "label": "attack",
+          "windows": 985,
+          "flagged": 985,
+          "rate": 1.0,
+          "wilson95": [
+            0.9961,
+            1.0
+          ],
+          "rule_hits": {
+            "syn_flood_pattern": 984,
+            "volumetric_flood_pattern": 4,
+            "port_scan_pattern": 1
+          }
+        }
+      ]
+    },
+    "baselines": {
+      "majority_class": {
+        "description": "predict the majority window label of the development split for every held-out window (tie -> attack)",
+        "fitted": {
+          "dev_attack_windows": 100,
+          "dev_benign_windows": 20,
+          "predicts": "attack"
+        },
+        "windows": 3446,
+        "confusion": {
+          "tp": 3070,
+          "fp": 376,
+          "tn": 0,
+          "fn": 0
+        },
+        "metrics": {
+          "precision": 0.8909,
+          "recall": 1.0,
+          "f1": 0.9423,
+          "fpr": 1.0
+        },
+        "bootstrap": {
+          "ci95": {
+            "precision": [
+              0.8804,
+              0.901
+            ],
+            "recall": [
+              1.0,
+              1.0
+            ],
+            "f1": [
+              0.9364,
+              0.9479
+            ],
+            "fpr": [
+              1.0,
+              1.0
+            ]
+          },
+          "resamples": 1000,
+          "seed": 0,
+          "valid_resamples": {
+            "precision": 1000,
+            "recall": 1000,
+            "f1": 1000,
+            "fpr": 1000
+          }
+        },
+        "per_class": {
+          "arp_spoofing": {
+            "label": "attack",
+            "windows": 17,
+            "flagged": 17,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8157,
+              1.0
+            ]
+          },
+          "benign": {
+            "label": "benign",
+            "windows": 376,
+            "flagged": 376,
+            "rate": 1.0,
+            "rate_meaning": "false_positive_rate",
+            "wilson95": [
+              0.9899,
+              1.0
+            ]
+          },
+          "ddos_volumetric": {
+            "label": "attack",
+            "windows": 1825,
+            "flagged": 1825,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.9979,
+              1.0
+            ]
+          },
+          "mqtt_malformed": {
+            "label": "attack",
+            "windows": 17,
+            "flagged": 17,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8157,
+              1.0
+            ]
+          },
+          "port_scan": {
+            "label": "attack",
+            "windows": 226,
+            "flagged": 226,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.9833,
+              1.0
+            ]
+          },
+          "syn_flood": {
+            "label": "attack",
+            "windows": 985,
+            "flagged": 985,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.9961,
+              1.0
+            ]
+          }
+        },
+        "per_file": [
+          {
+            "file": "ARP_Spoofing_test.pcap.csv",
+            "class": "arp_spoofing",
+            "label": "attack",
+            "windows": 17,
+            "flagged": 17,
+            "rate": 1.0,
+            "wilson95": [
+              0.8157,
+              1.0
+            ]
+          },
+          {
+            "file": "Benign_test.pcap.csv",
+            "class": "benign",
+            "label": "benign",
+            "windows": 376,
+            "flagged": 376,
+            "rate": 1.0,
+            "wilson95": [
+              0.9899,
+              1.0
+            ]
+          },
+          {
+            "file": "MQTT-Malformed_Data_test.pcap.csv",
+            "class": "mqtt_malformed",
+            "label": "attack",
+            "windows": 17,
+            "flagged": 17,
+            "rate": 1.0,
+            "wilson95": [
+              0.8157,
+              1.0
+            ]
+          },
+          {
+            "file": "Recon-Port_Scan_test.pcap.csv",
+            "class": "port_scan",
+            "label": "attack",
+            "windows": 226,
+            "flagged": 226,
+            "rate": 1.0,
+            "wilson95": [
+              0.9833,
+              1.0
+            ]
+          },
+          {
+            "file": "TCP_IP-DDoS-TCP_test.pcap.csv",
+            "class": "ddos_volumetric",
+            "label": "attack",
+            "windows": 1825,
+            "flagged": 1825,
+            "rate": 1.0,
+            "wilson95": [
+              0.9979,
+              1.0
+            ]
+          },
+          {
+            "file": "TCP_IP-DoS-SYN_test.pcap.csv",
+            "class": "syn_flood",
+            "label": "attack",
+            "windows": 985,
+            "flagged": 985,
+            "rate": 1.0,
+            "wilson95": [
+              0.9961,
+              1.0
+            ]
+          }
+        ]
+      },
+      "rate_p99_benign": {
+        "description": "single-feature baseline: flag a window when its mean Rate exceeds the 99th percentile of benign development windows (feature scales must match between development and held-out sources)",
+        "fitted": {
+          "rate_mean_threshold": 453.9814,
+          "dev_benign_windows": 20
+        },
+        "windows": 3446,
+        "confusion": {
+          "tp": 739,
+          "fp": 58,
+          "tn": 318,
+          "fn": 2331
+        },
+        "metrics": {
+          "precision": 0.9272,
+          "recall": 0.2407,
+          "f1": 0.3822,
+          "fpr": 0.1543
+        },
+        "bootstrap": {
+          "ci95": {
+            "precision": [
+              0.9089,
+              0.9452
+            ],
+            "recall": [
+              0.2257,
+              0.2553
+            ],
+            "f1": [
+              0.3624,
+              0.4007
+            ],
+            "fpr": [
+              0.1167,
+              0.1911
+            ]
+          },
+          "resamples": 1000,
+          "seed": 0,
+          "valid_resamples": {
+            "precision": 1000,
+            "recall": 1000,
+            "f1": 1000,
+            "fpr": 1000
+          }
+        },
+        "per_class": {
+          "arp_spoofing": {
+            "label": "attack",
+            "windows": 17,
+            "flagged": 3,
+            "rate": 0.1765,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.0619,
+              0.4103
+            ]
+          },
+          "benign": {
+            "label": "benign",
+            "windows": 376,
+            "flagged": 58,
+            "rate": 0.1543,
+            "rate_meaning": "false_positive_rate",
+            "wilson95": [
+              0.1213,
+              0.1942
+            ]
+          },
+          "ddos_volumetric": {
+            "label": "attack",
+            "windows": 1825,
+            "flagged": 690,
+            "rate": 0.3781,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.3561,
+              0.4006
+            ]
+          },
+          "mqtt_malformed": {
+            "label": "attack",
+            "windows": 17,
+            "flagged": 2,
+            "rate": 0.1176,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.0329,
+              0.3434
+            ]
+          },
+          "port_scan": {
+            "label": "attack",
+            "windows": 226,
+            "flagged": 6,
+            "rate": 0.0265,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.0122,
+              0.0567
+            ]
+          },
+          "syn_flood": {
+            "label": "attack",
+            "windows": 985,
+            "flagged": 38,
+            "rate": 0.0386,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.0282,
+              0.0525
+            ]
+          }
+        },
+        "per_file": [
+          {
+            "file": "ARP_Spoofing_test.pcap.csv",
+            "class": "arp_spoofing",
+            "label": "attack",
+            "windows": 17,
+            "flagged": 3,
+            "rate": 0.1765,
+            "wilson95": [
+              0.0619,
+              0.4103
+            ]
+          },
+          {
+            "file": "Benign_test.pcap.csv",
+            "class": "benign",
+            "label": "benign",
+            "windows": 376,
+            "flagged": 58,
+            "rate": 0.1543,
+            "wilson95": [
+              0.1213,
+              0.1942
+            ]
+          },
+          {
+            "file": "MQTT-Malformed_Data_test.pcap.csv",
+            "class": "mqtt_malformed",
+            "label": "attack",
+            "windows": 17,
+            "flagged": 2,
+            "rate": 0.1176,
+            "wilson95": [
+              0.0329,
+              0.3434
+            ]
+          },
+          {
+            "file": "Recon-Port_Scan_test.pcap.csv",
+            "class": "port_scan",
+            "label": "attack",
+            "windows": 226,
+            "flagged": 6,
+            "rate": 0.0265,
+            "wilson95": [
+              0.0122,
+              0.0567
+            ]
+          },
+          {
+            "file": "TCP_IP-DDoS-TCP_test.pcap.csv",
+            "class": "ddos_volumetric",
+            "label": "attack",
+            "windows": 1825,
+            "flagged": 690,
+            "rate": 0.3781,
+            "wilson95": [
+              0.3561,
+              0.4006
+            ]
+          },
+          {
+            "file": "TCP_IP-DoS-SYN_test.pcap.csv",
+            "class": "syn_flood",
+            "label": "attack",
+            "windows": 985,
+            "flagged": 38,
+            "rate": 0.0386,
+            "wilson95": [
+              0.0282,
+              0.0525
+            ]
+          }
+        ]
+      },
+      "tot_size_p1_p99_band_benign": {
+        "description": "single-feature baseline: flag a window when its mean Tot size lies outside the 1st-99th percentile band of benign development windows",
+        "fitted": {
+          "tot_size_mean_band": [
+            98.4423,
+            101.6892
+          ],
+          "dev_benign_windows": 20
+        },
+        "windows": 3446,
+        "confusion": {
+          "tp": 3070,
+          "fp": 319,
+          "tn": 57,
+          "fn": 0
+        },
+        "metrics": {
+          "precision": 0.9059,
+          "recall": 1.0,
+          "f1": 0.9506,
+          "fpr": 0.8484
+        },
+        "bootstrap": {
+          "ci95": {
+            "precision": [
+              0.8958,
+              0.9159
+            ],
+            "recall": [
+              1.0,
+              1.0
+            ],
+            "f1": [
+              0.9451,
+              0.9561
+            ],
+            "fpr": [
+              0.8116,
+              0.8843
+            ]
+          },
+          "resamples": 1000,
+          "seed": 0,
+          "valid_resamples": {
+            "precision": 1000,
+            "recall": 1000,
+            "f1": 1000,
+            "fpr": 1000
+          }
+        },
+        "per_class": {
+          "arp_spoofing": {
+            "label": "attack",
+            "windows": 17,
+            "flagged": 17,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8157,
+              1.0
+            ]
+          },
+          "benign": {
+            "label": "benign",
+            "windows": 376,
+            "flagged": 319,
+            "rate": 0.8484,
+            "rate_meaning": "false_positive_rate",
+            "wilson95": [
+              0.8086,
+              0.8811
+            ]
+          },
+          "ddos_volumetric": {
+            "label": "attack",
+            "windows": 1825,
+            "flagged": 1825,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.9979,
+              1.0
+            ]
+          },
+          "mqtt_malformed": {
+            "label": "attack",
+            "windows": 17,
+            "flagged": 17,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.8157,
+              1.0
+            ]
+          },
+          "port_scan": {
+            "label": "attack",
+            "windows": 226,
+            "flagged": 226,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.9833,
+              1.0
+            ]
+          },
+          "syn_flood": {
+            "label": "attack",
+            "windows": 985,
+            "flagged": 985,
+            "rate": 1.0,
+            "rate_meaning": "detection_rate",
+            "wilson95": [
+              0.9961,
+              1.0
+            ]
+          }
+        },
+        "per_file": [
+          {
+            "file": "ARP_Spoofing_test.pcap.csv",
+            "class": "arp_spoofing",
+            "label": "attack",
+            "windows": 17,
+            "flagged": 17,
+            "rate": 1.0,
+            "wilson95": [
+              0.8157,
+              1.0
+            ]
+          },
+          {
+            "file": "Benign_test.pcap.csv",
+            "class": "benign",
+            "label": "benign",
+            "windows": 376,
+            "flagged": 319,
+            "rate": 0.8484,
+            "wilson95": [
+              0.8086,
+              0.8811
+            ]
+          },
+          {
+            "file": "MQTT-Malformed_Data_test.pcap.csv",
+            "class": "mqtt_malformed",
+            "label": "attack",
+            "windows": 17,
+            "flagged": 17,
+            "rate": 1.0,
+            "wilson95": [
+              0.8157,
+              1.0
+            ]
+          },
+          {
+            "file": "Recon-Port_Scan_test.pcap.csv",
+            "class": "port_scan",
+            "label": "attack",
+            "windows": 226,
+            "flagged": 226,
+            "rate": 1.0,
+            "wilson95": [
+              0.9833,
+              1.0
+            ]
+          },
+          {
+            "file": "TCP_IP-DDoS-TCP_test.pcap.csv",
+            "class": "ddos_volumetric",
+            "label": "attack",
+            "windows": 1825,
+            "flagged": 1825,
+            "rate": 1.0,
+            "wilson95": [
+              0.9979,
+              1.0
+            ]
+          },
+          {
+            "file": "TCP_IP-DoS-SYN_test.pcap.csv",
+            "class": "syn_flood",
+            "label": "attack",
+            "windows": 985,
+            "flagged": 985,
+            "rate": 1.0,
+            "wilson95": [
+              0.9961,
+              1.0
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "method": {
+    "partition": "cross-source split: development = all windows of the --train-dir files (one data source), held-out = all windows of the --test-dir files (a different data source); the held-out source is never used for threshold selection",
+    "windowing": "consecutive non-overlapping windows of 100 rows per file (traffic_rules_eval.windows); a trailing partial window is dropped; windows never span files; at most 2000 windows per file (cap_reached in the manifests)",
+    "labels": "file name containing 'benign' -> benign, otherwise attack; class from CICIoMT2024 file-name keywords (catalog.REPLAY_FILES tokens) or the cleaned file stem",
+    "features": "per-window means of the CICIoMT2024 columns used by traffic_rules.features_from_rows",
+    "prediction": "a window is predicted 'attack' when any of the five rules fires (same decision the TrafficAnomalyAgent uses)",
+    "metrics": "window-level precision, recall, F1 and false-positive rate on the held-out set; per-class detection rate (benign: false-positive rate) with Wilson 95 % intervals (z = 1.96); per-file summaries; confusion matrix; target_rule_rate = share of a class's windows on which the rule designated for that class fired",
+    "confidence_intervals": "percentile bootstrap over held-out windows, 1000 resamples with replacement, seed 0, 2.5/97.5 percentiles (resamples with an undefined metric are dropped and counted in valid_resamples); Wilson score intervals for proportions; no scipy",
+    "baselines": "majority class of the development split; mean Rate > 99th percentile of benign development windows; mean Tot size outside the 1st-99th percentile band of benign development windows",
+    "single_evaluation": "the held-out set is evaluated once, after all thresholds and baselines are fixed on the development set"
+  },
+  "caveat": "The shipped thresholds in knowledge/traffic_rules.py were originally set by inspecting window statistics of the CICIoMT2024 test split, so the shipped-threshold row is NOT held-out on CICIoMT2024 test data and is optimistic; only the tuned-threshold row (thresholds selected on the development set, evaluated once on the held-out set) is a held-out estimate, and the baselines are fitted on the development set only. Development data are simulator-generated; their parameters imitate the shape of CICIoMT2024 class statistics but are not samples of it, and the synthetic Rate scale is not calibrated to CICIoMT2024, so the Rate baseline does not transfer across sources. Bootstrap intervals resample windows independently although consecutive windows of one capture are correlated, so the intervals are narrower than a capture-level resampling would give. Small classes (e.g. 17 ARP-spoofing or MQTT-malformed windows in the CICIoMT2024 test split) have wide Wilson intervals."
+}

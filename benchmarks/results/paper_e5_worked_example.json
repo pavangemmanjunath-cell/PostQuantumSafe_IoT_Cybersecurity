@@ -1,0 +1,676 @@
+{
+  "benchmark": "paper_e5_worked_example",
+  "paper_experiment": "E5",
+  "title": "Worked example of Section III: explanation, plan, projection and re-assessment",
+  "software_version": "0.3.0",
+  "date": "2026-11-22",
+  "python": "3.13.5",
+  "seed": 2026,
+  "inputs": {
+    "file": "examples/paper/worked_example_gateway.json",
+    "request": {
+      "system_id": "ICU-PUMP-GW",
+      "tls_config": {
+        "tls_version": "TLS1.2",
+        "key_exchange": "ECDHE-P256",
+        "cert_signature_algo": "ECDSA-P256",
+        "data_lifetime_years": 25
+      },
+      "assumptions": {
+        "migration_years": 5,
+        "years_to_crqc": 10
+      },
+      "constraints": {
+        "budget_usd": 60000,
+        "max_downtime_hrs": 12
+      }
+    }
+  },
+  "method": {
+    "inputs": "The gateway of the worked example (Section III), i.e. Listing 1 of the original draft: TLS 1.2, ECDHE-P256 key exchange, ECDSA-P256 certificate signature, data lifetime x = 25 years, y = 5, z = 10, budget 60,000 USD, downtime 12 h; no device or prompt logs (examples/paper/worked_example_gateway.json).",
+    "assessment": "One pipeline run with seed 2026 and the default (independent) planner; attribution, counterfactuals and plan projection are the explainer's output.",
+    "reassessment": "The plan's catalogue mitigations are applied to the configuration by code (optimizer.reassess.reassess) and the pipeline is re-run, once with the plan's hybrid ML-KEM action alone and once with the full plan.",
+    "subsets": "Every subset of the candidate actions that is feasible under the budget and downtime limits is reassessed (benchmarks/plan_reassessment.py: exhaustive, independent cost accounting); the shared-root-cause planner (options.group_shared_root_causes) is run on the same request for comparison (plan B, grouped cost accounting)."
+  },
+  "results": {
+    "baseline": {
+      "pq_risk_score": 46,
+      "verdict": "Partially Safe",
+      "environment_status": "UNSAFE",
+      "pq_readiness": "Quantum-vulnerable",
+      "findings_count": 5,
+      "critical_findings": 1,
+      "detected_by": [
+        "crypto_inventory",
+        "pq_identification"
+      ],
+      "findings": [
+        {
+          "id": "F1",
+          "agent": "crypto_inventory",
+          "type": "classical_key_exchange",
+          "severity": "high"
+        },
+        {
+          "id": "F2",
+          "agent": "crypto_inventory",
+          "type": "classical_signature",
+          "severity": "high"
+        },
+        {
+          "id": "F3",
+          "agent": "pq_identification",
+          "type": "pq_migration_required",
+          "severity": "high"
+        },
+        {
+          "id": "F4",
+          "agent": "pq_identification",
+          "type": "pq_migration_required",
+          "severity": "high"
+        },
+        {
+          "id": "F5",
+          "agent": "pq_identification",
+          "type": "long_lifetime_classical_crypto",
+          "severity": "critical"
+        }
+      ],
+      "raw_score": 46.25,
+      "score_attribution": [
+        {
+          "category": "pkc",
+          "label": "Classical public-key crypto",
+          "value": 75,
+          "weight": 0.3,
+          "contribution": 22.5
+        },
+        {
+          "category": "tls",
+          "label": "Deprecated TLS",
+          "value": 0.0,
+          "weight": 0.2,
+          "contribution": 0.0
+        },
+        {
+          "category": "lifetime",
+          "label": "Harvest-now-decrypt-later (data lifetime)",
+          "value": 100,
+          "weight": 0.2,
+          "contribution": 20.0
+        },
+        {
+          "category": "identity",
+          "label": "Device identity",
+          "value": 0.0,
+          "weight": 0.15,
+          "contribution": 0.0
+        },
+        {
+          "category": "secrets",
+          "label": "Secret exposure",
+          "value": 0.0,
+          "weight": 0.1,
+          "contribution": 0.0
+        },
+        {
+          "category": "migration",
+          "label": "No PQ algorithm in use",
+          "value": 75,
+          "weight": 0.05,
+          "contribution": 3.75
+        }
+      ],
+      "counterfactuals": [
+        {
+          "removed_type": "long_lifetime_classical_crypto",
+          "after_pq_risk_score": 26,
+          "after_status": "AT_RISK",
+          "delta_pq_score": -20
+        },
+        {
+          "removed_type": "classical_key_exchange",
+          "after_pq_risk_score": 46,
+          "after_status": "UNSAFE",
+          "delta_pq_score": 0
+        },
+        {
+          "removed_type": "classical_signature",
+          "after_pq_risk_score": 46,
+          "after_status": "UNSAFE",
+          "delta_pq_score": 0
+        },
+        {
+          "removed_type": "pq_migration_required",
+          "after_pq_risk_score": 46,
+          "after_status": "UNSAFE",
+          "delta_pq_score": 0
+        }
+      ],
+      "most_effective_fix": {
+        "removed_type": "long_lifetime_classical_crypto",
+        "after_pq_risk_score": 26,
+        "after_status": "AT_RISK",
+        "delta_pq_score": -20
+      },
+      "explanation_summary": [
+        "Largest score drivers: Classical public-key crypto (22.5 pts), Harvest-now-decrypt-later (data lifetime) (20 pts), No PQ algorithm in use (3.75 pts).",
+        "Single most effective fix for the PQ score: long_lifetime_classical_crypto (46 → 26).",
+        "Applying the QIRO plan is projected to move the environment from UNSAFE to UNSAFE (PQ score 46 → 46).",
+        "The binding optimisation constraint was: budget and downtime."
+      ]
+    },
+    "candidate_actions": [
+      {
+        "id": "A1",
+        "finding_id": "F1",
+        "finding_type": "classical_key_exchange",
+        "mitigation": "enable_hybrid_mlkem",
+        "cost_usd": 25000,
+        "downtime_hrs": 6,
+        "complexity": 7,
+        "optimization_benefit": 75
+      },
+      {
+        "id": "A2",
+        "finding_id": "F2",
+        "finding_type": "classical_signature",
+        "mitigation": "pq_certificates",
+        "cost_usd": 20000,
+        "downtime_hrs": 4,
+        "complexity": 6,
+        "optimization_benefit": 85
+      },
+      {
+        "id": "A3",
+        "finding_id": "F3",
+        "finding_type": "pq_migration_required",
+        "mitigation": "enable_hybrid_mlkem",
+        "cost_usd": 50000,
+        "downtime_hrs": 12,
+        "complexity": 9,
+        "optimization_benefit": 90
+      },
+      {
+        "id": "A4",
+        "finding_id": "F4",
+        "finding_type": "pq_migration_required",
+        "mitigation": "enable_hybrid_mlkem",
+        "cost_usd": 50000,
+        "downtime_hrs": 12,
+        "complexity": 9,
+        "optimization_benefit": 90
+      },
+      {
+        "id": "A5",
+        "finding_id": "F5",
+        "finding_type": "long_lifetime_classical_crypto",
+        "mitigation": "enable_hybrid_mlkem",
+        "cost_usd": 45000,
+        "downtime_hrs": 10,
+        "complexity": 8,
+        "optimization_benefit": 117
+      }
+    ],
+    "plan": {
+      "planner_mode": "independent_actions",
+      "candidate_actions": 5,
+      "selection_count": 2,
+      "selected_action_ids": [
+        "A2",
+        "A1"
+      ],
+      "selected_finding_types": [
+        "classical_signature",
+        "classical_key_exchange"
+      ],
+      "mitigations": [
+        "enable_hybrid_mlkem",
+        "pq_certificates"
+      ],
+      "total_cost_usd": 45000,
+      "total_downtime_hrs": 10,
+      "total_risk_reduction": 60,
+      "optimality_gap_pct": 0.0
+    },
+    "projection": {
+      "pq_risk_score": 46,
+      "environment_status": "UNSAFE"
+    },
+    "reassessment": {
+      "hybrid_mlkem_only": {
+        "pq_risk_score": 23,
+        "verdict": "Safe",
+        "environment_status": "AT_RISK",
+        "pq_readiness": "Partially PQ",
+        "findings_count": 2,
+        "critical_findings": 0,
+        "detected_by": [
+          "crypto_inventory",
+          "pq_identification"
+        ],
+        "findings": [
+          {
+            "id": "F1",
+            "agent": "crypto_inventory",
+            "type": "classical_signature",
+            "severity": "high"
+          },
+          {
+            "id": "F2",
+            "agent": "pq_identification",
+            "type": "pq_migration_required",
+            "severity": "high"
+          }
+        ],
+        "action_ids": [
+          "A1"
+        ],
+        "changes": [
+          "tls_config.key_exchange: 'ECDHE-P256' -> 'X25519MLKEM768' (enable_hybrid_mlkem)",
+          "tls_config.tls_version: 'TLS1.2' -> 'TLS1.3' (enable_hybrid_mlkem)"
+        ]
+      },
+      "full_plan": {
+        "pq_risk_score": 0,
+        "verdict": "Safe",
+        "environment_status": "SAFE",
+        "pq_readiness": "PQ-ready",
+        "findings_count": 0,
+        "critical_findings": 0,
+        "detected_by": [],
+        "findings": [],
+        "action_ids": [
+          "A2",
+          "A1"
+        ],
+        "changes": [
+          "tls_config.cert_signature_algo: 'ECDSA-P256' -> 'ML-DSA-65' (pq_certificates)",
+          "tls_config.cert_key_algo: None -> 'ML-DSA-65' (pq_certificates)",
+          "tls_config.key_exchange: 'ECDHE-P256' -> 'X25519MLKEM768' (enable_hybrid_mlkem)",
+          "tls_config.tls_version: 'TLS1.2' -> 'TLS1.3' (enable_hybrid_mlkem)"
+        ]
+      }
+    },
+    "exhaustive": {
+      "candidate_actions": 5,
+      "root_cause_groups": 2,
+      "pipeline_runs": 10,
+      "independent_cost_model": {
+        "subsets_enumerated": 32,
+        "feasible_subsets_reassessed": 7,
+        "subsets_attaining_best": 1,
+        "best_reassessed_pq_score": 0,
+        "best_outcome": {
+          "pq_risk_score": 0,
+          "environment_status": "SAFE",
+          "remaining_findings": 0
+        },
+        "cheapest_best_subset": {
+          "action_ids": [
+            "A1",
+            "A2"
+          ],
+          "mitigations": [
+            "enable_hybrid_mlkem",
+            "pq_certificates"
+          ],
+          "cost_usd": 45000,
+          "downtime_hrs": 10,
+          "unmodelled": []
+        }
+      },
+      "grouped_cost_model": {
+        "subsets_enumerated": 4,
+        "feasible_subsets_reassessed": 3,
+        "subsets_attaining_best": 1,
+        "best_reassessed_pq_score": 23,
+        "best_outcome": {
+          "pq_risk_score": 23,
+          "environment_status": "AT_RISK",
+          "remaining_findings": 2
+        },
+        "cheapest_best_subset": {
+          "action_ids": [
+            "A1",
+            "A3",
+            "A4",
+            "A5"
+          ],
+          "mitigations": [
+            "enable_hybrid_mlkem"
+          ],
+          "cost_usd": 50000,
+          "downtime_hrs": 12,
+          "unmodelled": [],
+          "group_ids": [
+            "G1"
+          ]
+        }
+      },
+      "best_reassessed_pq_score": 0,
+      "plan_a_is_best_by_reassessment": true,
+      "plan_a_is_cheapest_best": true,
+      "plan_b_is_best_by_reassessment": true,
+      "plan_b_is_cheapest_best": true,
+      "plan_b_attains_independent_best": false
+    },
+    "shared_root_cause": {
+      "planner_mode": "shared_root_cause",
+      "selected_action_ids": [
+        "A5",
+        "A1",
+        "A3",
+        "A4"
+      ],
+      "total_cost_usd": 50000,
+      "total_downtime_hrs": 12,
+      "projected_pq_score": 26,
+      "reassessed_pq_score": 23,
+      "reassessed_status": "AT_RISK",
+      "remaining_finding_types": [
+        "classical_signature",
+        "pq_migration_required"
+      ],
+      "root_cause_groups": [
+        {
+          "group_id": "G1",
+          "mitigation": "enable_hybrid_mlkem",
+          "finding_ids": [
+            "F1",
+            "F3",
+            "F4",
+            "F5"
+          ],
+          "finding_types": [
+            "classical_key_exchange",
+            "pq_migration_required",
+            "pq_migration_required",
+            "long_lifetime_classical_crypto"
+          ],
+          "member_action_ids": [
+            "A1",
+            "A3",
+            "A4",
+            "A5"
+          ],
+          "cost_usd": 50000,
+          "downtime_hrs": 12,
+          "complexity": 9,
+          "risk_reduction": 180,
+          "optimization_benefit": 372,
+          "selected": true
+        },
+        {
+          "group_id": "G2",
+          "mitigation": "pq_certificates",
+          "finding_ids": [
+            "F2"
+          ],
+          "finding_types": [
+            "classical_signature"
+          ],
+          "member_action_ids": [
+            "A2"
+          ],
+          "cost_usd": 20000,
+          "downtime_hrs": 4,
+          "complexity": 6,
+          "risk_reduction": 30,
+          "optimization_benefit": 85,
+          "selected": false
+        }
+      ]
+    }
+  },
+  "paper_check": {
+    "summary": {
+      "stated_values": 25,
+      "matched": 25,
+      "mismatched": 0,
+      "all_match": true
+    },
+    "checks": [
+      {
+        "id": "E5.findings",
+        "source": "revised paper, Section VII-C",
+        "statement": "The framework raised five findings ...",
+        "expected": 5,
+        "reproduced": 5,
+        "match": true
+      },
+      {
+        "id": "E5.critical_findings",
+        "source": "revised paper, Section VII-C",
+        "statement": "... one of them critical ...",
+        "expected": 1,
+        "reproduced": 1,
+        "match": true
+      },
+      {
+        "id": "E5.status",
+        "source": "revised paper, Section VII-C",
+        "statement": "... and returned UNSAFE ...",
+        "expected": "UNSAFE",
+        "reproduced": "UNSAFE",
+        "match": true
+      },
+      {
+        "id": "E5.pq_risk_score",
+        "source": "revised paper, Section VII-C",
+        "statement": "... with S = 46.",
+        "expected": 46,
+        "reproduced": 46,
+        "match": true
+      },
+      {
+        "id": "E5.raw_score",
+        "source": "revised paper, Section VII-C",
+        "statement": "The exact attribution of the raw score 46.25 ...",
+        "expected": 46.25,
+        "reproduced": 46.25,
+        "match": true
+      },
+      {
+        "id": "E5.attribution.pkc",
+        "source": "revised paper, Section VII-C",
+        "statement": "... was 22.5 points from classical public-key cryptography ...",
+        "expected": 22.5,
+        "reproduced": 22.5,
+        "match": true
+      },
+      {
+        "id": "E5.attribution.lifetime",
+        "source": "revised paper, Section VII-C",
+        "statement": "... was 20.0 from HNDL exposure ...",
+        "expected": 20.0,
+        "reproduced": 20.0,
+        "match": true
+      },
+      {
+        "id": "E5.attribution.migration",
+        "source": "revised paper, Section VII-C",
+        "statement": "... was 3.75 from the absence of any PQ algorithm ...",
+        "expected": 3.75,
+        "reproduced": 3.75,
+        "match": true
+      },
+      {
+        "id": "E5.attribution.other",
+        "source": "revised paper, Section VII-C",
+        "statement": "... and nothing from the other categories (deprecated TLS, device identity, secret exposure).",
+        "expected": 0,
+        "reproduced": 0.0,
+        "match": true
+      },
+      {
+        "id": "E5.most_effective_fix",
+        "source": "revised paper, Section VII-C",
+        "statement": "The counterfactuals named the HNDL finding as the single most effective fix (46 to 26).",
+        "expected": {
+          "removed_type": "long_lifetime_classical_crypto",
+          "before": 46,
+          "after": 26
+        },
+        "reproduced": {
+          "removed_type": "long_lifetime_classical_crypto",
+          "before": 46,
+          "after": 26
+        },
+        "match": true
+      },
+      {
+        "id": "E5.plan_size",
+        "source": "revised paper, Section VII-C",
+        "statement": "QIRO selected two of five candidate actions ...",
+        "expected": {
+          "selected": 2,
+          "candidates": 5
+        },
+        "reproduced": {
+          "selected": 2,
+          "candidates": 5
+        },
+        "match": true
+      },
+      {
+        "id": "E5.plan_mitigations",
+        "source": "revised paper, Section VII-C",
+        "statement": "... ML-DSA certificates and hybrid ML-KEM key exchange ...",
+        "expected": [
+          "enable_hybrid_mlkem",
+          "pq_certificates"
+        ],
+        "reproduced": [
+          "enable_hybrid_mlkem",
+          "pq_certificates"
+        ],
+        "match": true
+      },
+      {
+        "id": "E5.plan_cost_usd",
+        "source": "revised paper, Section VII-C",
+        "statement": "... for 45,000 USD ...",
+        "expected": 45000,
+        "reproduced": 45000,
+        "match": true
+      },
+      {
+        "id": "E5.plan_downtime_hrs",
+        "source": "revised paper, Section VII-C",
+        "statement": "... and 10 h of downtime.",
+        "expected": 10,
+        "reproduced": 10,
+        "match": true
+      },
+      {
+        "id": "E5.projected_pq_score",
+        "source": "revised paper, Section VII-C",
+        "statement": "Its projection ... left S at 46.",
+        "expected": 46,
+        "reproduced": 46,
+        "match": true
+      },
+      {
+        "id": "E5.hybrid_only.pq_risk_score",
+        "source": "revised paper, Section VII-C",
+        "statement": "Hybrid ML-KEM alone lowered S to 23 ...",
+        "expected": 23,
+        "reproduced": 23,
+        "match": true
+      },
+      {
+        "id": "E5.hybrid_only.pq_readiness",
+        "source": "revised paper, Section VII-C",
+        "statement": "... (partially PQ).",
+        "expected": "Partially PQ",
+        "reproduced": "Partially PQ",
+        "match": true
+      },
+      {
+        "id": "E5.hybrid_only.hndl_finding",
+        "source": "revised paper, Section VII-C",
+        "statement": "The HNDL finding disappeared because the key exchange that caused it had been replaced (long_lifetime_classical_crypto still raised = false).",
+        "expected": false,
+        "reproduced": false,
+        "match": true
+      },
+      {
+        "id": "E5.full_plan.pq_risk_score",
+        "source": "revised paper, Section VII-C",
+        "statement": "... and the full plan to 0 ...",
+        "expected": 0,
+        "reproduced": 0,
+        "match": true
+      },
+      {
+        "id": "E5.full_plan.findings",
+        "source": "revised paper, Section VII-C",
+        "statement": "... with no findings.",
+        "expected": 0,
+        "reproduced": 0,
+        "match": true
+      },
+      {
+        "id": "E5.feasible_subsets",
+        "source": "revised paper, Section VII-C",
+        "statement": "Of the seven feasible subsets of its five actions ...",
+        "expected": {
+          "subsets": 7,
+          "actions": 5
+        },
+        "reproduced": {
+          "subsets": 7,
+          "actions": 5
+        },
+        "match": true,
+        "note": "32 subsets enumerated; the feasible ones include the empty subset (no action)"
+      },
+      {
+        "id": "E5.best_subset_outcome",
+        "source": "revised paper, Section VII-C",
+        "statement": "... only this plan reaches 0 (SAFE): best reassessed outcome.",
+        "expected": {
+          "pq_risk_score": 0,
+          "environment_status": "SAFE"
+        },
+        "reproduced": {
+          "pq_risk_score": 0,
+          "environment_status": "SAFE"
+        },
+        "match": true
+      },
+      {
+        "id": "E5.best_subset_is_plan",
+        "source": "revised paper, Section VII-C",
+        "statement": "... only this plan reaches 0 (SAFE): one subset attains it and it is the plan.",
+        "expected": {
+          "subsets_attaining_best": 1,
+          "is_the_plan": true
+        },
+        "reproduced": {
+          "subsets_attaining_best": 1,
+          "is_the_plan": true
+        },
+        "match": true
+      },
+      {
+        "id": "E5.shared_root_cause.unit_cost_usd",
+        "source": "revised paper, Section VII-C",
+        "statement": "The shared-root-cause mode, which costs the merged ML-KEM unit at 50,000 USD ...",
+        "expected": 50000,
+        "reproduced": 50000,
+        "match": true
+      },
+      {
+        "id": "E5.shared_root_cause.reassessed_pq_score",
+        "source": "revised paper, Section VII-C",
+        "statement": "... reaches 23.",
+        "expected": 23,
+        "reproduced": 23,
+        "match": true
+      }
+    ]
+  },
+  "caveat": "Synthetic, hand-written configurations; configuration-level results of the framework's own rules, not evidence that an attack is prevented."
+}

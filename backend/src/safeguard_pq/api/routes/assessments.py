@@ -10,6 +10,7 @@ from pydantic import ValidationError
 
 from ...domain.models import AssessmentRequest, AssessmentResult
 from ...ingest.csv_adapters import IngestError, build_request
+from ...optimizer.reassess import evaluate_plan_by_reassessment
 from ...reporting import build_assessment_pdf
 from ...scenarios import get_scenario, load_scenarios
 from ...simulation import SimulationError
@@ -41,7 +42,7 @@ def scenario(scenario_id: str) -> dict[str, Any]:
 @router.post("/assessments", response_model=AssessmentResult)
 async def create_assessment(req: AssessmentRequest, state: AppState = Depends(core)) -> AssessmentResult:
     result = await state.pipeline.run(req)
-    state.assessments.put(result)
+    state.assessments.put(result, req)
     return result
 
 
@@ -69,6 +70,17 @@ def assessment_pdf(assessment_id: str, state: AppState = Depends(core)) -> Respo
                     headers=pdf_headers(f"safeguard-pq_{r.system_id}_{r.assessment_id}.pdf"))
 
 
+@router.post("/assessments/{assessment_id}/reassess")
+async def reassess_assessment(assessment_id: str, state: AppState = Depends(core)) -> dict[str, Any]:
+    """Apply the stored QIRO plan to the stored request at configuration level, re-run the pipeline, and report
+    summed benefit, projected score and reassessed score side by side (network mitigations are unmodelled)."""
+    result = _get(state, assessment_id)
+    req = state.assessments.request_for(assessment_id)
+    if req is None:
+        raise HTTPException(409, f"the request behind assessment '{assessment_id}' was not retained, so its plan cannot be reassessed")
+    return await evaluate_plan_by_reassessment(req, result, settings=state.settings)
+
+
 @router.post("/uploads/assess", response_model=AssessmentResult)
 async def assess_upload(
     file: UploadFile = File(...),
@@ -91,7 +103,7 @@ async def assess_upload(
     except (IngestError, ValidationError) as exc:
         raise HTTPException(422, str(exc)) from exc
     result = await state.pipeline.run(req)
-    state.assessments.put(result)
+    state.assessments.put(result, req)
     return result
 
 
@@ -111,7 +123,7 @@ async def assessment_stream(ws: WebSocket) -> None:
             await ws.send_json(event)
 
         result = await state.pipeline.run(req, sink)
-        state.assessments.put(result)
+        state.assessments.put(result, req)
         if msg.get("simulation_id") and msg.get("device_id"):
             sim = state.simulations.get(msg["simulation_id"])
             sim.device(msg["device_id"]).last_assessment = {

@@ -32,7 +32,8 @@ class Constraints(BaseModel):
 
 
 class Assumptions(BaseModel):
-    """Explicit, user-adjustable assumptions for Mosca's inequality (informational only)."""
+    """Explicit, user-adjustable assumptions: Mosca's inequality inputs (informational only) and the data-lifetime
+    threshold of the harvest-now-decrypt-later rule."""
 
     migration_years: float = Field(default=5, ge=0, le=50, description="Assumed time to complete PQ migration.")
     years_to_crqc: float = Field(
@@ -41,12 +42,24 @@ class Assumptions(BaseModel):
         le=100,
         description="Assumed years until a cryptographically relevant quantum computer exists. Highly uncertain.",
     )
+    lifetime_threshold_years: float = Field(
+        default=10,
+        ge=0,
+        le=100,
+        description="Data lifetime (years) at or above which classical key exchange raises the critical "
+                    "long_lifetime_classical_crypto finding. Design choice (default 10); see the sensitivity analysis.",
+    )
 
 
 class RunOptions(BaseModel):
     disabled_agents: list[str] = Field(default_factory=list)
     llm_report: bool = True
     pace_ms: int = Field(default=0, ge=0, le=2000, description="Presentation delay between agent events (UI demo only).")
+    group_shared_root_causes: bool = Field(
+        default=False,
+        description="QIRO planner mode: merge actions whose remediation is the same mitigation (shared root cause) into "
+                    "one decision unit costed once. Default False keeps the independent per-finding planner.",
+    )
 
 
 class AssessmentRequest(BaseModel):

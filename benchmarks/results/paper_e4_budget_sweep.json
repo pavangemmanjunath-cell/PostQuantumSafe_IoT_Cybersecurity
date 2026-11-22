@@ -1,0 +1,1034 @@
+{
+  "benchmark": "paper_e4_budget_sweep",
+  "paper_experiment": "E4",
+  "title": "Budget sweep of the QIRO plan for the ICU gateway and the legacy system",
+  "software_version": "0.3.0",
+  "date": "2026-11-22",
+  "python": "3.13.5",
+  "seed": 2026,
+  "inputs": {
+    "scenarios": {
+      "icu_gateway_critical": "ICU gateway",
+      "legacy_worst_case": "legacy system"
+    },
+    "budgets_usd": [
+      10000,
+      20000,
+      30000,
+      40000,
+      50000,
+      60000,
+      70000,
+      80000,
+      90000,
+      100000,
+      110000,
+      120000,
+      130000,
+      140000,
+      150000,
+      160000,
+      170000,
+      180000,
+      190000,
+      200000
+    ],
+    "max_downtime_hrs": 40
+  },
+  "method": {
+    "inputs": "Scenarios icu_gateway_critical (ICU gateway) and legacy_worst_case (legacy TLS 1.0 system) with the budget set to 10,000 to 200,000 USD in steps of 10,000 USD and the downtime limit held at 40 h (the scenarios' own value, set explicitly as in the v0.1.0 experiment script); seed 2026, independent planner.",
+    "reported": "total_risk_reduction of the selected actions (the sum of their template risk reductions, as plotted in the draft's Fig. 7a) and the explainer's projected PQ score after the plan (Fig. 7b).",
+    "solver quality": "The other half of paper E4, QIRO against exhaustive search on 500 random instances of 3 to 14 actions, is benchmarks/qiro_optimality.py --instances 500 --seed 0 (qiro_optimality.json)."
+  },
+  "results": {
+    "sweeps": {
+      "icu_gateway_critical": {
+        "label": "ICU gateway",
+        "baseline_pq_risk_score": 61,
+        "rows": [
+          {
+            "budget_usd": 10000,
+            "selection_count": 1,
+            "selected_action_ids": [
+              "A7"
+            ],
+            "selected_finding_types": [
+              "authentication_failed"
+            ],
+            "total_risk_reduction": 53,
+            "total_cost_usd": 10000,
+            "total_downtime_hrs": 2,
+            "projected_pq_score": 58,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 20000,
+            "selection_count": 2,
+            "selected_action_ids": [
+              "A8",
+              "A7"
+            ],
+            "selected_finding_types": [
+              "instruction_override",
+              "authentication_failed"
+            ],
+            "total_risk_reduction": 91,
+            "total_cost_usd": 18000,
+            "total_downtime_hrs": 3,
+            "projected_pq_score": 58,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 30000,
+            "selection_count": 2,
+            "selected_action_ids": [
+              "A8",
+              "A7"
+            ],
+            "selected_finding_types": [
+              "instruction_override",
+              "authentication_failed"
+            ],
+            "total_risk_reduction": 91,
+            "total_cost_usd": 18000,
+            "total_downtime_hrs": 3,
+            "projected_pq_score": 58,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 40000,
+            "selection_count": 3,
+            "selected_action_ids": [
+              "A8",
+              "A7",
+              "A2"
+            ],
+            "selected_finding_types": [
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature"
+            ],
+            "total_risk_reduction": 121,
+            "total_cost_usd": 38000,
+            "total_downtime_hrs": 7,
+            "projected_pq_score": 58,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 50000,
+            "selection_count": 3,
+            "selected_action_ids": [
+              "A8",
+              "A7",
+              "A2"
+            ],
+            "selected_finding_types": [
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature"
+            ],
+            "total_risk_reduction": 121,
+            "total_cost_usd": 38000,
+            "total_downtime_hrs": 7,
+            "projected_pq_score": 58,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 60000,
+            "selection_count": 4,
+            "selected_action_ids": [
+              "A8",
+              "A7",
+              "A2",
+              "A6"
+            ],
+            "selected_finding_types": [
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 146,
+            "total_cost_usd": 53000,
+            "total_downtime_hrs": 11,
+            "projected_pq_score": 46,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 70000,
+            "selection_count": 4,
+            "selected_action_ids": [
+              "A8",
+              "A7",
+              "A2",
+              "A1"
+            ],
+            "selected_finding_types": [
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange"
+            ],
+            "total_risk_reduction": 151,
+            "total_cost_usd": 63000,
+            "total_downtime_hrs": 13,
+            "projected_pq_score": 58,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 80000,
+            "selection_count": 5,
+            "selected_action_ids": [
+              "A8",
+              "A7",
+              "A2",
+              "A1",
+              "A6"
+            ],
+            "selected_finding_types": [
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 176,
+            "total_cost_usd": 78000,
+            "total_downtime_hrs": 17,
+            "projected_pq_score": 46,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 90000,
+            "selection_count": 5,
+            "selected_action_ids": [
+              "A8",
+              "A7",
+              "A2",
+              "A1",
+              "A6"
+            ],
+            "selected_finding_types": [
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 176,
+            "total_cost_usd": 78000,
+            "total_downtime_hrs": 17,
+            "projected_pq_score": 46,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 100000,
+            "selection_count": 5,
+            "selected_action_ids": [
+              "A5",
+              "A8",
+              "A7",
+              "A2",
+              "A6"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 206,
+            "total_cost_usd": 98000,
+            "total_downtime_hrs": 21,
+            "projected_pq_score": 26,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 110000,
+            "selection_count": 5,
+            "selected_action_ids": [
+              "A5",
+              "A8",
+              "A7",
+              "A2",
+              "A1"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange"
+            ],
+            "total_risk_reduction": 211,
+            "total_cost_usd": 108000,
+            "total_downtime_hrs": 23,
+            "projected_pq_score": 38,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 120000,
+            "selection_count": 5,
+            "selected_action_ids": [
+              "A5",
+              "A8",
+              "A7",
+              "A2",
+              "A1"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange"
+            ],
+            "total_risk_reduction": 211,
+            "total_cost_usd": 108000,
+            "total_downtime_hrs": 23,
+            "projected_pq_score": 38,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 130000,
+            "selection_count": 6,
+            "selected_action_ids": [
+              "A5",
+              "A8",
+              "A7",
+              "A2",
+              "A1",
+              "A6"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 236,
+            "total_cost_usd": 123000,
+            "total_downtime_hrs": 27,
+            "projected_pq_score": 26,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 140000,
+            "selection_count": 6,
+            "selected_action_ids": [
+              "A5",
+              "A8",
+              "A7",
+              "A2",
+              "A1",
+              "A6"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 236,
+            "total_cost_usd": 123000,
+            "total_downtime_hrs": 27,
+            "projected_pq_score": 26,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 150000,
+            "selection_count": 6,
+            "selected_action_ids": [
+              "A5",
+              "A8",
+              "A7",
+              "A2",
+              "A3",
+              "A6"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "pq_migration_required",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 251,
+            "total_cost_usd": 148000,
+            "total_downtime_hrs": 33,
+            "projected_pq_score": 26,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 160000,
+            "selection_count": 6,
+            "selected_action_ids": [
+              "A5",
+              "A8",
+              "A7",
+              "A2",
+              "A1",
+              "A3"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "pq_migration_required"
+            ],
+            "total_risk_reduction": 256,
+            "total_cost_usd": 158000,
+            "total_downtime_hrs": 35,
+            "projected_pq_score": 38,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 170000,
+            "selection_count": 6,
+            "selected_action_ids": [
+              "A5",
+              "A8",
+              "A7",
+              "A2",
+              "A1",
+              "A3"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "pq_migration_required"
+            ],
+            "total_risk_reduction": 256,
+            "total_cost_usd": 158000,
+            "total_downtime_hrs": 35,
+            "projected_pq_score": 38,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 180000,
+            "selection_count": 7,
+            "selected_action_ids": [
+              "A5",
+              "A8",
+              "A7",
+              "A2",
+              "A1",
+              "A3",
+              "A6"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "pq_migration_required",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 281,
+            "total_cost_usd": 173000,
+            "total_downtime_hrs": 39,
+            "projected_pq_score": 26,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 190000,
+            "selection_count": 7,
+            "selected_action_ids": [
+              "A5",
+              "A8",
+              "A7",
+              "A2",
+              "A1",
+              "A3",
+              "A6"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "pq_migration_required",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 281,
+            "total_cost_usd": 173000,
+            "total_downtime_hrs": 39,
+            "projected_pq_score": 26,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 200000,
+            "selection_count": 7,
+            "selected_action_ids": [
+              "A5",
+              "A8",
+              "A7",
+              "A2",
+              "A1",
+              "A3",
+              "A6"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "instruction_override",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "pq_migration_required",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 281,
+            "total_cost_usd": 173000,
+            "total_downtime_hrs": 39,
+            "projected_pq_score": 26,
+            "projected_status": "AT_RISK"
+          }
+        ]
+      },
+      "legacy_worst_case": {
+        "label": "legacy system",
+        "baseline_pq_risk_score": 89,
+        "rows": [
+          {
+            "budget_usd": 10000,
+            "selection_count": 1,
+            "selected_action_ids": [
+              "A9"
+            ],
+            "selected_finding_types": [
+              "authentication_failed"
+            ],
+            "total_risk_reduction": 53,
+            "total_cost_usd": 10000,
+            "total_downtime_hrs": 2,
+            "projected_pq_score": 85,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 20000,
+            "selection_count": 1,
+            "selected_action_ids": [
+              "A9"
+            ],
+            "selected_finding_types": [
+              "authentication_failed"
+            ],
+            "total_risk_reduction": 53,
+            "total_cost_usd": 10000,
+            "total_downtime_hrs": 2,
+            "projected_pq_score": 85,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 30000,
+            "selection_count": 2,
+            "selected_action_ids": [
+              "A9",
+              "A3"
+            ],
+            "selected_finding_types": [
+              "authentication_failed",
+              "classical_signature"
+            ],
+            "total_risk_reduction": 83,
+            "total_cost_usd": 30000,
+            "total_downtime_hrs": 6,
+            "projected_pq_score": 85,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 40000,
+            "selection_count": 2,
+            "selected_action_ids": [
+              "A1",
+              "A9"
+            ],
+            "selected_finding_types": [
+              "deprecated_tls_version",
+              "authentication_failed"
+            ],
+            "total_risk_reduction": 106,
+            "total_cost_usd": 40000,
+            "total_downtime_hrs": 10,
+            "projected_pq_score": 65,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 50000,
+            "selection_count": 3,
+            "selected_action_ids": [
+              "A4",
+              "A9",
+              "A8"
+            ],
+            "selected_finding_types": [
+              "weak_hash",
+              "authentication_failed",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 123,
+            "total_cost_usd": 47000,
+            "total_downtime_hrs": 11,
+            "projected_pq_score": 66,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 60000,
+            "selection_count": 3,
+            "selected_action_ids": [
+              "A1",
+              "A9",
+              "A3"
+            ],
+            "selected_finding_types": [
+              "deprecated_tls_version",
+              "authentication_failed",
+              "classical_signature"
+            ],
+            "total_risk_reduction": 136,
+            "total_cost_usd": 60000,
+            "total_downtime_hrs": 14,
+            "projected_pq_score": 65,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 70000,
+            "selection_count": 4,
+            "selected_action_ids": [
+              "A4",
+              "A9",
+              "A3",
+              "A8"
+            ],
+            "selected_finding_types": [
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 153,
+            "total_cost_usd": 67000,
+            "total_downtime_hrs": 15,
+            "projected_pq_score": 66,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 80000,
+            "selection_count": 4,
+            "selected_action_ids": [
+              "A4",
+              "A9",
+              "A3",
+              "A2"
+            ],
+            "selected_finding_types": [
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange"
+            ],
+            "total_risk_reduction": 158,
+            "total_cost_usd": 77000,
+            "total_downtime_hrs": 17,
+            "projected_pq_score": 78,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 90000,
+            "selection_count": 4,
+            "selected_action_ids": [
+              "A1",
+              "A4",
+              "A9",
+              "A3"
+            ],
+            "selected_finding_types": [
+              "deprecated_tls_version",
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature"
+            ],
+            "total_risk_reduction": 181,
+            "total_cost_usd": 82000,
+            "total_downtime_hrs": 19,
+            "projected_pq_score": 58,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 100000,
+            "selection_count": 5,
+            "selected_action_ids": [
+              "A1",
+              "A4",
+              "A9",
+              "A3",
+              "A8"
+            ],
+            "selected_finding_types": [
+              "deprecated_tls_version",
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 206,
+            "total_cost_usd": 97000,
+            "total_downtime_hrs": 23,
+            "projected_pq_score": 46,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 110000,
+            "selection_count": 5,
+            "selected_action_ids": [
+              "A1",
+              "A4",
+              "A9",
+              "A3",
+              "A2"
+            ],
+            "selected_finding_types": [
+              "deprecated_tls_version",
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange"
+            ],
+            "total_risk_reduction": 211,
+            "total_cost_usd": 107000,
+            "total_downtime_hrs": 25,
+            "projected_pq_score": 58,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 120000,
+            "selection_count": 5,
+            "selected_action_ids": [
+              "A1",
+              "A4",
+              "A9",
+              "A3",
+              "A2"
+            ],
+            "selected_finding_types": [
+              "deprecated_tls_version",
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange"
+            ],
+            "total_risk_reduction": 211,
+            "total_cost_usd": 107000,
+            "total_downtime_hrs": 25,
+            "projected_pq_score": 58,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 130000,
+            "selection_count": 6,
+            "selected_action_ids": [
+              "A1",
+              "A4",
+              "A9",
+              "A3",
+              "A2",
+              "A8"
+            ],
+            "selected_finding_types": [
+              "deprecated_tls_version",
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 236,
+            "total_cost_usd": 122000,
+            "total_downtime_hrs": 29,
+            "projected_pq_score": 46,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 140000,
+            "selection_count": 6,
+            "selected_action_ids": [
+              "A7",
+              "A4",
+              "A9",
+              "A3",
+              "A2",
+              "A8"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 243,
+            "total_cost_usd": 137000,
+            "total_downtime_hrs": 31,
+            "projected_pq_score": 46,
+            "projected_status": "UNSAFE"
+          },
+          {
+            "budget_usd": 150000,
+            "selection_count": 6,
+            "selected_action_ids": [
+              "A7",
+              "A1",
+              "A4",
+              "A9",
+              "A3",
+              "A8"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "deprecated_tls_version",
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 266,
+            "total_cost_usd": 142000,
+            "total_downtime_hrs": 33,
+            "projected_pq_score": 26,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 160000,
+            "selection_count": 6,
+            "selected_action_ids": [
+              "A7",
+              "A1",
+              "A4",
+              "A9",
+              "A3",
+              "A2"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "deprecated_tls_version",
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange"
+            ],
+            "total_risk_reduction": 271,
+            "total_cost_usd": 152000,
+            "total_downtime_hrs": 35,
+            "projected_pq_score": 38,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 170000,
+            "selection_count": 7,
+            "selected_action_ids": [
+              "A7",
+              "A1",
+              "A4",
+              "A9",
+              "A3",
+              "A2",
+              "A8"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "deprecated_tls_version",
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 296,
+            "total_cost_usd": 167000,
+            "total_downtime_hrs": 39,
+            "projected_pq_score": 26,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 180000,
+            "selection_count": 7,
+            "selected_action_ids": [
+              "A7",
+              "A1",
+              "A4",
+              "A9",
+              "A3",
+              "A2",
+              "A8"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "deprecated_tls_version",
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 296,
+            "total_cost_usd": 167000,
+            "total_downtime_hrs": 39,
+            "projected_pq_score": 26,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 190000,
+            "selection_count": 7,
+            "selected_action_ids": [
+              "A7",
+              "A1",
+              "A4",
+              "A9",
+              "A3",
+              "A2",
+              "A8"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "deprecated_tls_version",
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 296,
+            "total_cost_usd": 167000,
+            "total_downtime_hrs": 39,
+            "projected_pq_score": 26,
+            "projected_status": "AT_RISK"
+          },
+          {
+            "budget_usd": 200000,
+            "selection_count": 7,
+            "selected_action_ids": [
+              "A7",
+              "A1",
+              "A4",
+              "A9",
+              "A3",
+              "A2",
+              "A8"
+            ],
+            "selected_finding_types": [
+              "long_lifetime_classical_crypto",
+              "deprecated_tls_version",
+              "weak_hash",
+              "authentication_failed",
+              "classical_signature",
+              "classical_key_exchange",
+              "missing_certificate"
+            ],
+            "total_risk_reduction": 296,
+            "total_cost_usd": 167000,
+            "total_downtime_hrs": 39,
+            "projected_pq_score": 26,
+            "projected_status": "AT_RISK"
+          }
+        ]
+      }
+    }
+  },
+  "paper_check": {
+    "summary": {
+      "stated_values": 9,
+      "matched": 9,
+      "mismatched": 0,
+      "all_match": true
+    },
+    "checks": [
+      {
+        "id": "E4.icu_gateway_critical.risk_reduction_10k",
+        "source": "revised paper, Section VII-C",
+        "statement": "Total risk reduction rose from 53 at 10,000 USD (ICU gateway).",
+        "expected": 53,
+        "reproduced": 53,
+        "match": true
+      },
+      {
+        "id": "E4.legacy_worst_case.risk_reduction_10k",
+        "source": "revised paper, Section VII-C",
+        "statement": "Total risk reduction rose from 53 at 10,000 USD (legacy system).",
+        "expected": 53,
+        "reproduced": 53,
+        "match": true
+      },
+      {
+        "id": "E4.icu_gateway_critical.risk_reduction_200k",
+        "source": "revised paper, Section VII-C",
+        "statement": "... to 281 (ICU gateway) at 200,000 USD.",
+        "expected": 281,
+        "reproduced": 281,
+        "match": true
+      },
+      {
+        "id": "E4.icu_gateway_critical.risk_reduction_rises",
+        "source": "revised paper, Section VII-C",
+        "statement": "Total risk reduction rose with the budget (ICU gateway; read as: never falls between steps).",
+        "expected": true,
+        "reproduced": true,
+        "match": true
+      },
+      {
+        "id": "E4.legacy_worst_case.risk_reduction_200k",
+        "source": "revised paper, Section VII-C",
+        "statement": "... to 296 (legacy system) at 200,000 USD.",
+        "expected": 296,
+        "reproduced": 296,
+        "match": true
+      },
+      {
+        "id": "E4.legacy_worst_case.risk_reduction_rises",
+        "source": "revised paper, Section VII-C",
+        "statement": "Total risk reduction rose with the budget (legacy system; read as: never falls between steps).",
+        "expected": true,
+        "reproduced": true,
+        "match": true
+      },
+      {
+        "id": "E4.icu_gateway_critical.projected_monotonic",
+        "source": "revised paper, Section VII-C",
+        "statement": "The projected score was not monotonic (ICU gateway): projected S never rises with the budget = false.",
+        "expected": false,
+        "reproduced": false,
+        "match": true
+      },
+      {
+        "id": "E4.icu_gateway_critical.projected_100k",
+        "source": "revised paper, Section VII-C",
+        "statement": "ICU gateway: projected score 26 at 100,000 USD.",
+        "expected": 26,
+        "reproduced": 26,
+        "match": true
+      },
+      {
+        "id": "E4.icu_gateway_critical.projected_110k",
+        "source": "revised paper, Section VII-C",
+        "statement": "ICU gateway: projected score 38 at 110,000 USD.",
+        "expected": 38,
+        "reproduced": 38,
+        "match": true
+      }
+    ]
+  },
+  "caveat": "Synthetic, hand-written configurations; configuration-level results of the framework's own rules, not evidence that an attack is prevented."
+}

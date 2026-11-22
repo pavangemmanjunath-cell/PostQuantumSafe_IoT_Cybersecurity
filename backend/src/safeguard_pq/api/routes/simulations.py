@@ -144,7 +144,7 @@ async def assess_device(sim_id: str, device_id: str, body: ConstraintBody | None
     c = body or ConstraintBody()
     req = _guard(sim.to_request, device_id, c.budget_usd, c.max_downtime_hrs)
     result = await state.pipeline.run(req)
-    state.assessments.put(result)
+    state.assessments.put(result, req)
     sim.device(device_id).last_assessment = {"assessment_id": result.assessment_id, "environment_status": result.environment_status,
                                              "pq_risk_score": result.pq_risk_score, "findings_count": result.findings_count,
                                              "tick": sim.tick}

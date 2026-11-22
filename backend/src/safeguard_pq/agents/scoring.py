@@ -1,12 +1,15 @@
 """Pure scoring functions (TIPPSS pillars, PQ risk score, environment status).
 
 Kept free of agent plumbing so the explainer can re-evaluate them on
-counterfactual finding sets. Constants reproduce the v0 prototype.
+counterfactual finding sets. Constants reproduce the v0 prototype; the
+functions accept alternative constant tables (``weights``, ``points``,
+``deduct``) so their sensitivity can be studied without changing defaults
+(see benchmarks/sensitivity_analysis.py).
 """
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from typing import Any
 
 from ..domain.models import PILLARS, Finding
@@ -25,10 +28,12 @@ CATEGORY_LABELS = {
 }
 
 
-def tippss_pillars(findings: Iterable[Finding]) -> dict[str, dict[str, Any]]:
+def tippss_pillars(findings: Iterable[Finding], *, deduct: Mapping[str, float] | None = None) -> dict[str, dict[str, Any]]:
+    """Per-pillar scores (100 minus severity deductions, floored at 0). ``deduct`` defaults to PILLAR_DEDUCT."""
+    table = PILLAR_DEDUCT if deduct is None else deduct
     pillars: dict[str, dict[str, Any]] = {p: {"score": 100, "finding_ids": [], "deductions": []} for p in PILLARS}
     for f in findings:
-        ded = PILLAR_DEDUCT.get(f.severity, 5)
+        ded = table.get(f.severity, 5)
         for p in f.tippss_mapping:
             if p in pillars:
                 pillars[p]["finding_ids"].append(f.id)
@@ -51,20 +56,33 @@ def category_of(f: Finding) -> str | None:
     return None
 
 
-def pq_score(findings: Sequence[Finding], pq_detected: bool) -> dict[str, Any]:
-    cat = {k: 0.0 for k in WEIGHTS}
-    drivers: dict[str, list[str]] = {k: [] for k in WEIGHTS}
+def pq_score(
+    findings: Sequence[Finding],
+    pq_detected: bool,
+    *,
+    weights: Mapping[str, float] | None = None,
+    points: Mapping[str, float] | None = None,
+) -> dict[str, Any]:
+    """Weighted 0-100 PQ risk score. ``weights`` / ``points`` default to WEIGHTS / POINTS.
+
+    The 75-point "no PQ algorithm in use" value of the migration category is a fixed posture constant, not a
+    severity, so it is not taken from ``points``.
+    """
+    w = WEIGHTS if weights is None else weights
+    pts_table = POINTS if points is None else points
+    cat = {k: 0.0 for k in w}
+    drivers: dict[str, list[str]] = {k: [] for k in w}
     for f in findings:
         c = category_of(f)
         if c is None:
             continue
-        pts = POINTS.get(f.severity, 25)
+        pts = pts_table.get(f.severity, 25)
         if pts > cat[c]:
             cat[c], drivers[c] = pts, [f.id]
         elif pts == cat[c] and pts > 0:
             drivers[c].append(f.id)
     cat["migration"] = 0 if pq_detected else 75
-    raw = sum(cat[k] * WEIGHTS[k] for k in WEIGHTS)
+    raw = sum(cat[k] * w[k] for k in w)
     score = js_round(raw)
     return {"pq_risk_score": score, "raw_score": raw, "status": verdict(score), "category_breakdown": cat, "drivers": drivers}
 

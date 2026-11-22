@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "safeguard-pq"
-version = "0.1.0"
+version = "0.3.0"
 description = "Agentic testing framework that checks whether IoT and edge-device environments are safe against post-quantum attacks (research prototype)."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -47,6 +47,8 @@ Changelog = "https://github.com/pavangemmanjunath-cell/PostQuantumSafe_IoT_Cyber
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.6"]
+# Research benchmarks only: integer-programming baseline (HiGHS MIP solver) and figure generation.
+benchmark = ["highspy>=1.7", "matplotlib>=3.8"]
 
 [project.scripts]
 safeguard-pq = "safeguard_pq.cli:main"

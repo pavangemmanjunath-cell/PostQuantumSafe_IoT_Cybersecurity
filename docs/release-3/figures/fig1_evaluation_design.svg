@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="800" viewBox="0 0 1400 800" font-family="Helvetica, Arial, sans-serif" font-size="12.5">
+  <title>Figure 1. Evaluation design of SafeGuard-PQ Release 3</title>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#222"/>
+    </marker>
+    <marker id="arrg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#777"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="800" fill="#ffffff"/>
+
+  <!-- ============ (a) INPUTS ============ -->
+  <text x="40" y="36" font-size="14.5" font-weight="bold" fill="#111">(a) Inputs (one system)</text>
+  <g stroke="#222" stroke-width="1.1" fill="#f4f4f4">
+    <rect x="40" y="52" width="210" height="44" rx="4"/>
+    <rect x="40" y="106" width="210" height="44" rx="4"/>
+    <rect x="40" y="160" width="210" height="44" rx="4"/>
+    <rect x="40" y="214" width="210" height="44" rx="4"/>
+    <rect x="40" y="268" width="210" height="58" rx="4"/>
+  </g>
+  <g fill="#111">
+    <text x="50" y="70" font-weight="bold">tls_config</text>
+    <text x="50" y="88" font-size="11.5" fill="#444">version, KEX, certificate, hash, lifetime</text>
+    <text x="50" y="124" font-weight="bold">iot_traffic</text>
+    <text x="50" y="142" font-size="11.5" fill="#444">100-row flow-feature window</text>
+    <text x="50" y="178" font-weight="bold">ai_prompt_logs</text>
+    <text x="50" y="196" font-size="11.5" fill="#444">clinical-assistant prompts</text>
+    <text x="50" y="232" font-weight="bold">device_logs</text>
+    <text x="50" y="250" font-size="11.5" fill="#444">certificate, auth status, debug log</text>
+    <text x="50" y="286" font-weight="bold">constraints, assumptions</text>
+    <text x="50" y="303" font-size="11.5" fill="#444">budget B, downtime D, Q-Day years,</text>
+    <text x="50" y="318" font-size="11.5" fill="#444">lifetime threshold L</text>
+  </g>
+
+  <!-- ============ (b) PIPELINE ============ -->
+  <text x="300" y="36" font-size="14.5" font-weight="bold" fill="#111">(b) Assessment pipeline (14 agents, seeded)</text>
+  <g stroke="#222" stroke-width="1.1" fill="#ffffff">
+    <rect x="300" y="52" width="330" height="80" rx="4"/>
+    <rect x="300" y="152" width="330" height="80" rx="4"/>
+    <rect x="300" y="252" width="330" height="80" rx="4"/>
+    <rect x="300" y="352" width="330" height="80" rx="4"/>
+    <rect x="300" y="452" width="330" height="80" rx="4"/>
+  </g>
+  <g fill="#111">
+    <text x="312" y="72" font-weight="bold">Stage 1 · Detection (8 agents, 6 in parallel)</text>
+    <text x="312" y="91" font-size="11.5" fill="#444">crypto inventory · PQ identification · PHI · injection</text>
+    <text x="312" y="106" font-size="11.5" fill="#444">secrets · clinical safety · device identity · traffic</text>
+    <text x="312" y="123" font-size="11.5" fill="#444">→ findings F: (type, severity, pillars, evidence)</text>
+
+    <text x="312" y="172" font-weight="bold">Stage 2 · Scoring</text>
+    <text x="312" y="191" font-size="11.5" fill="#444">pillar P_k = 100 − Σ d(sev);  S = round(Σ_c w_c · v_c)</text>
+    <text x="312" y="206" font-size="11.5" fill="#444">Mosca test M and lifetime override P reported separately</text>
+    <text x="312" y="223" font-size="11.5" fill="#444">→ SAFE / AT_RISK / UNSAFE from the supplied evidence</text>
+
+    <text x="312" y="272" font-weight="bold">Stage 3 · Planning (QIRO)</text>
+    <text x="312" y="291" font-size="11.5" fill="#444">max Σ (B_i − ½ K_i) x_i   s.t.  Σ C_i x_i ≤ B,  Σ D_i x_i ≤ D</text>
+    <text x="312" y="306" font-size="11.5" fill="#444">greedy start → simulated annealing → local search</text>
+    <text x="312" y="323" font-size="11.5" fill="#444">optional: shared-root-cause grouping (one fix, many findings)</text>
+
+    <text x="312" y="372" font-weight="bold">Stage 4 · Explanation</text>
+    <text x="312" y="391" font-size="11.5" fill="#444">exact score attribution, counterfactuals, agent traces</text>
+    <text x="312" y="406" font-size="11.5" fill="#444">projected score S_proj: selected action ⇒ finding removed</text>
+    <text x="312" y="423" font-size="11.5" fill="#444">→ Markdown / PDF report</text>
+
+    <text x="312" y="472" font-weight="bold">Stage 5 · Reassessment (new in Release 3)</text>
+    <text x="312" y="491" font-size="11.5" fill="#444">apply the plan to the configuration (mitigation catalogue)</text>
+    <text x="312" y="506" font-size="11.5" fill="#444">re-run stages 1–2 → S_reass and status</text>
+    <text x="312" y="523" font-size="11.5" fill="#444">network mitigations reported as unmodelled</text>
+  </g>
+  <g stroke="#222" stroke-width="1.2" fill="none" marker-end="url(#arr)">
+    <line x1="465" y1="132" x2="465" y2="150"/>
+    <line x1="465" y1="232" x2="465" y2="250"/>
+    <line x1="465" y1="332" x2="465" y2="350"/>
+    <line x1="465" y1="432" x2="465" y2="450"/>
+  </g>
+  <!-- inputs → stage 1 / stage 3 -->
+  <g stroke="#222" stroke-width="1.2" fill="none" marker-end="url(#arr)">
+    <path d="M250,74 C275,74 275,92 298,92"/>
+    <path d="M250,128 C275,128 275,92 298,92"/>
+    <path d="M250,182 C275,182 275,92 298,92"/>
+    <path d="M250,236 C275,236 275,92 298,92"/>
+    <path d="M250,297 C275,297 275,292 298,292"/>
+  </g>
+  <!-- reassessment feedback loop (left side) -->
+  <path d="M300,492 C270,492 270,140 298,112" stroke="#777" stroke-width="1.2" fill="none" stroke-dasharray="5,4" marker-end="url(#arrg)"/>
+  <text x="262" y="400" font-size="10.5" fill="#777" transform="rotate(-90 262,400)">re-run on remediated configuration</text>
+
+  <!-- ============ (c) EXPERIMENTS ============ -->
+  <text x="690" y="36" font-size="14.5" font-weight="bold" fill="#111">(c) Experiments (benchmarks/*.py → results/*.json)</text>
+  <g stroke="#222" stroke-width="1.1" fill="#eef3fb">
+    <rect x="690" y="52" width="360" height="56" rx="4"/>
+    <rect x="690" y="118" width="360" height="56" rx="4"/>
+    <rect x="690" y="184" width="360" height="56" rx="4"/>
+    <rect x="690" y="250" width="360" height="56" rx="4"/>
+    <rect x="690" y="316" width="360" height="56" rx="4"/>
+    <rect x="690" y="382" width="360" height="56" rx="4"/>
+    <rect x="690" y="448" width="360" height="56" rx="4"/>
+  </g>
+  <g fill="#111">
+    <text x="700" y="72" font-weight="bold">E1 · Ten synthetic clinical systems</text>
+    <text x="700" y="90" font-size="11.5" fill="#444">verdict, S, pillar scores and plan per system (seed 2026)</text>
+    <text x="700" y="138" font-weight="bold">E7 · Scoring sensitivity</text>
+    <text x="700" y="156" font-size="11.5" fill="#444">weights, deductions, points ±20 %;  L ∈ {5, 10, 15, 20} years</text>
+    <text x="700" y="204" font-weight="bold">E4 / E8 · Optimizer quality and scalability</text>
+    <text x="700" y="222" font-size="11.5" fill="#444">n ≤ 14 vs exhaustive;  n = 20…200 vs ILP (HiGHS), τ ∈ {¼, ½, ¾}</text>
+    <text x="700" y="270" font-weight="bold">E5 / E9 · Plan evaluation by reassessment</text>
+    <text x="700" y="288" font-size="11.5" fill="#444">Σ B_i  vs  S_proj  vs  S_reass;  independent vs root-cause planner</text>
+    <text x="700" y="336" font-weight="bold">E6 / E10 · Traffic rules on held-out data</text>
+    <text x="700" y="354" font-size="11.5" fill="#444">tune on development split only → P / R / F1 + 95 % CIs; baselines</text>
+    <text x="700" y="402" font-weight="bold">E11* · Attack simulation, hospital ward</text>
+    <text x="700" y="420" font-size="11.5" fill="#444">14 attacks × 9 devices × 3 seeds; inject, detect, mitigate, re-inject</text>
+    <text x="700" y="468" font-weight="bold">E12* · Standards traceability</text>
+    <text x="700" y="486" font-size="11.5" fill="#444">finding type → pillar → deduction → public reference (pillar level)</text>
+    <text x="690" y="524" font-size="11.5" fill="#444">Numbers follow the journal paper.  * supplementary, not reported in the paper</text>
+  </g>
+  <!-- experiment → stage links -->
+  <g stroke="#777" stroke-width="1.1" fill="none" marker-end="url(#arrg)">
+    <path d="M690,80 C660,80 660,92 632,92"/>
+    <path d="M690,146 C660,146 660,192 632,192"/>
+    <path d="M690,212 C660,212 660,292 632,292"/>
+    <path d="M690,278 C660,278 660,492 632,492"/>
+    <path d="M690,344 C655,344 655,92 632,92"/>
+    <path d="M690,410 C650,410 650,92 632,92"/>
+    <path d="M690,476 C665,476 665,192 632,192"/>
+  </g>
+
+  <!-- ============ (d) DATA ============ -->
+  <text x="1100" y="36" font-size="14.5" font-weight="bold" fill="#111">(d) Data</text>
+  <g stroke="#222" stroke-width="1.1" fill="#fbf3e6">
+    <rect x="1100" y="52" width="260" height="70" rx="4"/>
+    <rect x="1100" y="132" width="260" height="70" rx="4"/>
+    <rect x="1100" y="212" width="260" height="98" rx="4"/>
+    <rect x="1100" y="320" width="260" height="70" rx="4"/>
+  </g>
+  <g fill="#111">
+    <text x="1110" y="72" font-weight="bold">Synthetic scenarios (10)</text>
+    <text x="1110" y="90" font-size="11.5" fill="#444">hand-written; not observed deployments</text>
+    <text x="1110" y="105" font-size="11.5" fill="#444">backend/…/data/scenarios.json</text>
+    <text x="1110" y="152" font-weight="bold">Synthetic optimizer instances</text>
+    <text x="1110" y="170" font-size="11.5" fill="#444">500 with n ∈ [3, 14]; sizes 20 / 50 / 100 / 200</text>
+    <text x="1110" y="185" font-size="11.5" fill="#444">seed 0; costs are illustrative</text>
+    <text x="1110" y="232" font-weight="bold">Traffic windows (100 rows)</text>
+    <text x="1110" y="250" font-size="11.5" fill="#444">synthetic simulator dataset, train / test seeds</text>
+    <text x="1110" y="265" font-size="11.5" fill="#444">CICIoMT2024 test split: real, user-downloaded,</text>
+    <text x="1110" y="280" font-size="11.5" fill="#444">not redistributed; train split not available</text>
+    <text x="1110" y="295" font-size="11.5" fill="#444">→ cross-source and temporal protocols</text>
+    <text x="1110" y="340" font-weight="bold">Hospital-ward simulator</text>
+    <text x="1110" y="358" font-size="11.5" fill="#444">9 devices, 14 attacks, 12 mitigations</text>
+    <text x="1110" y="373" font-size="11.5" fill="#444">synthetic telemetry; seeds 7, 11, 23</text>
+  </g>
+  <g stroke="#777" stroke-width="1.1" fill="none" marker-end="url(#arrg)">
+    <line x1="1100" y1="80" x2="1052" y2="80"/>
+    <line x1="1100" y1="167" x2="1052" y2="212"/>
+    <line x1="1100" y1="261" x2="1052" y2="344"/>
+    <line x1="1100" y1="355" x2="1052" y2="410"/>
+  </g>
+
+  <!-- ============ (e) CLAIM BOUNDARY ============ -->
+  <rect x="40" y="570" width="1320" height="160" rx="6" fill="#fafafa" stroke="#222" stroke-width="1.1" stroke-dasharray="6,4"/>
+  <text x="56" y="594" font-size="14" font-weight="bold" fill="#111">(e) What the evidence supports — and what it does not</text>
+  <g font-size="12" fill="#222">
+    <text x="56" y="618">Supported: deterministic results for a seed; findings, pillar deductions and the PQ score are exact functions of the supplied configuration; the planner's gap to the</text>
+    <text x="56" y="636">exact / ILP optimum on synthetic instances; sensitivity of verdicts to the weight choices; detection of simulated attack preconditions and configuration-level reassessment.</text>
+    <text x="56" y="662">Not supported: protection against a real attacker (reassessment is a configuration-consistency check); generalisation of the traffic rules beyond the evaluated captures;</text>
+    <text x="56" y="680">clinical safety or IEEE/UL 2933-2024 conformance; calibrated risk (the weights are design choices, not fitted to incident data).</text>
+    <text x="56" y="708" fill="#555">Notation: w_c category weights (Σ w_c = 1); v_c category value; d(sev) pillar deduction {25, 15, 8, 3}; B_i benefit, K_i complexity, C_i cost, D_i downtime of action i; τ = B / Σ C_i.</text>
+  </g>
+
+  <text x="40" y="768" font-size="12" fill="#333">Figure 1. Evaluation design of SafeGuard-PQ Release 3 (v0.3.0). Inputs (a) flow through the five-stage agent pipeline (b); each experiment (c) exercises one stage on the data in (d);</text>
+  <text x="40" y="786" font-size="12" fill="#333">the dashed box (e) states the claim boundary. Grey dashed arrow: the reassessment stage re-runs detection and scoring on the remediated configuration.</text>
+</svg>
