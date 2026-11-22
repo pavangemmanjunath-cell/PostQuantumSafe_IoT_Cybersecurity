@@ -293,16 +293,16 @@ cd frontend && npm ci && cd ..
 
 ## Quick start
 
-**Windows:** double-click `start_all.bat` in the repository root, or run it from a command prompt with the option as an
-argument:
+**Windows:** double-click `start_all.bat` in the repository root for a menu, or run it from a command prompt with the
+option as an argument:
 
-```bat
-start_all.bat app              :: web application (backend :8000, frontend :5173); Research Results at http://127.0.0.1:5173/#results
-start_all.bat pipeline         :: every experiment, figures and Word summary, then the --check against the committed results
-start_all.bat pipeline-quick   :: the same without the slow E8 benchmark
-start_all.bat tests            :: ruff, pytest, frontend type check and build, Playwright browser tests
-start_all.bat docs             :: rebuild the figures and the Word summary only
-```
+| Command | Runs |
+|---|---|
+| `start_all.bat app` | the web application (backend :8000, frontend :5173); Research Results tab at http://127.0.0.1:5173/#results |
+| `start_all.bat pipeline` | every experiment, the figures and the Word summary, then the `--check` against the committed results |
+| `start_all.bat pipeline-quick` | the same without the slow E8 benchmark |
+| `start_all.bat tests` | ruff, pytest, frontend type check and build, Playwright browser tests |
+| `start_all.bat docs` | the figures and the Word summary only |
 
 The launcher creates `backend\.venv` on first use, prints an OK / FAIL line with the exit code for every step and
 pauses at the end only when started without an argument. The `app` option runs `scripts\dev.ps1`, which can also be
