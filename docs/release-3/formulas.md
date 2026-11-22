@@ -1,7 +1,7 @@
 # Formulas, constants and instance generators (Release 3)
 
-Both reviewers asked for the exact benefit formula, the rounding rule, the gap formula, the instance-generation
-distributions and — if the term "quantum-inspired" is kept — the energy function that is actually minimised. Every
+This appendix gives the exact benefit formula, the rounding rule, the gap formula, the instance-generation
+distributions and the energy function that is actually minimised (relevant to the term "quantum-inspired"). Every
 formula below is transcribed from the code (file names in parentheses) so the paper can cite them verbatim.
 
 ## 1. Pillar scores (`agents/scoring.py`)
@@ -41,7 +41,7 @@ SAFE     otherwise  (no finding across the evaluated controls on the supplied ev
 
 SAFE therefore means "no finding of severity ≥ medium on the supplied evidence and S ≤ 25". A system whose
 cryptographic configuration was not supplied is never SAFE (it is AT_RISK with the reason "PQ safety is unverified").
-This replaces the self-contradictory wording flagged by the reviewers.
+This replaces earlier, self-contradictory wording.
 
 ## 4. Mosca's inequality `M` and the lifetime override `P` (`agents/crypto.py`, `tools/builtin.py`)
 

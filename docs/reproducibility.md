@@ -61,6 +61,28 @@ safeguard-pq assess --scenario icu_gateway_critical --json result.json --pdf rep
 ```
 Expected: `environment UNSAFE | PQ score 61/100 (Not Post-Quantum Safe) | 8 finding(s) | QIRO 5 action(s)`.
 
+## Reproduce everything (one command)
+
+```bash
+python benchmarks/run_all.py --cic-test-dir <CIC test folder> --figures-python <python with matplotlib> --check
+```
+
+`benchmarks/run_all.py` runs every command of the next section in that order, prints each command with its wall time
+and stops at the first failure (about 4 min, of which E8 takes about 100 s). Without `--cic-test-dir`, E6 and E10
+P1/P2 are skipped. `--figures-python` is the interpreter for `make_figures.py` (run in isolated mode `-I`; default:
+the interpreter running `run_all.py`). `--skip-slow` leaves out E8, `--no-figures` and `--no-docx` the figure and Word
+steps. `--check` then compares every regenerated file in `benchmarks/results/` and `datasets/synthetic_holdout/` with
+the committed version (`git show HEAD:<path>`): JSON values are compared without the volatile fields (`date`,
+`python`, `platform`, `machine`, `software_version`, `*_ms`, `runtime_s`, `total_runtime_s`,
+`runtime_ratio_heuristic_over_ilp`, `mean_optimize_ms_including_exact_solver`), other files byte by byte with line
+endings normalised. It prints a PASS / CHANGED table and exits with status 1 if a deterministic value changed.
+
+On GitHub, the CI job `reproduce` (`.github/workflows/ci.yml`) runs
+`python benchmarks/run_all.py --check --no-figures --no-docx` on Ubuntu with Python 3.13.5 and highspy 1.16.0 for every
+push to `main` or a `feat/**` branch and every pull request, and uploads the regenerated results as the workflow
+artifact `reproduced-results`. The
+CICIoMT2024 files are not redistributed, so there E6 and E10 P1/P2 are reported as NOT RUN.
+
 ## Reproduce experiments (one command each)
 
 ```bash
@@ -73,19 +95,31 @@ python benchmarks/make_synthetic_traffic_dataset.py --out datasets/synthetic_hol
 python benchmarks/traffic_rules_holdout.py --train-dir datasets/synthetic_holdout/train --test-dir datasets/synthetic_holdout/test \
     --out benchmarks/results/traffic_rules_holdout.json                                           # E10 demonstration
 python benchmarks/traffic_rules_holdout.py --protocol cross_source --train-dir datasets/synthetic_holdout/train \
-    --test-dir <CIC test folder> --out benchmarks/results/traffic_rules_holdout_cic_p1.json        # E10 P1
+    --test-dir <CIC test folder> --data-label "<CICIoMT2024 test CSV folder, user-supplied; not redistributed>" \
+    --out benchmarks/results/traffic_rules_holdout_cic_p1.json                                    # E10 P1
 python benchmarks/traffic_rules_holdout.py --protocol temporal_split --test-dir <CIC test folder> --dev-fraction 0.5 \
+    --data-label "<CICIoMT2024 test CSV folder, user-supplied; not redistributed>" \
     --out benchmarks/results/traffic_rules_holdout_cic_p2.json                                    # E10 P2
 python benchmarks/attack_simulation_eval.py --template hospital_ward --seeds 7,11,23              # E11
 python scripts/gen_standards_map_doc.py                                                          # E12 table
 python benchmarks/make_figures.py                                                                 # figures (SVG, PDF, PNG)
+node scripts/svg_to_pdf.cjs                                                                       # schematic drafts (PDF, PNG)
+python scripts/build_release3_docx.py                                                            # Word evidence summary
 ```
+
+`traffic_rules_holdout.py` never records local paths: `train_dir` / `test_dir` hold the repository-relative path of an
+in-repository folder, the folder name of any other folder, or the `--train-data-label` / `--data-label` text. The two
+CICIoMT2024 runs pass a fixed label so the artifacts do not depend on where the files were downloaded.
+`scripts/build_release3_docx.py` writes `docs/release-3/SafeGuard-PQ_Release3_Evidence_Summary.docx` with docx-js
+(npm package `docx` 9.15.3), which it installs on first use into a scratch folder outside the repository; it is not
+a dependency of the repository.
 
 ## Expected outputs
 
 The committed artifacts in `benchmarks/results/` (see [benchmarks/README.md](../benchmarks/README.md) for the headline
-numbers). Objective metrics, verdicts, scores, selections, detection counts and intervals are deterministic for the
-stated seeds and Python version; the recorded `date`, runtimes and platform strings are machine-dependent. The
+numbers); `run_all.py --check` verifies them. Objective metrics, verdicts, scores, selections, detection counts and
+intervals are deterministic for the stated seeds and Python version; the recorded `date`, runtimes and platform strings
+are machine-dependent. The
 attack-simulation and synthetic-dataset outputs are byte-identical on re-run (no timestamps). The E10 CIC artifacts
 depend on the downloaded files (window counts are listed in their manifests: 376 benign, 17 ARP, 17 MQTT, 226 port
 scan, 1825 DDoS, 985 SYN).
@@ -93,7 +127,7 @@ scan, 1825 DDoS, 985 SYN).
 ## Evaluation commands
 
 ```bash
-cd backend && ruff check src tests && pytest           # expected: 216 passed
+cd backend && ruff check src tests && pytest           # expected: 222 passed
 cd frontend && npm run typecheck && npm run build && npx playwright test   # expected: 12 passed
 ```
 

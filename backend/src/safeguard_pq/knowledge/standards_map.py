@@ -1,9 +1,9 @@
 """Traceable mapping: finding type → TIPPSS pillar(s) → pillar deduction / score category → public references.
 
-Reviewers asked for a table that shows, for every finding the agents can raise, which
-IEEE/UL 2933-2024 TIPPSS pillar it affects, how many pillar points it deducts, which
-PQ-risk category (and weight) it feeds, and which public standard or guidance supports
-the rule.
+A table that shows, for every finding the agents can raise, which of the six IEEE/UL
+2933-2024 principles (called pillars in the code) it affects, how many pillar points it
+deducts, which PQ-risk category (and weight) it feeds, and which public standard or
+guidance supports the rule.
 
 Honesty notes
 -------------

@@ -2,8 +2,8 @@
 
     python benchmarks/plan_reassessment.py --seed 2026 --exhaustive-max-n 10
 
-Reviewer question: the planner's projected risk reduction (summed benefits, and a projection that assumes each
-selected action removes only its own finding) does not match the effect of remediation (the reassessed score).
+Question: does the planner's projected risk reduction (summed benefits, and a projection that assumes each selected
+action removes only its own finding) match the effect of remediation (the reassessed score)?
 For every scenario this script
 
 1. runs the baseline assessment;

@@ -7,7 +7,7 @@
   "data_source": "CICIoMT2024 test split (user-downloaded, not redistributed)",
   "development_source": "synthetic_simulator",
   "evaluation_source": "CICIoMT2024 test split (user-downloaded, not redistributed)",
-  "train_dir": "datasets\\synthetic_holdout\\train",
+  "train_dir": "datasets/synthetic_holdout/train",
   "test_dir": "<CICIoMT2024 test CSV folder, user-supplied; not redistributed>",
   "dev_fraction": null,
   "window_rows": 100,

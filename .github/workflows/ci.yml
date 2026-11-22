@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, "feat/**"]
   pull_request:
   workflow_dispatch:
 
@@ -73,6 +73,37 @@ jobs:
           name: playwright-report
           path: frontend/e2e-report
           retention-days: 7
+
+  reproduce:
+    # Re-runs every experiment that needs no third-party data (E3, E7, E8, E9, the synthetic dataset, E10 on it,
+    # E11, E12) and fails if any deterministic value differs from the committed artifacts. E6 and E10 P1/P2 need
+    # the CICIoMT2024 files, which are not redistributed, and are reported as NOT RUN.
+    name: Reproduce results (benchmarks/run_all.py --check)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13.5" # interpreter of the recorded artifacts
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+      - run: python -m pip install --upgrade pip
+      # highspy pinned to the HiGHS version that produced the recorded E8 artifact.
+      - run: pip install -e "backend[dev,benchmark]" "highspy==1.16.0"
+      - name: Re-run the experiments and compare with the committed artifacts
+        shell: bash
+        run: python benchmarks/run_all.py --check --no-figures --no-docx 2>&1 | tee reproduce.log
+      - name: Upload the regenerated results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reproduced-results
+          path: |
+            reproduce.log
+            benchmarks/results/
+            datasets/synthetic_holdout/
+          retention-days: 30
 
   citation:
     name: Validate CITATION.cff

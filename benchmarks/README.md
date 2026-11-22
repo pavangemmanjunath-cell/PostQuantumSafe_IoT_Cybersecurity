@@ -16,6 +16,7 @@ the same files by `make_figures.py` (optional `benchmark` extra: `pip install -e
 | E11 | `attack_simulation_eval.py` | `attack_simulation.json` | attacker-versus-defender outcomes on the hospital-ward simulator |
 | — | `make_synthetic_traffic_dataset.py` | `../datasets/synthetic_holdout/` | synthetic development split for E10 |
 | — | `make_figures.py` | `../docs/release-3/figures/` | result figures |
+| — | `run_all.py` | all of the above | runs every step in order; `--check` compares the regenerated artifacts with the committed ones |
 
 Environment for all recorded artifacts: Python 3.13.5, Windows 11, software version 0.3.0, 2026-11-22 (E6:
 2026-10-17, v0.1.0). Runtimes are single-machine wall-clock values and vary with hardware and load.
@@ -52,7 +53,7 @@ Shipped planner, optimal share / mean / p95 / max gap to the ILP optimum, and me
 | n | Greedy only | Shipped (greedy + SA + LS) | Shipped runtime | ILP runtime |
 |---|---|---|---|---|
 | 20 | 40 % / 1.19 / 3.37 / 5.00 % | 76 % / 0.30 / 1.67 / 3.04 % | 17 ms | 16 ms |
-| 50 | 28 % / 0.43 / 1.22 / 1.82 % | 46 % / 0.20 / 0.77 / 1.05 % | 67 ms | 24 ms |
+| 50 | 28 % / 0.43 / 1.22 / 1.82 % | 46 % / 0.19 / 0.77 / 1.05 % | 67 ms | 24 ms |
 | 100 | 10 % / 0.29 / 0.71 / 1.17 % | 32 % / 0.09 / 0.27 / 0.36 % | 190 ms | 41 ms |
 | 200 | 10 % / 0.16 / 0.48 / 0.62 % | 28 % / 0.06 / 0.16 / 0.28 % | 811 ms | 54 ms |
 
@@ -85,7 +86,7 @@ long-lifetime finding (61 → 41) but stay UNSAFE on other findings. Plan Jaccar
 
 For each scenario the plan's mitigations are applied to the configuration by code (`optimizer/reassess.py`) and the
 pipeline is re-run; every feasible subset of actions (n ≤ 10) is also reassessed to find the best attainable outcome
-(730 pipeline runs). Plan A = shipped planner (independent per-finding actions); plan B = shared-root-cause planner
+(413 pipeline runs). Plan A = shipped planner (independent per-finding actions); plan B = shared-root-cause planner
 (actions with the same mitigation merged and costed once). Command: `python benchmarks/plan_reassessment.py --seed 2026`.
 
 | Scenario | n | Baseline S / status | Plan A cost / ΣB / S_proj → S_reass / status | Plan B cost / S_proj → S_reass / status | Plan A best / cheapest-best |
@@ -103,7 +104,8 @@ pipeline is re-run; every feasible subset of actions (n ≤ 10) is also reassess
 
 Summary: plan A reaches SAFE in 7/10 systems (1 SAFE at baseline), projected = reassessed in 5/10, mean |S_proj −
 S_reass| 9.3 (max 26), best by reassessment 8/10, cheapest-best 1/10. Plan B: SAFE 7/10, projected = reassessed 8/10,
-mean error 2.7 (max 24), cheapest-best 2/10. The projection is pessimistic where several findings share one mitigation
+mean error 2.7 (max 24), best by reassessment 9/10, cheapest-best 7/10 (compared with subsets of whole root-cause
+groups under the grouped cost accounting). The projection is pessimistic where several findings share one mitigation
 and optimistic where a mitigation cannot be verified at configuration level (network controls).
 
 ## E6. Traffic rules, same split (`traffic_rules_eval.py`)

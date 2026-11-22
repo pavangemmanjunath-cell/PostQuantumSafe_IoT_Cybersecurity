@@ -1,7 +1,7 @@
 # Threat model (Release 3)
 
-This section answers the reviewers' request for an explicit threat model: who the adversary is, what is protected,
-what the framework can observe, and what is out of scope. It is written so that it can be pasted into Section V of the
+This section states the threat model explicitly: who the adversary is, what is protected, what the framework can
+observe, and what is out of scope. It is written so that it can be pasted into Section V of the
 paper with minimal editing.
 
 ## Assets

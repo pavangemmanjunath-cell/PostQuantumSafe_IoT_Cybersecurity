@@ -57,8 +57,8 @@ are designed to be extended to other IoT and edge domains. It answers three ques
 The system is implemented as **14 cooperating agents** behind a **FastAPI** backend, with a **React + three.js (WebGL)**
 interface that shows each agent working live, a 3D IoT fleet simulator with attack injection, and downloadable PDF reports.
 
-**Intended users:** security researchers, students and engineers exploring PQ-migration planning for medical IoT; reviewers
-who want to reproduce or challenge the approach.
+**Intended users:** security researchers, students and engineers exploring PQ-migration planning for medical IoT; anyone
+who wants to reproduce or challenge the approach.
 
 ## Built on the TIPPSS framework
 
@@ -179,11 +179,12 @@ Only capabilities present in this repository are listed.
 ### Reproducibility
 - Seeded optimizer and simulator; deterministic finding/action identifiers.
 - Regression parity tests against outputs recorded from the earlier JavaScript prototype.
-- Benchmark scripts with machine-readable results; 216 backend tests and 12 browser end-to-end tests.
+- Benchmark scripts with machine-readable results; 222 backend tests and 12 browser end-to-end tests.
 - Open the web application's **Research Results** tab (`/#results`) to inspect every recorded experiment (optimizer
   quality and scalability, scoring sensitivity, plan reassessment, same-split and held-out traffic rules, attack
   simulation, standards traceability) together with its caveats.
-- Reviewer-evidence pack for the manuscript: [docs/release-3/README.md](docs/release-3/README.md) (also as Word).
+- Release 3 evidence summary: [docs/release-3/README.md](docs/release-3/README.md) (also as Word); every artifact is
+  regenerated and checked against the committed version by `python benchmarks/run_all.py --check`, locally and in CI.
 
 ## How this work differs
 
@@ -351,7 +352,10 @@ No third-party dataset is redistributed. See [datasets/README.md](datasets/READM
 See [docs/reproducibility.md](docs/reproducibility.md). In short:
 
 ```bash
-cd backend && pytest                                         # 216 tests
+python benchmarks/run_all.py --cic-test-dir <CICIoMT2024 test CSV folder> --figures-python <python with matplotlib> --check
+                                                             # every experiment, figure and the Word summary, then a
+                                                             # PASS/CHANGED check against the committed artifacts
+cd backend && pytest                                         # 222 tests
 cd frontend && npx playwright install chromium && npx playwright test   # 12 browser E2E tests
 python benchmarks/qiro_optimality.py --instances 500 --seed 0           # E3
 python benchmarks/sensitivity_analysis.py --seed 2026                   # E7
@@ -434,9 +438,10 @@ not empirically fitted. Full list: [docs/limitations.md](docs/limitations.md).
 
 ## Research paper
 
-Associated publication information will be added when available. The evidence prepared for the revised manuscript
-(point-by-point reviewer tables, threat model, formulas, deployment feasibility, standards mapping, figures) is in
-[docs/release-3/](docs/release-3/) — `README.md` (Markdown) and `SafeGuard-PQ_Release3_Reviewer_Evidence.docx` (Word).
+Associated publication information will be added when available. The Release 3 evidence summary (results, figures,
+limitations) is in [docs/release-3/](docs/release-3/) — `README.md` (Markdown) and
+`SafeGuard-PQ_Release3_Evidence_Summary.docx` (Word) — with the threat model, formulas, deployment feasibility and
+standards mapping as appendices.
 
 ## Software citation
 

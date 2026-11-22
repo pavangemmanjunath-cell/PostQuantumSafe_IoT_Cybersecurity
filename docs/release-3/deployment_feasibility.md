@@ -1,7 +1,7 @@
 # Clinical deployment feasibility (Release 3)
 
-Reviewer 1 asked for a discussion of legacy medical-device compatibility, computational overhead, memory needs,
-certificate lifecycle management and operational downtime. **No device measurements were performed in this work.**
+This appendix discusses legacy medical-device compatibility, computational overhead, memory needs, certificate
+lifecycle management and operational downtime. **No device measurements were performed in this work.**
 This section collects published, publicly verifiable figures and states what they imply for the remediation actions
 the planner proposes. Every number below was read from the cited public page on 2026-11-22; derived values are
 marked.

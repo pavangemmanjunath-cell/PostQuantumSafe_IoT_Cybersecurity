@@ -2,7 +2,7 @@
 
     python benchmarks/qiro_scalability.py --sizes 20,50,100,200 --instances-per-size 50 --seed 0
 
-Reviewer-requested extension of ``qiro_optimality.py``, whose exhaustive reference is limited to n ≤ 14.
+Extension of ``qiro_optimality.py``, whose exhaustive reference is limited to n ≤ 14.
 Findings are drawn exactly as in ``qiro_optimality.instance`` (type, severity, agent and TIPPSS pillars
 uniformly from the remediation catalogue) but with n fixed per size, and the constraint tightness
 τ ∈ {0.25, 0.5, 0.75} is sampled per instance: budget = τ·Σ cost_i and max_downtime = τ·Σ downtime_i.

@@ -91,6 +91,14 @@ def test_threshold_substitution_matches_shipped_evaluation(holdout) -> None:
     assert traffic_rules.TRAFFIC_RULES[1].conditions[0][2] == 0.6  # shipped rules untouched
 
 
+def test_data_folders_are_recorded_as_portable_labels(holdout, tmp_path) -> None:
+    repo = Path(holdout.__file__).resolve().parents[1]
+    assert holdout.dir_label(repo / "datasets" / "synthetic_holdout" / "train") == "datasets/synthetic_holdout/train"
+    assert holdout.dir_label(tmp_path / "Input") == "Input"
+    assert holdout.dir_label(tmp_path / "Input", "<CICIoMT2024 test folder>") == "<CICIoMT2024 test folder>"
+    assert holdout.dir_label(None) is None
+
+
 def test_generator_writes_expected_files(generator, tmp_path) -> None:
     out = tmp_path / "ds"
     assert generator.main(["--out", str(out), "--windows-per-class", "2", "--window", "50"]) == 0
@@ -131,6 +139,8 @@ def test_holdout_main_runs_on_tiny_synthetic_dataset(generator, holdout, tmp_pat
     assert set(r["tuning"]["rules"]) == {rule.type for rule in traffic_rules.TRAFFIC_RULES}
     assert all(e["status"] == "tuned" for e in r["tuning"]["rules"].values())
     assert "simulator" in r["caveat"]
+    assert r["train_dir"] == "train" and r["test_dir"] == "test"  # folder names only, never the local path
+    assert tmp_path.name not in out.read_text(encoding="utf-8")
 
     out2 = tmp_path / "temporal.json"
     argv2 = ["--protocol", "temporal_split", "--test-dir", str(ds / "test"), "--dev-fraction", "0.5", "--window", "50",

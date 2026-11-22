@@ -1,7 +1,8 @@
 # Traceable mapping: findings → TIPPSS pillars → deductions → references (Release 3)
 
-Reviewer 2 asked for a traceable mapping from finding types to pillar deductions and to IEEE/UL 2933-2024
-requirements, and for a statement that pillar scores do not imply standards compliance.
+This appendix traces every finding type to the IEEE/UL 2933-2024 principles it affects (pillars in the code), the
+pillar deduction, the PQ-score category and the public references, and states that pillar scores do not imply
+standards compliance.
 
 **Standard.** IEEE/UL 2933-2024 — Standard for Clinical Internet of Things (IoT) Data and Device Interoperability with TIPPSS (Trust, Identity, Privacy, Protection, Safety, Security).
 

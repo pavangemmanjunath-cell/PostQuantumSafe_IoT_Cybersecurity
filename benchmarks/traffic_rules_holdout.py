@@ -36,6 +36,9 @@ Common procedure
   matrix, for the shipped thresholds, the tuned thresholds and three baselines fitted on the development set
   (majority class; mean ``Rate`` above the 99th percentile of benign development windows; mean ``Tot size``
   outside the 1st-99th percentile band of benign development windows).
+* Local paths are never written to the artifact: ``train_dir`` / ``test_dir`` record ``--train-data-label`` /
+  ``--data-label`` when given, else the repository-relative path of an in-repository folder or only the name of
+  any other folder.
 
 The CICIoMT2024 files are not redistributed with this repository (see datasets/README.md).
 """
@@ -57,7 +60,8 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend" / "src"))
+REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT / "backend" / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from safeguard_pq import __version__  # noqa: E402
@@ -204,6 +208,23 @@ def describe_source(directory: Path, override: str | None = None) -> str:
     if any(".pcap" in n for n in names):
         return CIC_SOURCE
     return "csv_folder"
+
+
+def dir_label(directory: Path | None, label: str | None = None) -> str | None:
+    """Portable label recorded for a data folder, so an artifact never contains a local absolute path.
+
+    ``label`` when given; otherwise the repository-relative POSIX path for a folder inside this repository
+    (e.g. ``datasets/synthetic_holdout/train``) and only the folder name for any other folder.
+    """
+    if directory is None:
+        return None
+    if label:
+        return label
+    resolved = directory.resolve()
+    try:
+        return resolved.relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return resolved.name
 
 
 def manifest_of(per_file: Mapping[str, Sequence[Window]], max_windows: int) -> list[dict[str, Any]]:
@@ -506,8 +527,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "data_source": eval_source,
         "development_source": dev_source,
         "evaluation_source": eval_source,
-        "train_dir": str(args.train_dir) if args.train_dir else None,
-        "test_dir": str(args.test_dir),
+        "train_dir": dir_label(args.train_dir, args.train_data_label),
+        "test_dir": dir_label(args.test_dir, args.data_label),
         "dev_fraction": args.dev_fraction if protocol == "temporal_split" else None,
         "window_rows": args.window,
         "max_windows_per_file": args.max_windows,
@@ -589,6 +610,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--n-boot", type=int, default=1000, help="bootstrap resamples")
     ap.add_argument("--data-source", default=None, help="override the auto-detected held-out data source label")
     ap.add_argument("--train-data-source", default=None, help="override the auto-detected development data source label")
+    ap.add_argument("--data-label", default=None,
+                    help="label recorded as test_dir instead of the folder path (default: repository-relative path, or the "
+                         "folder name for a folder outside the repository)")
+    ap.add_argument("--train-data-label", default=None, help="label recorded as train_dir (same default rule as --data-label)")
     ap.add_argument("--out", type=Path, default=Path(__file__).parent / "results" / "traffic_rules_holdout.json")
     args = ap.parse_args(argv)
 
