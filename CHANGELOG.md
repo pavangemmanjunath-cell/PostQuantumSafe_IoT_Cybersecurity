@@ -28,7 +28,7 @@ summary: [docs/release-3/README.md](docs/release-3/README.md).
   time and stops at the first failure; `--check` compares every regenerated artifact in `benchmarks/results/` and
   `datasets/synthetic_holdout/` with the committed version, ignoring dates, version strings and runtimes, and fails on
   any other difference; `--skip-slow`, `--no-figures`, `--no-docx`.
-- CI job `reproduce`: runs `run_all.py --check --no-figures --no-docx` (Python 3.13.5, highspy 1.16.0) for pushes to
+- CI job `reproduce`: runs `run_all.py --check --no-figures --no-docx` (ubuntu-latest, Python 3.13, highspy 1.16.0) for pushes to
   `main` and `feat/**` branches and for pull requests, and uploads the regenerated results; CI now also runs on pushes
   to `feat/**` branches.
 - `docs/release-3/` evidence summary (Markdown and Word, `SafeGuard-PQ_Release3_Evidence_Summary.docx`) with the

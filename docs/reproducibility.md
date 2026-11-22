@@ -78,7 +78,7 @@ the committed version (`git show HEAD:<path>`): JSON values are compared without
 endings normalised. It prints a PASS / CHANGED table and exits with status 1 if a deterministic value changed.
 
 On GitHub, the CI job `reproduce` (`.github/workflows/ci.yml`) runs
-`python benchmarks/run_all.py --check --no-figures --no-docx` on Ubuntu with Python 3.13.5 and highspy 1.16.0 for every
+`python benchmarks/run_all.py --check --no-figures --no-docx` on ubuntu-latest with Python 3.13 and highspy 1.16.0 for every
 push to `main` or a `feat/**` branch and every pull request, and uploads the regenerated results as the workflow
 artifact `reproduced-results`. The
 CICIoMT2024 files are not redistributed, so there E6 and E10 P1/P2 are reported as NOT RUN.
