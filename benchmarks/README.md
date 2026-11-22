@@ -35,7 +35,7 @@ with every input assumption, the results and a `paper_check` block that lists ea
 
 | Id | Paper content | Inputs | Artifact | Stated values reproduced |
 |---|---|---|---|---|
-| E1 | Table II (every cell) and the principle scores of Section VII-A | the ten built-in scenarios | `paper_e1_systems.json` | 127 / 127 |
+| E1 | Table II (every cell) and the principle scores of Section VII-A | the ten built-in scenarios | `paper_e1_systems.json` | 128 / 128 |
 | E2 | six attack conditions on a legacy infusion-pump gateway, before and after the countermeasures | `examples/paper/e2_infusion_pump_conditions.json` | `paper_e2_attack_conditions.json` | 42 / 42 |
 | E3 | HNDL exposure of seven data classes (5–30 years) against z = 4–30 years for y = 2, 5, 8; hybrid ML-KEM | E2 base gateway (classical) and migrated gateway (hybrid) | `paper_e3_qday_sweep.json` | 12 / 12 |
 | E4 | budget sweep 10 000–200 000 USD in steps of 10 000 for the ICU gateway and the legacy system | `icu_gateway_critical`, `legacy_worst_case`, downtime 40 h | `paper_e4_budget_sweep.json` | 9 / 9 |
@@ -44,7 +44,7 @@ with every input assumption, the results and a `paper_check` block that lists ea
 Input reconstruction: the original draft names the E2 conditions and the seven E3 data classes but not their
 configurations. They are taken from the v0.1.0 experiment script that produced the draft's numbers, and every E2
 condition equals the effect of the simulator's own attack injection (`Simulation.inject`), which the script
-re-checks on every run; the assumptions are listed in each artifact's `method`. All 215 stated values are reproduced
+re-checks on every run; the assumptions are listed in each artifact's `method`. All 216 stated values are reproduced
 with v0.3.0, and the E2–E4 values equal those recorded with v0.1.0.
 
 ## E4 (solver quality). QIRO optimality, n ≤ 14 (`qiro_optimality.py`)

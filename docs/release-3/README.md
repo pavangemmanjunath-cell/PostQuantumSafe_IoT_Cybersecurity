@@ -14,7 +14,7 @@ journal paper (E1–E10); E11 and E12 are supplementary (not reported in the pap
 <!-- docx-widths: 16,25,35,24 -->
 | Experiment | Question | Headline result | Artifact |
 |---|---|---|---|
-| E1–E5 Paper experiments | Do the numbers the paper states for E1–E5 reproduce with v0.3.0? | all 215 stated values reproduced (Table II, attack conditions, Q-Day sweep, budget sweep, worked example) | `paper_e1_systems.json` … `paper_e5_worked_example.json` |
+| E1–E5 Paper experiments | Do the numbers the paper states for E1–E5 reproduce with v0.3.0? | all 216 stated values reproduced (Table II, attack conditions, Q-Day sweep, budget sweep, worked example) | `paper_e1_systems.json` … `paper_e5_worked_example.json` |
 | E7 Scoring sensitivity | Do verdicts depend on the scoring constants? | status unchanged under ±20 % changes of every constant; a 5-year lifetime threshold changes one | `sensitivity_analysis.json` |
 | E8 Optimizer scalability | How close to the exact optimum at 20–200 actions? | mean gap 0.30 % (n = 20) to 0.055 % (n = 200) | `qiro_scalability.json` |
 | E9 Plan reassessment | Does a plan's projected effect match the reassessed configuration? | 7/10 systems SAFE after the plan; projection error 9.3 points (2.7 with root-cause grouping) | `plan_reassessment.json` |

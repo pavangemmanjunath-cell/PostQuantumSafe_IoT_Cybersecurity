@@ -295,27 +295,20 @@ async def e1(seed: int) -> dict[str, Any]:
     check.add("E1.pq_ready_but_unsafe", f"{PAPER}, Section VII-A", "Three systems with PQ-safe cryptography were still UNSAFE.",
               3, len(pq_unsafe), note=", ".join(pq_unsafe))
     ai = pillars["clinical_ai_phi"]
-    check.add("E1.principles.clinical_ai_phi.trust", f"{PAPER}, Section VII-A",
-              "The clinical AI assistant scored lowest on trust (30) ...", 30, ai["Trust"])
-    check.add("E1.principles.clinical_ai_phi.privacy", f"{PAPER}, Section VII-A",
-              "... and privacy (55).", 55, ai["Privacy"])
-    ties = [k for k, v in ai.items() if v == ai["Privacy"] and k != "Privacy"]
-    check.add("E1.principles.clinical_ai_phi.lowest_two", f"{PAPER}, Section VII-A",
-              "Trust (30) and privacy (55) are the clinical AI assistant's lowest principle scores.",
-              [30, 55], sorted(set(ai.values()))[:2],
-              note=f"also {ai['Privacy']}: {', '.join(ties)}" if ties else None)
+    for name, value in (("Trust", 30), ("Privacy", 55), ("Protection", 55)):
+        check.add(f"E1.principles.clinical_ai_phi.{name.lower()}", f"{PAPER}, Section VII-A",
+                  "The clinical AI assistant scored 30 on trust and 55 on privacy and protection.", value, ai[name])
     for sid, who, pair, value in (("secret_exposure", "the device that logged cloud credentials", ("Protection", "Security"), 50),
                                   ("pq_downgrade_prompt", "the gateway that received a PQ-downgrade instruction", ("Trust", "Security"), 60)):
         for name in pair:
             check.add(f"E1.principles.{sid}.{name.lower()}", f"{PAPER}, Section VII-A",
                       f"{who[0].upper()}{who[1:]} scored {value} on {pair[0].lower()} and {pair[1].lower()}.", value, pillars[sid][name])
     zero_security = [sid for sid, p in pillars.items() if p["Security"] == 0]
-    for sid, who in (("icu_gateway_critical", "the ICU gateway"), ("legacy_worst_case", "the legacy device"),
-                     ("infusion_syn_flood", "the flooded pump")):
+    for sid, who in (("icu_gateway_critical", "the ICU gateway"), ("tight_budget_qiro", "the ICU gateway, $30k"),
+                     ("legacy_worst_case", "the legacy device"), ("infusion_syn_flood", "the flooded pump")):
         check.add(f"E1.principles.{sid}.security", f"{PAPER}, Section VII-A",
-                  f"Security fell to 0 for the ICU gateway, the legacy device and the flooded pump ({who}).", 0,
-                  pillars[sid]["Security"], note=f"all systems with security 0: {', '.join(zero_security)} (tight_budget_qiro "
-                                                 "is the ICU gateway's configuration under a 30,000 USD budget)")
+                  f"Security fell to 0 for both ICU gateway systems, the legacy device and the flooded pump ({who}).", 0,
+                  pillars[sid]["Security"], note=f"all systems with security 0: {', '.join(zero_security)}")
     zero_protection = [sid for sid, p in pillars.items() if p["Protection"] == 0]
     check.add("E1.principles.legacy_worst_case.protection", f"{PAPER}, Section VII-A",
               "... and protection to 0 for the legacy device.", 0, pillars["legacy_worst_case"]["Protection"],

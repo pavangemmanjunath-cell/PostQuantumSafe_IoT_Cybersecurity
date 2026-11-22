@@ -395,7 +395,7 @@ The Research Results tab in the web application displays these metrics and limit
 **Paper experiments E1–E5** (`python benchmarks/paper_experiments.py`, a few seconds): the ten systems of Table II,
 the six attack conditions, the Q-Day sweep, the budget sweep and the worked example of the journal paper, rerun with
 v0.3.0. Each artifact (`benchmarks/results/paper_e1_systems.json` … `paper_e5_worked_example.json`) lists every
-number the paper states with the reproduced value: all 215 match.
+number the paper states with the reproduced value: all 216 match.
 
 **Release 3 experiments (2026-11-22, Python 3.13.5)** — E11 and E12 are supplementary (not reported in the paper)
 

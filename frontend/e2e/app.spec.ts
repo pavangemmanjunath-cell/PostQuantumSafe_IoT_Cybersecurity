@@ -220,7 +220,7 @@ test.describe("TIPPSS SafeGuard-PQ — user journeys", () => {
     await page.goto("/#results");
     await expect(page.getByTestId("benchmark-page")).toBeVisible();
     await expect(page.getByTestId("qiro-optimal-share")).toHaveText("97.6%");
-    await expect(page.getByTestId("paper-check")).toHaveText("215/215"); // every number stated for paper E1-E5
+    await expect(page.getByTestId("paper-check")).toHaveText("216/216"); // every number stated for paper E1-E5
     await expect(page.getByTestId("results-optimizer")).toHaveText("Optimizer (E4)");
     await expect(page.getByTestId("benchmark-caveat")).toContainText("not a generalization estimate");
     await page.getByTestId("results-traffic").click();

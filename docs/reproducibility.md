@@ -109,7 +109,7 @@ end only when started without an argument.
 Experiment numbers are those of the revised journal paper (Section VI). Artifacts are in `benchmarks/results/` unless
 a path is given. `python benchmarks/paper_experiments.py` runs E1–E5 together (a few seconds); every `paper_e*.json`
 carries a `paper_check` block that lists each number the paper states for the experiment with the expected value,
-the reproduced value and whether they match (all 215 match with v0.3.0).
+the reproduced value and whether they match (all 216 match with v0.3.0).
 
 | Paper experiment | Command | Artifact |
 |---|---|---|

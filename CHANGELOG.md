@@ -15,7 +15,7 @@ summary: [docs/release-3/README.md](docs/release-3/README.md).
 - **Paper experiments E1–E5 scripted.** `benchmarks/paper_experiments.py` (`--only e1,…`, `--out-dir`, `--strict`)
   reruns Table II, the six attack conditions, the Q-Day sweep, the budget sweep and the worked example of the journal
   paper with the shipped software and writes `benchmarks/results/paper_e1_systems.json` … `paper_e5_worked_example.json`;
-  each has a `paper_check` block listing every number the paper states with the reproduced value (215 of 215 match).
+  each has a `paper_check` block listing every number the paper states with the reproduced value (216 of 216 match).
   Inputs in `examples/paper/` (Listing 1 gateway; E2 conditions equal to the simulator's attack effects). First step of
   `run_all.py`, so `--check` and the CI job `reproduce` cover it.
 - **Windows launcher** `start_all.bat` (menu, or `app`, `pipeline`, `pipeline-quick`, `tests`, `docs` as argument);

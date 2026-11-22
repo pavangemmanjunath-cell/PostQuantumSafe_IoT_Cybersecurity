@@ -1064,8 +1064,8 @@
   },
   "paper_check": {
     "summary": {
-      "stated_values": 127,
-      "matched": 127,
+      "stated_values": 128,
+      "matched": 128,
       "mismatched": 0,
       "all_match": true
     },
@@ -2037,7 +2037,7 @@
       {
         "id": "E1.principles.clinical_ai_phi.trust",
         "source": "revised paper, Section VII-A",
-        "statement": "The clinical AI assistant scored lowest on trust (30) ...",
+        "statement": "The clinical AI assistant scored 30 on trust and 55 on privacy and protection.",
         "expected": 30,
         "reproduced": 30,
         "match": true
@@ -2045,25 +2045,18 @@
       {
         "id": "E1.principles.clinical_ai_phi.privacy",
         "source": "revised paper, Section VII-A",
-        "statement": "... and privacy (55).",
+        "statement": "The clinical AI assistant scored 30 on trust and 55 on privacy and protection.",
         "expected": 55,
         "reproduced": 55,
         "match": true
       },
       {
-        "id": "E1.principles.clinical_ai_phi.lowest_two",
+        "id": "E1.principles.clinical_ai_phi.protection",
         "source": "revised paper, Section VII-A",
-        "statement": "Trust (30) and privacy (55) are the clinical AI assistant's lowest principle scores.",
-        "expected": [
-          30,
-          55
-        ],
-        "reproduced": [
-          30,
-          55
-        ],
-        "match": true,
-        "note": "also 55: Protection"
+        "statement": "The clinical AI assistant scored 30 on trust and 55 on privacy and protection.",
+        "expected": 55,
+        "reproduced": 55,
+        "match": true
       },
       {
         "id": "E1.principles.secret_exposure.protection",
@@ -2100,29 +2093,38 @@
       {
         "id": "E1.principles.icu_gateway_critical.security",
         "source": "revised paper, Section VII-A",
-        "statement": "Security fell to 0 for the ICU gateway, the legacy device and the flooded pump (the ICU gateway).",
+        "statement": "Security fell to 0 for both ICU gateway systems, the legacy device and the flooded pump (the ICU gateway).",
         "expected": 0,
         "reproduced": 0,
         "match": true,
-        "note": "all systems with security 0: icu_gateway_critical, legacy_worst_case, tight_budget_qiro, infusion_syn_flood (tight_budget_qiro is the ICU gateway's configuration under a 30,000 USD budget)"
+        "note": "all systems with security 0: icu_gateway_critical, legacy_worst_case, tight_budget_qiro, infusion_syn_flood"
+      },
+      {
+        "id": "E1.principles.tight_budget_qiro.security",
+        "source": "revised paper, Section VII-A",
+        "statement": "Security fell to 0 for both ICU gateway systems, the legacy device and the flooded pump (the ICU gateway, $30k).",
+        "expected": 0,
+        "reproduced": 0,
+        "match": true,
+        "note": "all systems with security 0: icu_gateway_critical, legacy_worst_case, tight_budget_qiro, infusion_syn_flood"
       },
       {
         "id": "E1.principles.legacy_worst_case.security",
         "source": "revised paper, Section VII-A",
-        "statement": "Security fell to 0 for the ICU gateway, the legacy device and the flooded pump (the legacy device).",
+        "statement": "Security fell to 0 for both ICU gateway systems, the legacy device and the flooded pump (the legacy device).",
         "expected": 0,
         "reproduced": 0,
         "match": true,
-        "note": "all systems with security 0: icu_gateway_critical, legacy_worst_case, tight_budget_qiro, infusion_syn_flood (tight_budget_qiro is the ICU gateway's configuration under a 30,000 USD budget)"
+        "note": "all systems with security 0: icu_gateway_critical, legacy_worst_case, tight_budget_qiro, infusion_syn_flood"
       },
       {
         "id": "E1.principles.infusion_syn_flood.security",
         "source": "revised paper, Section VII-A",
-        "statement": "Security fell to 0 for the ICU gateway, the legacy device and the flooded pump (the flooded pump).",
+        "statement": "Security fell to 0 for both ICU gateway systems, the legacy device and the flooded pump (the flooded pump).",
         "expected": 0,
         "reproduced": 0,
         "match": true,
-        "note": "all systems with security 0: icu_gateway_critical, legacy_worst_case, tight_budget_qiro, infusion_syn_flood (tight_budget_qiro is the ICU gateway's configuration under a 30,000 USD budget)"
+        "note": "all systems with security 0: icu_gateway_critical, legacy_worst_case, tight_budget_qiro, infusion_syn_flood"
       },
       {
         "id": "E1.principles.legacy_worst_case.protection",
